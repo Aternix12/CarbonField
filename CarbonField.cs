@@ -9,13 +9,18 @@ namespace CarbonField
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        Texture2D logo;
         Vector2 _position = new Vector2(0, 0);
         Vector2 _velocity = new Vector2(100, 100);
 
         public CarbonField()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.
+            
+            _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -30,36 +35,20 @@ namespace CarbonField
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-            logo = this.Content.Load<Texture2D>("spr_wallblock");
+            Vector2 p;
+            p.X = 64;
+            p.Y = 64;
+            WallBlock ent = new WallBlock(p);
+            EntityManager.Add(ent);
             // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
-        {
+        { 
+            base.Update(gameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
-            _position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if(_position.X <= 0 && _velocity.X < 0)
-            {
-                _velocity.X *= -1; 
-            }
-            else if (_position.Y <= 0 && _velocity.Y < 0)
-            {
-                _velocity.Y *= -1;
-            }
-            else if (_position.X >= _graphics.GraphicsDevice.Viewport.Width - 32 && _velocity.X > 0)
-            {
-                _velocity.X *= -1;
-            }
-            else if (_position.Y >= _graphics.GraphicsDevice.Viewport.Height - 32 && _velocity.Y > 0)
-            {
-                _velocity.Y *= -1;
-            }
+            EntityManager.Update(gameTime, _graphics);
             base.Update(gameTime);
         }
 
@@ -67,9 +56,8 @@ namespace CarbonField
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
-            _spriteBatch.Begin();//These are the image layers
-            _spriteBatch.Draw(logo, _position, color: Color.White);
+            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);//These are the image layers
+            EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
