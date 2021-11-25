@@ -9,37 +9,42 @@ namespace CarbonField
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        Vector2 _position = new Vector2(0, 0);
-        Vector2 _velocity = new Vector2(100, 100);
+        private CtrCamera _cam;
+        //Viewport Backgroun Testing
+        private Texture2D _bgrTexture;
+        private Vector2 _bgrPos;
 
         public CarbonField()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = true;
-            _graphics.PreferredBackBufferWidth = 1920;
-            _graphics.PreferredBackBufferHeight = 1080;
-            
-            _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            
+
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
 
+            _cam = new CtrCamera(GraphicsDevice.Viewport);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            Vector2 p;
-            p.X = 64;
-            p.Y = 64;
+            
+            //Crearing Wall
+            Vector2 p = new Vector2(64, 64);
             WallBlock ent = new WallBlock(p);
             EntityManager.Add(ent);
-            // TODO: use this.Content to load your game content here
+
+            _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
 
         protected override void Update(GameTime gameTime)
@@ -48,6 +53,9 @@ namespace CarbonField
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             EntityManager.Update(gameTime, _graphics);
+
+            //Updating View
+            _cam.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -55,10 +63,11 @@ namespace CarbonField
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);//These are the image layers
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);//These are the image layers
+            _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
+            
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
