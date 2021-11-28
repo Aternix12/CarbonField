@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 namespace CarbonField
 {
@@ -19,7 +23,7 @@ namespace CarbonField
 
         private Queue<float> _sampleBuffer = new Queue<float>();
 
-        public override bool Update(float deltaTime)
+        public bool Update(float deltaTime)
         {
             CurrentFramesPerSecond = 1.0f / deltaTime;
 

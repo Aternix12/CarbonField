@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace CarbonField
 {
@@ -14,24 +15,30 @@ namespace CarbonField
         private Texture2D _bgrTexture;
         private Vector2 _bgrPos;
 
+        //FPS Counter
+        private FrameCounter _frameCounter;
+        private SpriteFont _arial;
+
         public CarbonField()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            IsFixedTimeStep = false;
             
 
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
             _cam = new CtrCamera(GraphicsDevice.Viewport);
+
+            _frameCounter = new FrameCounter();
             base.Initialize();
         }
 
@@ -40,9 +47,14 @@ namespace CarbonField
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             
             //Crearing Wall
-            Vector2 p = new Vector2(64, 64);
-            WallBlock ent = new WallBlock(p);
-            EntityManager.Add(ent);
+            
+            for(int i = 0; i < 30; i++) {
+                Random r = new Random();
+                int nextValue = r.Next(0, 1900);
+                Vector2 p = new Vector2(nextValue, 64);
+                WallBlock ent = new WallBlock(p);
+                EntityManager.Add(ent);
+            } 
 
             _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
@@ -56,6 +68,10 @@ namespace CarbonField
 
             //Updating View
             _cam.Update(gameTime);
+            //Updating FPS
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _frameCounter.Update(deltaTime);
+
             base.Update(gameTime);
         }
 
@@ -66,8 +82,14 @@ namespace CarbonField
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);//These are the image layers
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
-            
+
+            //Drawing FPS
+            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
+            _arial = Content.Load<SpriteFont>("Fonts/Arial");
+            _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
+
             _spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }

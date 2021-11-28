@@ -29,7 +29,7 @@ namespace CarbonField
             //Keyboard input for moving view
             _vel.X *= (float)0.75;
             _vel.Y *= (float)0.75;
-            if(Keyboard.GetState().IsKeyDown(Keys.D)){
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) {
                 _vel.X += 3;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
@@ -48,7 +48,11 @@ namespace CarbonField
             _pos.Y += _vel.Y;
 
             transform = Matrix.CreateScale(new Vector3(1, 1, 0)) * Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0));
-                
         }
+
+        public Vector2 pos {
+            get { return _pos;}     
+        }
+
     }
 }

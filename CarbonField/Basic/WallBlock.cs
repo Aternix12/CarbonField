@@ -14,8 +14,11 @@ namespace CarbonField
         public WallBlock(Vector2 pos)
         {
             _position = pos;
-            _velocity.X = 50;
-            _velocity.Y = 50;
+            Random r = new Random();
+            int nextValue = r.Next(-100, 100);
+            _velocity.X = nextValue;
+            nextValue = r.Next(-100, 100);
+            _velocity.Y = nextValue;
         }
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
