@@ -13,7 +13,6 @@ namespace CarbonField
         private CtrCamera _cam;
         //Viewport Backgroun Testing
         private Texture2D _bgrTexture;
-        private Vector2 _bgrPos;
 
         //FPS Counter
         private FrameCounter _frameCounter;
@@ -48,7 +47,7 @@ namespace CarbonField
             
             //Crearing Wall
             
-            for(int i = 0; i < 30; i++) {
+            for(int i = 0; i < 20; i++) {
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);
@@ -74,6 +73,8 @@ namespace CarbonField
 
             base.Update(gameTime);
         }
+
+       
 
         protected override void Draw(GameTime gameTime)
         {

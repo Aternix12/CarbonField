@@ -30,12 +30,12 @@ namespace CarbonField
 
 		public static void Update(GameTime gameTime, GraphicsDeviceManager graphics)
 		{
+			
 			isUpdating = true;
-			HandleCollisions();
 
 			foreach (var entity in entities)
 				entity.Update(gameTime, graphics);
-
+			UpdateCollision(gameTime);
 			isUpdating = false;
 
 			foreach (var entity in addedEntities)
@@ -44,83 +44,39 @@ namespace CarbonField
 			addedEntities.Clear();
 
 			entities = entities.Where(x => !x.IsExpired).ToList();
+			
 		}
 
-		static void HandleCollisions()
-		{
-			// handle collisions between enemies
-			/*
-			for (int i = 0; i < enemies.Count; i++)
-				for (int j = i + 1; j < enemies.Count; j++)
-				{
-					if (IsColliding(enemies[i], enemies[j]))
-					{
-						enemies[i].HandleCollision(enemies[j]);
-						enemies[j].HandleCollision(enemies[i]);
-					}
-				}
+		public static void UpdateCollision(GameTime gameTime)
+        {
+			foreach(var objA in entities)
+            {
+				foreach(var objB in entities)
+                {
+					if (objA == objB)
+						continue;
+					if (objA.Intersects(objB))
+						objA.OnCollide(objB);
+                }
+            }
 
-			// handle collisions between bullets and enemies
-			for (int i = 0; i < enemies.Count; i++)
-				for (int j = 0; j < bullets.Count; j++)
-				{
-					if (IsColliding(enemies[i], bullets[j]))
-					{
-						enemies[i].WasShot();
-						bullets[j].IsExpired = true;
-					}
-				}
-
-			// handle collisions between the player and enemies
-			for (int i = 0; i < enemies.Count; i++)
+			for (int i = 0; i < Count; i++)
 			{
-				if (enemies[i].IsActive && IsColliding(PlayerShip.Instance, enemies[i]))
-				{
-					KillPlayer();
-					break;
-				}
+				foreach (var child in entities[i].Children)
+					entities.Add(child);
+
+				entities[i].Children.Clear();
 			}
 
-			// handle collisions with black holes
-			for (int i = 0; i < blackHoles.Count; i++)
+			for (int i = 0; i < Count; i++)
 			{
-				for (int j = 0; j < enemies.Count; j++)
-					if (enemies[j].IsActive && IsColliding(blackHoles[i], enemies[j]))
-						enemies[j].WasShot();
-
-				for (int j = 0; j < bullets.Count; j++)
+				if (entities[i].IsExpired)
 				{
-					if (IsColliding(blackHoles[i], bullets[j]))
-					{
-						bullets[j].IsExpired = true;
-						blackHoles[i].WasShot();
-					}
+					entities.RemoveAt(i);
+					i--;
 				}
-
-				if (IsColliding(PlayerShip.Instance, blackHoles[i]))
-				{
-					KillPlayer();
-					break;
-				}
-			}*/
+			}
 		}
-
-		private static bool IsColliding(GameObject a, GameObject b)
-		{
-			//This needs to be reworked!!
-			/*
-			float radius = a.Radius + b.Radius;
-			return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
-			*/
-			return false;
-		}
-
-		/*
-		public static IEnumerable<GameObject> GetNearbyEntities(Vector2 position, float radius)
-		{
-			return entities.Where(x => Vector2.DistanceSquared(position, x.Position) < radius * radius);
-		}
-		*/
 
 		public static void Draw(SpriteBatch spriteBatch)
 		{

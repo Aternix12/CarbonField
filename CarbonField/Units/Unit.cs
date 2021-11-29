@@ -6,7 +6,7 @@ namespace CarbonField
 {
     abstract class Unit : GameObject
     {
-        private Vector2 _position;
+
         private float _direction;
 
         public abstract override void Update(GameTime gameTime, GraphicsDeviceManager graphics);
