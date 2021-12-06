@@ -20,6 +20,8 @@ namespace CarbonField
         public bool IsExpired;
         public List<GameObject> Children { get; set; }
 
+        public string _classtype;
+
         public Vector2 Size
 		{
 			get
@@ -37,7 +39,11 @@ namespace CarbonField
 			spriteBatch.Draw(_image, _position, Color.White);
 		}
 
-        
+        public Vector2 position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
 
         private Matrix Transform
         {
