@@ -32,10 +32,10 @@ namespace CarbonField
 		{
 			
 			isUpdating = true;
-
+			UpdateCollision(gameTime);
 			foreach (var entity in entities)
 				entity.Update(gameTime, graphics);
-			UpdateCollision(gameTime);
+			
 			isUpdating = false;
 
 			foreach (var entity in addedEntities)
@@ -57,6 +57,11 @@ namespace CarbonField
 						continue;
 					if (objA.Intersects(objB))
 						objA.OnCollide(objB);
+					else
+                    {
+						objA.collisionwait = true;
+						objB.collisionwait = true;
+                    }
                 }
             }
 

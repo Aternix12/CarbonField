@@ -47,7 +47,7 @@ namespace CarbonField
             
             //Crearing Wall
             
-            for(int i = 0; i < 20; i++) {
+            for(int i = 0; i < 5; i++) {
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);

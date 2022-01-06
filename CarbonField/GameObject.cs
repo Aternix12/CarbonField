@@ -17,6 +17,10 @@ namespace CarbonField
 		protected Vector2 _origin;
         protected float _rotation;
         protected Color[] _textureData;
+
+        protected bool _collisionwait = false;
+        protected bool _colliding = false;
+
         public bool IsExpired;
         public List<GameObject> Children { get; set; }
 
@@ -115,6 +119,18 @@ namespace CarbonField
 
             // No intersection found
             return false;
+        }
+
+        public bool collisionwait
+        {
+            set { _collisionwait = value; }
+            get { return _collisionwait; }
+        }
+
+        public bool colliding
+        {
+            set { _colliding = value; }
+            get { return _colliding; }
         }
     }
 }
