@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Penumbra;
 
 namespace CarbonField
 {
@@ -18,13 +19,25 @@ namespace CarbonField
         private FrameCounter _frameCounter;
         private SpriteFont _arial;
 
+        //Penumbra
+        PenumbraComponent penumbra;
+        Light _light = new PointLight
+        {
+            Position = new Vector2(700, 700),
+            Color = Color.Red,
+            Scale = new Vector2(1000),
+            Radius = 80
+        };
+
         public CarbonField()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
-            
+
+            penumbra = new PenumbraComponent(this);
+            Components.Add(penumbra);
 
         }
 
@@ -38,6 +51,10 @@ namespace CarbonField
             _cam = new CtrCamera(GraphicsDevice.Viewport);
 
             _frameCounter = new FrameCounter();
+
+            
+            penumbra.Lights.Add(_light);
+
             base.Initialize();
         }
 
@@ -71,6 +88,8 @@ namespace CarbonField
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(deltaTime);
 
+            
+
             base.Update(gameTime);
         }
 
@@ -78,17 +97,24 @@ namespace CarbonField
 
         protected override void Draw(GameTime gameTime)
         {
+
+            //Penumbra
+            penumbra.BeginDraw();
+            //penumbra.Draw(gameTime);
+
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);//These are the image layers
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
 
+            
+
             //Drawing FPS
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
-
+            
             _spriteBatch.End();
 
             base.Draw(gameTime);
