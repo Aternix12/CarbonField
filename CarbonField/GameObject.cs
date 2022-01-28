@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Penumbra;
 
 namespace CarbonField
 {
@@ -20,6 +21,8 @@ namespace CarbonField
 
         protected bool _collisionwait = false;
         protected bool _colliding = false;
+
+        protected Hull _hull;
 
         public bool IsExpired;
         public List<GameObject> Children { get; set; }
@@ -131,6 +134,12 @@ namespace CarbonField
         {
             set { _colliding = value; }
             get { return _colliding; }
+        }
+
+        public Hull Hull
+        {
+            get { return _hull; }
+            set { _hull = value; }
         }
     }
 }

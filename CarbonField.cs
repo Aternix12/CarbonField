@@ -21,13 +21,12 @@ namespace CarbonField
 
         //Penumbra
         PenumbraComponent penumbra;
-        Light _light = new PointLight
-        {
-            Position = new Vector2(700, 700),
-            Color = Color.Red,
-            Scale = new Vector2(1000),
-            Radius = 80
-        };
+
+        //Random Colours
+        private Random rnd = new Random();
+        private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
+
+        
 
         public CarbonField()
         {
@@ -37,8 +36,9 @@ namespace CarbonField
             IsFixedTimeStep = false;
 
             penumbra = new PenumbraComponent(this);
-            Components.Add(penumbra);
-
+            
+            penumbra.SpriteBatchTransformEnabled = true;
+            
         }
 
         protected override void Initialize()
@@ -52,8 +52,7 @@ namespace CarbonField
 
             _frameCounter = new FrameCounter();
 
-            
-            penumbra.Lights.Add(_light);
+            penumbra.Initialize();
 
             base.Initialize();
         }
@@ -64,16 +63,46 @@ namespace CarbonField
             
             //Crearing Wall
             
-            for(int i = 0; i < 5; i++) {
+            for(int i = 0; i < 15; i++) {
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);
                 WallBlock ent = new WallBlock(p);
+                ent.Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
+                {
+                    Position = new Vector2(nextValue, 64),
+                    Scale = new Vector2(16)
+                };
+                penumbra.Hulls.Add(ent.Hull);
                 EntityManager.Add(ent);
-            } 
+            }
 
+            //Adding Lights
+            for (int i = 0; i < 5; i++)
+            {
+                Random ran1 = new Random();
+                int nextValue1 = ran1.Next(0, 1920);
+                Random ran2 = new Random();
+                int nextValue2 = ran2.Next(0, 1080);
+
+                Light _light = new PointLight
+                {
+                    Position = new Vector2(nextValue1, nextValue2),
+                    Color = RandomColor(),
+                    Scale = new Vector2(800),
+                    Radius = 500,
+                    ShadowType = ShadowType.Occluded
+                };
+                penumbra.Lights.Add(_light);
+            }
             _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
+
+        public Color RandomColor()
+        {
+            return Colors[rnd.Next(Colors.Length)];
+        }
+
 
         protected override void Update(GameTime gameTime)
         { 
@@ -88,7 +117,8 @@ namespace CarbonField
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(deltaTime);
 
-            
+            System.Diagnostics.Debug.WriteLine("Test" + penumbra.Transform);
+            penumbra.Transform = _cam.transform;
 
             base.Update(gameTime);
         }
@@ -97,25 +127,26 @@ namespace CarbonField
 
         protected override void Draw(GameTime gameTime)
         {
-
             //Penumbra
             penumbra.BeginDraw();
-            //penumbra.Draw(gameTime);
-
             GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);//These are the image layers
-            _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
-            EntityManager.Draw(_spriteBatch);
-
             
 
-            //Drawing FPS
+            //Gameplane
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
+            _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
+            EntityManager.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            penumbra.Draw(gameTime);
+
+            //GUI
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
-            
             _spriteBatch.End();
+            
 
             base.Draw(gameTime);
         }

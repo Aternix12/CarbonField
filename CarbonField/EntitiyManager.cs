@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace CarbonField
 {
 	static class EntityManager
@@ -88,5 +89,7 @@ namespace CarbonField
 			foreach (var entity in entities)
 				entity.Draw(spriteBatch);
 		}
+
+		
 	}
 }

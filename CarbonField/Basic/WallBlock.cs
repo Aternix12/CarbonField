@@ -51,7 +51,7 @@ namespace CarbonField
             {
                 _velocity.Y = 0;
             }
-            
+
             
 
             if (_position.X <= 0 && _velocity.X < 0)
@@ -84,7 +84,12 @@ namespace CarbonField
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if(_collisionwait == false)
+
+            //Updating Hull
+            _hull.Position = _position + _origin;
+
+
+            if (_collisionwait == false)
             spriteBatch.Draw(_image, _position, Color.White);
             else
             spriteBatch.Draw(_image, _position, Color.Red);
