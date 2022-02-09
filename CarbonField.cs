@@ -12,7 +12,7 @@ namespace CarbonField
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
-        //Viewport Backgroun Testing
+        //Viewport Background Testing
         private Texture2D _bgrTexture;
 
         //FPS Counter
@@ -21,12 +21,15 @@ namespace CarbonField
 
         //Penumbra
         PenumbraComponent penumbra;
+        public Color bgrCol = new Color(255, 255, 255, 0.25f);
 
         //Random Colours
         private Random rnd = new Random();
         private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
-        
+        //Scroll wheel initial state
+        private int _previousScrollValue;
+        private float _daylight = 0.25f;
 
         public CarbonField()
         {
@@ -36,34 +39,42 @@ namespace CarbonField
             IsFixedTimeStep = false;
 
             penumbra = new PenumbraComponent(this);
-            
+            penumbra.AmbientColor = bgrCol;
             penumbra.SpriteBatchTransformEnabled = true;
             
         }
 
         protected override void Initialize()
         {
+
+            base.Initialize();
+
             _graphics.PreferredBackBufferWidth = 1920;
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
+            //Camera
             _cam = new CtrCamera(GraphicsDevice.Viewport);
 
+            //FPS
             _frameCounter = new FrameCounter();
 
+            //Penumbra
             penumbra.Initialize();
 
-            base.Initialize();
+            //Scroll Wheel
+            _previousScrollValue = Mouse.GetState().ScrollWheelValue;
+            
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             
-            //Crearing Wall
+            //Creating Wall
             
-            for(int i = 0; i < 15; i++) {
+            for(int i = 0; i < 5; i++) {
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);
@@ -78,20 +89,23 @@ namespace CarbonField
             }
 
             //Adding Lights
-            for (int i = 0; i < 5; i++)
-            {
+            for (int i = 0; i < 3; i++){
+
                 Random ran1 = new Random();
                 int nextValue1 = ran1.Next(0, 1920);
                 Random ran2 = new Random();
                 int nextValue2 = ran2.Next(0, 1080);
 
-                Light _light = new PointLight
+                Texture2D tex = Content.Load<Texture2D>("src_texturedlight");
+                Light _light = new TexturedLight(tex)
                 {
                     Position = new Vector2(nextValue1, nextValue2),
-                    Color = RandomColor(),
-                    Scale = new Vector2(800),
-                    Radius = 500,
-                    ShadowType = ShadowType.Occluded
+                    //Color = RandomColor(),
+                    Scale = new Vector2(800,400),
+                    Color = Color.White,
+                    Intensity = 2,
+                    ShadowType = ShadowType.Illuminated,
+                    
                 };
                 penumbra.Lights.Add(_light);
             }
@@ -106,10 +120,36 @@ namespace CarbonField
 
         protected override void Update(GameTime gameTime)
         { 
+            //TODO: Later for controller input
             base.Update(gameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             EntityManager.Update(gameTime, _graphics);
+
+            //Penumbra
+            if (Mouse.GetState().ScrollWheelValue < _previousScrollValue)
+            {
+                if (_daylight >= 0.02f)
+                {
+                    _daylight -= 0.02f;
+                    penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
+                }
+                
+            }
+            else if (Mouse.GetState().ScrollWheelValue > _previousScrollValue)
+            {
+                if (_daylight <= 0.98f)
+                {
+                    _daylight += 0.02f;
+                    penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
+                }
+            }
+            _previousScrollValue = Mouse.GetState().ScrollWheelValue;
+
+
+            
+            
+
 
             //Updating View
             _cam.Update(gameTime);
@@ -117,8 +157,8 @@ namespace CarbonField
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(deltaTime);
 
-            System.Diagnostics.Debug.WriteLine("Test" + penumbra.Transform);
             penumbra.Transform = _cam.transform;
+
 
             base.Update(gameTime);
         }
@@ -127,24 +167,30 @@ namespace CarbonField
 
         protected override void Draw(GameTime gameTime)
         {
+            
             //Penumbra
             penumbra.BeginDraw();
+
             GraphicsDevice.Clear(Color.Black);
-            
 
             //Gameplane
+            
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
+            
 
             penumbra.Draw(gameTime);
 
             //GUI
+            
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
+            var scrollstate = Mouse.GetState().ScrollWheelValue;
+            _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
             _spriteBatch.End();
             
 
