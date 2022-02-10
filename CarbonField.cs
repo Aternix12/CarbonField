@@ -29,7 +29,7 @@ namespace CarbonField
 
         //Scroll wheel initial state
         private int _previousScrollValue;
-        private float _daylight = 0.25f;
+        private float _daylight = 1f;
 
         //Clock
         private Clock _time = new Clock();
@@ -134,6 +134,7 @@ namespace CarbonField
             EntityManager.Update(gameTime, _graphics);
 
             //Penumbra
+            /*
             if (Mouse.GetState().ScrollWheelValue < _previousScrollValue)
             {
                 if (_daylight >= 0.02f)
@@ -150,14 +151,18 @@ namespace CarbonField
                     _daylight += 0.02f;
                     penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
                 }
-            }
+            }*/
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
 
+            ////Clock
+            //Update Time
             var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             for (int i = 0; i < delta; i++)
             {
                 _time.Increment();
             }
+            //Change Penumbra Alpha
+            penumbra.AmbientColor = new Color(255, 255, 255, (float)Math.Sin(_time.MilliSeconds() / 60 / (60 / Math.PI)) + 0.2f);
 
             //Updating View
             _cam.Update(gameTime);

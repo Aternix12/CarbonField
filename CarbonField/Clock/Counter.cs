@@ -18,6 +18,15 @@ namespace CarbonField
         public bool Increment()
         {
             _count++;
+            if (_name.Equals("Milliseconds"))
+            {
+                if (_count == 100)
+                {
+                    _count = 0;
+                    return true;
+                }
+            } else
+
             if(_count == 60)
             {
                 _count = 0;
