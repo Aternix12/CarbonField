@@ -31,6 +31,9 @@ namespace CarbonField
         private int _previousScrollValue;
         private float _daylight = 0.25f;
 
+        //Clock
+        private Clock _time = new Clock();
+
         public CarbonField()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -65,6 +68,10 @@ namespace CarbonField
 
             //Scroll Wheel
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
+
+            
+
+            
             
         }
 
@@ -146,10 +153,11 @@ namespace CarbonField
             }
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
 
-
-            
-            
-
+            var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            for (int i = 0; i < delta; i++)
+            {
+                _time.Increment();
+            }
 
             //Updating View
             _cam.Update(gameTime);
@@ -159,7 +167,6 @@ namespace CarbonField
 
             penumbra.Transform = _cam.transform;
 
-
             base.Update(gameTime);
         }
 
@@ -168,12 +175,12 @@ namespace CarbonField
         protected override void Draw(GameTime gameTime)
         {
             
-            //Penumbra
+            ////Penumbra
             penumbra.BeginDraw();
 
             GraphicsDevice.Clear(Color.Black);
 
-            //Gameplane
+            ////Gameplane
             
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
@@ -183,14 +190,17 @@ namespace CarbonField
 
             penumbra.Draw(gameTime);
 
-            //GUI
-            
+            ////GUI 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
+            //FPS
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
+            //Scrolls
             var scrollstate = Mouse.GetState().ScrollWheelValue;
             _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
+            //Clock
+            _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
             _spriteBatch.End();
             
 
