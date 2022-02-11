@@ -68,11 +68,6 @@ namespace CarbonField
 
             //Scroll Wheel
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
-
-            
-
-            
-            
         }
 
         protected override void LoadContent()
@@ -162,9 +157,16 @@ namespace CarbonField
                 _time.Increment();
             }
             //Change Penumbra Alpha
-            penumbra.AmbientColor = new Color(255, 255, 255, (float)Math.Sin(_time.MilliSeconds() / 60 / (60 / Math.PI)) + 0.2f);
+            _daylight = ((float)Math.Sin((_time.Seconds()/Math.PI/6f)-(Math.PI/2f)) + 1f)/2f;
+            /*
+            if (_daylight >= 0.85f)
+                _daylight = 0.85f;
+            if (_daylight <= 0.1f)
+                _daylight = 0.1f;
+            */
+            penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
 
-            //Updating View
+            //Updating Viewwa
             _cam.Update(gameTime);
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -206,6 +208,7 @@ namespace CarbonField
             _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
             //Clock
             _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
+            _spriteBatch.DrawString(_arial, _daylight.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 60), Color.White);
             _spriteBatch.End();
             
 

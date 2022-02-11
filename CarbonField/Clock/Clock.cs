@@ -38,9 +38,9 @@ namespace CarbonField
             return str;
         }
 
-        public int MilliSeconds()
+        public float Seconds()
         {
-            int _sec = _myCounters[3].Count + (100*_myCounters[2].Count) + (6000*_myCounters[1].Count);
+            float _sec = _myCounters[3].Count/100f + _myCounters[2].Count + 60f*_myCounters[1].Count;
             return _sec;
         }
 
