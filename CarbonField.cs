@@ -21,8 +21,10 @@ namespace CarbonField
 
         //Penumbra
         PenumbraComponent penumbra;
-        public Color bgrCol = new Color(255, 255, 255, 0.25f);
-
+        public Color bgrCol = new Color(255, 255, 255, 0f);
+        public Light _sun = new TexturedLight();
+        
+         
         //Random Colours
         private Random rnd = new Random();
         private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
@@ -68,6 +70,8 @@ namespace CarbonField
 
             //Scroll Wheel
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
+
+            
         }
 
         protected override void LoadContent()
@@ -91,26 +95,28 @@ namespace CarbonField
             }
 
             //Adding Lights
-            for (int i = 0; i < 3; i++){
+            for (int i = 0; i < 3; i++) {
 
                 Random ran1 = new Random();
                 int nextValue1 = ran1.Next(0, 1920);
                 Random ran2 = new Random();
                 int nextValue2 = ran2.Next(0, 1080);
 
-                Texture2D tex = Content.Load<Texture2D>("src_texturedlight");
-                Light _light = new TexturedLight(tex)
+                Texture2D _tex = Content.Load<Texture2D>("src_texturedlight");
+                Light _light = new TexturedLight(_tex)
                 {
                     Position = new Vector2(nextValue1, nextValue2),
                     //Color = RandomColor(),
-                    Scale = new Vector2(800,400),
+                    Scale = new Vector2(800, 400),
                     Color = Color.White,
                     Intensity = 2,
                     ShadowType = ShadowType.Illuminated,
-                    
+
                 };
                 penumbra.Lights.Add(_light);
             }
+
+
             _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
 
@@ -157,14 +163,24 @@ namespace CarbonField
                 _time.Increment();
             }
             //Change Penumbra Alpha
-            _daylight = ((float)Math.Sin((_time.Seconds()/Math.PI/6f)-(Math.PI/2f)) + 1f)/2f;
-            /*
-            if (_daylight >= 0.85f)
-                _daylight = 0.85f;
-            if (_daylight <= 0.1f)
-                _daylight = 0.1f;
-            */
-            penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
+            _daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f;
+            //penumbra.AmbientColor = new Color(255, 255, 255, _daylight*0.8f);
+
+            //Sun
+            penumbra.Lights.Remove(_sun);
+            Texture2D _tex = Content.Load<Texture2D>("src_texturedlight");
+            _sun = new TexturedLight(_tex)
+            {
+                Position = new Vector2(_daylight * 960, 0),
+                //Color = RandomColor(),
+                Scale = new Vector2(6800, 3200),
+                Radius = 700f,
+                Color = Color.White,
+                Intensity = _daylight,
+                ShadowType = ShadowType.Illuminated,
+
+            };
+            penumbra.Lights.Add(_sun);
 
             //Updating Viewwa
             _cam.Update(gameTime);
