@@ -5,15 +5,15 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField", "CarbonField.csproj", "{B226D886-FD7D-4BC8-87B1-57B3E88C9950}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonFieldServer", "..\..\source\repos\CarbonFieldServer\CarbonFieldServer\CarbonFieldServer.csproj", "{B162E62B-79D7-4FE1-87F2-AAC62330E8E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonFieldServer", "CarbonFieldServer\CarbonFieldServer.csproj", "{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bindings", "..\..\source\repos\CarbonFieldServer\Bindings\Bindings.shproj", "{4BBB73C3-6872-4A4F-80D1-C3F45FCA8332}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bindings", "..\Computer Science\Bindings\Bindings.shproj", "{5238B793-D371-45EB-BDAA-71AA1FC452B8}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\..\source\repos\CarbonFieldServer\Bindings\Bindings.projitems*{4bbb73c3-6872-4a4f-80d1-c3f45fca8332}*SharedItemsImports = 13
-		..\..\source\repos\CarbonFieldServer\Bindings\Bindings.projitems*{b162e62b-79d7-4fe1-87f2-aac62330e8e5}*SharedItemsImports = 5
-		..\..\source\repos\CarbonFieldServer\Bindings\Bindings.projitems*{b226d886-fd7d-4bc8-87b1-57b3e88c9950}*SharedItemsImports = 5
+		..\Computer Science\Bindings\Bindings.projitems*{5238b793-d371-45eb-bdaa-71aa1fc452b8}*SharedItemsImports = 13
+		..\Computer Science\Bindings\Bindings.projitems*{8c5f2d3f-9c2e-417b-ac53-f27846cb7acd}*SharedItemsImports = 5
+		..\Computer Science\Bindings\Bindings.projitems*{b226d886-fd7d-4bc8-87b1-57b3e88c9950}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,10 +24,10 @@ Global
 		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B162E62B-79D7-4FE1-87F2-AAC62330E8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B162E62B-79D7-4FE1-87F2-AAC62330E8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B162E62B-79D7-4FE1-87F2-AAC62330E8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B162E62B-79D7-4FE1-87F2-AAC62330E8E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
