@@ -12,6 +12,9 @@ namespace CarbonField
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
+        //ClientNetwork
+        ClientTCP ctcp;
+
         //Viewport Background Testing
         private Texture2D _bgrTexture;
 
@@ -70,6 +73,10 @@ namespace CarbonField
 
             //Scroll Wheel
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
+
+            //Client Server
+            ctcp = new ClientTCP();
+            ctcp.ConnectToServer();
 
             
         }
