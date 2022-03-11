@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField", "CarbonField.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonFieldServer", "CarbonFieldServer\CarbonFieldServer.csproj", "{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bindings", "..\Computer Science\Bindings\Bindings.shproj", "{5238B793-D371-45EB-BDAA-71AA1FC452B8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bindings", "Bindings\Bindings.shproj", "{F05B28FD-7197-4D04-AE70-E8E20BCD62DD}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Computer Science\Bindings\Bindings.projitems*{5238b793-d371-45eb-bdaa-71aa1fc452b8}*SharedItemsImports = 13
-		..\Computer Science\Bindings\Bindings.projitems*{8c5f2d3f-9c2e-417b-ac53-f27846cb7acd}*SharedItemsImports = 5
-		..\Computer Science\Bindings\Bindings.projitems*{b226d886-fd7d-4bc8-87b1-57b3e88c9950}*SharedItemsImports = 5
+		Bindings\Bindings.projitems*{8c5f2d3f-9c2e-417b-ac53-f27846cb7acd}*SharedItemsImports = 5
+		Bindings\Bindings.projitems*{b226d886-fd7d-4bc8-87b1-57b3e88c9950}*SharedItemsImports = 5
+		Bindings\Bindings.projitems*{f05b28fd-7197-4d04-ae70-e8e20bcd62dd}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
