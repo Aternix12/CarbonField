@@ -28,4 +28,5 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Penumbra.DesktopGL" Version="2.1.0" />
   </ItemGroup>
+  <Import Project="..\..\source\repos\CarbonFieldServer\Bindings\Bindings.projitems" Label="Shared" />
 </Project>
