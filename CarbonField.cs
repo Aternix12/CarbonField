@@ -14,6 +14,7 @@ namespace CarbonField
         private CtrCamera _cam;
         //ClientNetwork
         ClientTCP ctcp;
+        ClientHandleData chd;
 
         //Viewport Background Testing
         private Texture2D _bgrTexture;
@@ -76,9 +77,12 @@ namespace CarbonField
 
             //Client Server
             ctcp = new ClientTCP();
+            chd = new ClientHandleData();
+            chd.InitMessages();
             ctcp.ConnectToServer();
-
             
+
+
         }
 
         protected override void LoadContent()
@@ -141,6 +145,10 @@ namespace CarbonField
                 Exit();
             EntityManager.Update(gameTime, _graphics);
 
+            //Networking
+            if(Keyboard.GetState().IsKeyDown(Keys.P))
+            ctcp.SendLogin();
+
             //Penumbra
             /*
             if (Mouse.GetState().ScrollWheelValue < _previousScrollValue)
@@ -187,7 +195,10 @@ namespace CarbonField
                 ShadowType = ShadowType.Illuminated,
 
             };
+
             penumbra.Lights.Add(_sun);
+
+            
 
             //Updating Viewwa
             _cam.Update(gameTime);

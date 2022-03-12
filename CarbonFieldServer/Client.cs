@@ -10,12 +10,14 @@ namespace CarbonFieldServer
         public int PlayerIndex;
         public string IP;
         public TcpClient Socket; //Allows connection to server
+        private ServerHandleData shd;
         public NetworkStream NetworkStream; //Sends and gets data
         public bool Closing;
         public byte[] readBuff; //Where data will be 'saved'
 
         public void Start()
         {
+            shd = new ServerHandleData();
             Socket.SendBufferSize = 4096;
             Socket.ReceiveBufferSize = 4096;
             NetworkStream = Socket.GetStream();
@@ -41,6 +43,7 @@ namespace CarbonFieldServer
                 Buffer.BlockCopy(readBuff, 0, newBytes, 0, readBytes); //Copies specific number of bytes starting at an offset, read Microsoft documentation
 
                 ///Handle Data
+                shd.HandleNetworkMessages(PlayerIndex, newBytes);
                 NetworkStream.BeginRead(readBuff, 0, Socket.ReceiveBufferSize, OnReceiveData, null);
 
             }
@@ -52,7 +55,7 @@ namespace CarbonFieldServer
 
         private void CloseSocket(int index)
         {
-            Console.WriteLine("Connectrion from " + IP + " has been terminated.");
+            Console.WriteLine("Connection from " + IP + " has been terminated.");
             Socket.Close();
             Socket = null;
 

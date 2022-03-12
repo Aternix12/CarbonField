@@ -8,6 +8,7 @@ namespace CarbonFieldServer
         private static Thread consoleThread;
         private static General general;
 
+        
         static void Main(string[] args)
         {
             general = new General();          
