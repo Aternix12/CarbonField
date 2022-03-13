@@ -17,6 +17,9 @@ namespace CarbonField
         ClientTCP ctcp;
         ClientHandleData chd;
 
+        //GUI
+        InterfaceGUI IGUI = new InterfaceGUI();
+
         //Viewport Background Testing
         private Texture2D _bgrTexture;
 
@@ -84,7 +87,7 @@ namespace CarbonField
 
             //GeonBit.UI
             UserInterface.Initialize(Content, BuiltinThemes.editor);
-
+            IGUI.InitGUI();
 
 
         }
