@@ -16,6 +16,7 @@ namespace CarbonField
         public void InitGUI()
         {
             CreateWindow_Login();
+            CreateWindow_Register();
         }
 
         public void CreateWindow(Panel panel)
@@ -33,6 +34,7 @@ namespace CarbonField
             CheckBox chkUser = new CheckBox("Remember?");
             Header headerUser = new Header("Username", Anchor.TopCenter);
             Header headerPass = new Header("Password", Anchor.AutoCenter);
+            Label noAccount = new Label("No Account?", Anchor.AutoCenter);
             UserInterface.Active.AddEntity(panel);
 
             //Entity Settings
@@ -46,10 +48,56 @@ namespace CarbonField
             panel.AddChild(txtPass);
             panel.AddChild(chkUser);
             panel.AddChild(btnLogin);
+            panel.AddChild(noAccount);
+
+            //On Click
+            noAccount.OnClick += (Entity entity) =>
+            {
+                MenuManager.ChangeMenu(MenuManager.Menu.Register);
+            };
 
             //Create Window
             CreateWindow(panel);
 
+        }
+
+        public void CreateWindow_Register()
+        {
+            //Create Entities
+            Panel panel = new Panel(new Vector2(800, 600));
+            Button btnRegister = new Button("Register");
+            Button btnBack = new Button("Back");
+            TextInput txtUser = new TextInput(false);
+            TextInput txtPass = new TextInput(false);
+            TextInput txtPassRepeat = new TextInput(false);
+            Header headerUser = new Header("Username", Anchor.TopCenter);
+            Header headerPass = new Header("Password", Anchor.AutoCenter);
+            Header headerPassRepeat = new Header("Repeat Password", Anchor.AutoCenter);
+            UserInterface.Active.AddEntity(panel);
+
+            //Entity Settings
+            txtUser.PlaceholderText = "enter username...";
+            txtPass.PlaceholderText = "enter password...";
+            txtPassRepeat.PlaceholderText = "repeat password...";
+
+            //Add Entity
+            panel.AddChild(headerUser);
+            panel.AddChild(txtUser);
+            panel.AddChild(headerPass);
+            panel.AddChild(txtPass);
+            panel.AddChild(headerPassRepeat);
+            panel.AddChild(txtPassRepeat);
+            panel.AddChild(btnRegister);
+            panel.AddChild(btnBack);
+
+            //On Click
+            btnBack.OnClick += (Entity entity) =>
+            {
+                MenuManager.ChangeMenu(MenuManager.Menu.Login);
+            };
+
+            //Create Window
+            CreateWindow(panel);
         }
     }
 }

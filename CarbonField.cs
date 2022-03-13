@@ -88,6 +88,7 @@ namespace CarbonField
             //GeonBit.UI
             UserInterface.Initialize(Content, BuiltinThemes.editor);
             IGUI.InitGUI();
+            MenuManager.ChangeMenu(MenuManager.Menu.Login);
 
 
         }
