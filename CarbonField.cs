@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Penumbra;
+using GeonBit.UI;
 
 namespace CarbonField
 {
@@ -79,8 +80,11 @@ namespace CarbonField
             ctcp = new ClientTCP();
             chd = new ClientHandleData();
             chd.InitMessages();
-            ctcp.ConnectToServer();
-            
+            //ctcp.ConnectToServer();
+
+            //GeonBit.UI
+            UserInterface.Initialize(Content, BuiltinThemes.editor);
+
 
 
         }
@@ -146,8 +150,8 @@ namespace CarbonField
             EntityManager.Update(gameTime, _graphics);
 
             //Networking
-            if(Keyboard.GetState().IsKeyDown(Keys.P))
-            ctcp.SendLogin();
+            //if(Keyboard.GetState().IsKeyDown(Keys.P))
+            //ctcp.SendLogin();
 
             //Penumbra
             /*
@@ -198,15 +202,15 @@ namespace CarbonField
 
             penumbra.Lights.Add(_sun);
 
-            
-
             //Updating Viewwa
             _cam.Update(gameTime);
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(deltaTime);
-
+            //Penumbra screen lock
             penumbra.Transform = _cam.transform;
+            //GeonBit.UI
+            UserInterface.Active.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -215,6 +219,7 @@ namespace CarbonField
 
         protected override void Draw(GameTime gameTime)
         {
+            
             
             ////Penumbra
             penumbra.BeginDraw();
@@ -244,6 +249,8 @@ namespace CarbonField
             _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
             _spriteBatch.DrawString(_arial, _daylight.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 60), Color.White);
             _spriteBatch.End();
+            //GeonBit.UI
+            UserInterface.Active.Draw(_spriteBatch);
             
 
             base.Draw(gameTime);
