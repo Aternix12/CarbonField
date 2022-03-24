@@ -30,5 +30,10 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Penumbra.DesktopGL" Version="2.1.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Lidgren.Network">
+      <HintPath>..\..\.nuget\packages\lidgren.network\1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Import Project="Bindings\Bindings.projitems" Label="Shared" />
 </Project>

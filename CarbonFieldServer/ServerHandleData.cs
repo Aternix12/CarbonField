@@ -7,7 +7,8 @@ namespace CarbonFieldServer
     internal class ServerHandleData
     {
         private delegate void Packet_(int index, byte[] data);
-        private static Dictionary<int, Packet_> Packets;
+        #nullable enable
+        private static Dictionary<int, Packet_>? Packets;
 
         public void InitMessages()
         {

@@ -13,9 +13,14 @@ namespace CarbonField
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
-        //ClientNetwork
-        ClientTCP ctcp;
-        ClientHandleData chd;
+        
+        //Libgren Networking
+        private NetworkConnection _connection;
+        private Color _libgrencolor;
+
+        //KevinClientNetwork
+        //ClientTCP ctcp;
+        //ClientHandleData chd;
 
         //GUI
         InterfaceGUI IGUI = new InterfaceGUI();
@@ -54,7 +59,10 @@ namespace CarbonField
             penumbra = new PenumbraComponent(this);
             penumbra.AmbientColor = bgrCol;
             penumbra.SpriteBatchTransformEnabled = true;
-            
+
+            //Libgren Networking
+            _connection = new NetworkConnection();
+
         }
 
         protected override void Initialize()
@@ -79,11 +87,21 @@ namespace CarbonField
             //Scroll Wheel
             _previousScrollValue = Mouse.GetState().ScrollWheelValue;
 
-            //Client Server
-            ctcp = new ClientTCP();
-            chd = new ClientHandleData();
-            chd.InitMessages();
+            //Kevin Connection to Server
+            //ctcp = new ClientTCP();
+            //chd = new ClientHandleData();
+            //chd.InitMessages();
             //ctcp.ConnectToServer();
+
+            //Libgren Networking
+            if (_connection.Start())
+            {
+                _libgrencolor = Color.Green;
+            }
+            else
+            {
+                _libgrencolor = Color.Red;
+            }
 
             //GeonBit.UI
             UserInterface.Initialize(Content, BuiltinThemes.editor);
@@ -250,7 +268,7 @@ namespace CarbonField
             var scrollstate = Mouse.GetState().ScrollWheelValue;
             _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
             //Clock
-            _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
+            _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), _libgrencolor);
             _spriteBatch.DrawString(_arial, _daylight.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 60), Color.White);
             _spriteBatch.End();
             //GeonBit.UI

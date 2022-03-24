@@ -12,9 +12,16 @@ namespace CarbonFieldServer
         public TcpClient Socket; //Allows connection to server
         private ServerHandleData shd;
         public NetworkStream NetworkStream; //Sends and gets data
-        public bool Closing;
+        public bool Closing = false;
         public byte[] readBuff; //Where data will be 'saved'
 
+        public Client()
+        {
+            shd = null;
+            IP = "000.000.000.000";
+            Socket = null;
+        }
+        
         public void Start()
         {
             shd = new ServerHandleData();
@@ -58,7 +65,6 @@ namespace CarbonFieldServer
             Console.WriteLine("Connection from " + IP + " has been terminated.");
             Socket.Close();
             Socket = null;
-
         }
 
     }
