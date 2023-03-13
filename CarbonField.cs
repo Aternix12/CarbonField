@@ -30,9 +30,6 @@ namespace CarbonField
         private Random rnd = new Random();
         private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
-        //Scroll wheel initial state
-        private float _daylight = 1f;
-
         //Clock
         private Clock _time = new Clock();
 
@@ -53,8 +50,8 @@ namespace CarbonField
 
             base.Initialize();
 
-            _graphics.PreferredBackBufferWidth = 1920;
-            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.PreferredBackBufferWidth = 2160;
+            _graphics.PreferredBackBufferHeight = 1440;
             _graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
@@ -135,32 +132,18 @@ namespace CarbonField
             {
                 _time.Increment();
             }
+
             //Change Penumbra Alpha
-            _daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f;
-            //penumbra.AmbientColor = new Color(255, 255, 255, _daylight*0.8f);
+            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f;
+            penumbra.AmbientColor = new Color(255, 255, 255, 0.8f);
 
-            //Sun
-            penumbra.Lights.Remove(_sun);
-            Texture2D _tex = Content.Load<Texture2D>("src_texturedlight");
-            _sun = new TexturedLight(_tex)
-            {
-                Position = new Vector2(_daylight * 960, 0),
-                //Color = RandomColor(),
-                Scale = new Vector2(6800, 3200),
-                Radius = 700f,
-                Color = Color.White,
-                Intensity = _daylight,
-                ShadowType = ShadowType.Illuminated,
-
-            };
-
-            penumbra.Lights.Add(_sun);
-
-            //Updating Viewwa
+            //Updating View
             _cam.Update(gameTime);
+
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _frameCounter.Update(deltaTime);
+
             //Penumbra screen lock
             penumbra.Transform = _cam.transform;
 
@@ -194,10 +177,7 @@ namespace CarbonField
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
-            //Scrolls
-            var scrollstate = Mouse.GetState().ScrollWheelValue;
-            _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
-            _spriteBatch.DrawString(_arial, _daylight.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 60), Color.White);
+            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager._entityCounter.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

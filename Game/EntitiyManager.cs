@@ -9,10 +9,9 @@ namespace CarbonField
 	static class EntityManager
 	{
 		static List<GameObject> entities = new List<GameObject>();
-
-
 		static bool isUpdating;
 		static List<GameObject> addedEntities = new List<GameObject>();
+		public static int _entityCounter;
 
 		public static int Count { get { return entities.Count; } }
 
@@ -27,6 +26,13 @@ namespace CarbonField
 		private static void AddEntity(GameObject entity)
 		{
 			entities.Add(entity);
+			_entityCounter++;
+		}
+
+		private static void RemoveEntity(GameObject entity)
+		{
+			entities.Remove(entity);
+			_entityCounter--;
 		}
 
 		public static void Update(GameTime gameTime, GraphicsDeviceManager graphics)
