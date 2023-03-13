@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Penumbra;
-using GeonBit.UI;
 
 namespace CarbonField
 {
@@ -13,17 +12,6 @@ namespace CarbonField
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
-        
-        //Libgren Networking
-        private NetworkConnection _connection;
-        private Color _libgrencolor;
-
-        //KevinClientNetwork
-        //ClientTCP ctcp;
-        //ClientHandleData chd;
-
-        //GUI
-        InterfaceGUI IGUI = new InterfaceGUI();
 
         //Viewport Background Testing
         private Texture2D _bgrTexture;
@@ -43,7 +31,6 @@ namespace CarbonField
         private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
         //Scroll wheel initial state
-        private int _previousScrollValue;
         private float _daylight = 1f;
 
         //Clock
@@ -59,10 +46,6 @@ namespace CarbonField
             penumbra = new PenumbraComponent(this);
             penumbra.AmbientColor = bgrCol;
             penumbra.SpriteBatchTransformEnabled = true;
-
-            //Libgren Networking
-            _connection = new NetworkConnection();
-
         }
 
         protected override void Initialize()
@@ -83,32 +66,6 @@ namespace CarbonField
 
             //Penumbra
             penumbra.Initialize();
-
-            //Scroll Wheel
-            _previousScrollValue = Mouse.GetState().ScrollWheelValue;
-
-            //Kevin Connection to Server
-            //ctcp = new ClientTCP();
-            //chd = new ClientHandleData();
-            //chd.InitMessages();
-            //ctcp.ConnectToServer();
-
-            //Libgren Networking
-            if (_connection.Start())
-            {
-                _libgrencolor = Color.Green;
-            }
-            else
-            {
-                _libgrencolor = Color.Red;
-            }
-
-            //GeonBit.UI
-            UserInterface.Initialize(Content, BuiltinThemes.editor);
-            IGUI.InitGUI();
-            MenuManager.ChangeMenu(MenuManager.Menu.Login);
-
-
         }
 
         protected override void LoadContent()
@@ -171,31 +128,6 @@ namespace CarbonField
                 Exit();
             EntityManager.Update(gameTime, _graphics);
 
-            //Networking
-            //if(Keyboard.GetState().IsKeyDown(Keys.P))
-            //ctcp.SendLogin();
-
-            //Penumbra
-            /*
-            if (Mouse.GetState().ScrollWheelValue < _previousScrollValue)
-            {
-                if (_daylight >= 0.02f)
-                {
-                    _daylight -= 0.02f;
-                    penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
-                }
-                
-            }
-            else if (Mouse.GetState().ScrollWheelValue > _previousScrollValue)
-            {
-                if (_daylight <= 0.98f)
-                {
-                    _daylight += 0.02f;
-                    penumbra.AmbientColor = new Color(255, 255, 255, _daylight);
-                }
-            }*/
-            _previousScrollValue = Mouse.GetState().ScrollWheelValue;
-
             ////Clock
             //Update Time
             var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -231,8 +163,6 @@ namespace CarbonField
             _frameCounter.Update(deltaTime);
             //Penumbra screen lock
             penumbra.Transform = _cam.transform;
-            //GeonBit.UI
-            UserInterface.Active.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -267,13 +197,8 @@ namespace CarbonField
             //Scrolls
             var scrollstate = Mouse.GetState().ScrollWheelValue;
             _spriteBatch.DrawString(_arial, scrollstate.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y+20), Color.White);
-            //Clock
-            _spriteBatch.DrawString(_arial, _time.PrintTime(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), _libgrencolor);
             _spriteBatch.DrawString(_arial, _daylight.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 60), Color.White);
             _spriteBatch.End();
-            //GeonBit.UI
-            UserInterface.Active.Draw(_spriteBatch);
-            
 
             base.Draw(gameTime);
         }

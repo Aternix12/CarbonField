@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/xX12T/OneDrive/CarbonField/Content/GeonBit.UI/themes/lowres/effects/disabled.fx</SourceFile>
+  <SourceTime>2023-03-13T19:59:01.4724872+11:00</SourceTime>
+  <DestFile>C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/GeonBit.UI/themes/lowres/effects/disabled.xnb</DestFile>
+  <DestTime>2023-03-13T19:59:37.1757039+11:00</DestTime>
+  <Importer>EffectImporter</Importer>
+  <ImporterTime>2020-08-11T02:17:54+10:00</ImporterTime>
+  <Processor>EffectProcessor</Processor>
+  <ProcessorTime>2020-08-11T02:17:54+10:00</ProcessorTime>
+  <Parameters>
+    <Key>DebugMode</Key>
+    <Value>Auto</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
