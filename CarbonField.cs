@@ -22,10 +22,10 @@ namespace CarbonField
 
         //Penumbra
         PenumbraComponent penumbra;
-        public Color bgrCol = new Color(255, 255, 255, 0f);
+        public Color bgrCol = new(255, 255, 255, 0f);
         public Light _sun = new TexturedLight();
-        
-         
+
+
         //Random Colours
         private Random rnd = new Random();
         private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
@@ -68,10 +68,11 @@ namespace CarbonField
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             //Creating Wall
-            
-            for(int i = 0; i < 5; i++) {
+
+            for (int i = 0; i < 5; i++)
+            {
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);
@@ -86,7 +87,8 @@ namespace CarbonField
             }
 
             //Adding Lights
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
+            {
 
                 Random ran1 = new Random();
                 int nextValue1 = ran1.Next(0, 1920);
@@ -118,7 +120,7 @@ namespace CarbonField
 
 
         protected override void Update(GameTime gameTime)
-        { 
+        {
             //TODO: Later for controller input
             base.Update(gameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -150,24 +152,24 @@ namespace CarbonField
             base.Update(gameTime);
         }
 
-       
+
 
         protected override void Draw(GameTime gameTime)
         {
-            
-            
+
+
             ////Penumbra
             penumbra.BeginDraw();
 
             GraphicsDevice.Clear(Color.Black);
 
             ////Gameplane
-            
+
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
-            
+
 
             penumbra.Draw(gameTime);
 
