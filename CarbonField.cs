@@ -3,12 +3,16 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Penumbra;
+using LiteNetLib;
+using LiteNetLib.Utils;
+using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace CarbonField
 {
     public class CarbonField : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
@@ -21,28 +25,41 @@ namespace CarbonField
         private SpriteFont _arial;
 
         //Penumbra
-        PenumbraComponent penumbra;
-        public Color bgrCol = new(255, 255, 255, 0f);
-        public Light _sun = new TexturedLight();
+        readonly PenumbraComponent penumbra;
+        public Color _bgrCol = new(255, 255, 255, 0f);
+        public readonly Light _sun = new TexturedLight();
 
 
         //Random Colours
-        private Random rnd = new Random();
-        private Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
+        private readonly Random rnd = new Random();
+        private readonly Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
         //Clock
-        private Clock _time = new Clock();
+        private readonly Clock _time = new Clock();
+
+        //LiteNetLib
+        readonly EventBasedNetListener listener;
+        readonly NetManager client;
+
+        //Console
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
 
         public CarbonField()
         {
+            AllocConsole();
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
 
             penumbra = new PenumbraComponent(this);
-            penumbra.AmbientColor = bgrCol;
+            penumbra.AmbientColor = _bgrCol;
             penumbra.SpriteBatchTransformEnabled = true;
+
+            listener = new();
+            client = new(listener);
         }
 
         protected override void Initialize()
@@ -63,6 +80,19 @@ namespace CarbonField
 
             //Penumbra
             penumbra.Initialize();
+
+            //LiteNetLib
+
+            client.Start();
+            client.Connect("localhost" /* host ip or name */, 42069 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+            listener.NetworkReceiveEvent += (fromPeer, dataReader, channelNumber, deliveryMethod) =>
+            {
+                Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+                dataReader.Recycle();
+            };
+            Console.WriteLine("Initialisation Finished");
+
+
         }
 
         protected override void LoadContent()
@@ -108,8 +138,6 @@ namespace CarbonField
                 };
                 penumbra.Lights.Add(_light);
             }
-
-
             _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
 
@@ -117,7 +145,6 @@ namespace CarbonField
         {
             return Colors[rnd.Next(Colors.Length)];
         }
-
 
         protected override void Update(GameTime gameTime)
         {
@@ -149,22 +176,21 @@ namespace CarbonField
             //Penumbra screen lock
             penumbra.Transform = _cam.transform;
 
+            //LitenetLib
+            client.PollEvents();
+            Thread.Sleep(15);
+            //client.Stop();
+
             base.Update(gameTime);
         }
 
-
-
         protected override void Draw(GameTime gameTime)
         {
-
-
             ////Penumbra
             penumbra.BeginDraw();
-
             GraphicsDevice.Clear(Color.Black);
 
             ////Gameplane
-
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);

@@ -2,6 +2,19 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "LiteNetLib/1.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/LiteNetLib.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/LiteNetLib.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "MonoGame.Content.Builder.Task/3.8.1.303": {
         "type": "package",
         "build": {
@@ -117,6 +130,31 @@
     }
   },
   "libraries": {
+    "LiteNetLib/1.1.0": {
+      "sha512": "GavpDPs65Y4vvAeECbApWXynTOn7f7IVIHmRKpPmzLWSf3vllcxHN4XPN+Tu3YFqIwOYUdgI8fhkCMhn4FLQCw==",
+      "type": "package",
+      "path": "litenetlib/1.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LNL.png",
+        "README.md",
+        "lib/net471/LiteNetLib.dll",
+        "lib/net471/LiteNetLib.xml",
+        "lib/net5.0/LiteNetLib.dll",
+        "lib/net5.0/LiteNetLib.xml",
+        "lib/net6.0/LiteNetLib.dll",
+        "lib/net6.0/LiteNetLib.xml",
+        "lib/netcoreapp3.1/LiteNetLib.dll",
+        "lib/netcoreapp3.1/LiteNetLib.xml",
+        "lib/netstandard2.0/LiteNetLib.dll",
+        "lib/netstandard2.0/LiteNetLib.xml",
+        "lib/netstandard2.1/LiteNetLib.dll",
+        "lib/netstandard2.1/LiteNetLib.xml",
+        "litenetlib.1.1.0.nupkg.sha512",
+        "litenetlib.nuspec"
+      ]
+    },
     "MonoGame.Content.Builder.Task/3.8.1.303": {
       "sha512": "9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
       "type": "package",
@@ -185,6 +223,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "LiteNetLib >= 1.1.0",
       "MonoGame.Content.Builder.Task >= 3.8.1.303",
       "MonoGame.Framework.DesktopGL >= 3.8.1.303",
       "MonoGame.Penumbra.DesktopGL >= 3.0.0"
@@ -234,6 +273,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "LiteNetLib": {
+            "target": "Package",
+            "version": "[1.1.0, )"
+          },
           "MonoGame.Content.Builder.Task": {
             "target": "Package",
             "version": "[3.8.1.303, )"
