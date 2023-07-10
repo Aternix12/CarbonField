@@ -6,7 +6,7 @@ namespace CarbonField
 {
     class Clock
     {
-        Counter[] _myCounters = new Counter[4];
+        readonly Counter[] _myCounters = new Counter[4];
 
         public Clock()
         {
@@ -19,23 +19,36 @@ namespace CarbonField
         public void Increment()
         {
             if (_myCounters[3].Increment())
+            {
+                _myCounters[2].Increment();
+            }
+
             if (_myCounters[2].Increment())
+            {
+                _myCounters[1].Increment();
+            }
+
             if (_myCounters[1].Increment())
-            _myCounters[0].Increment();
+            {
+                _myCounters[0].Increment();
+            }
         }
 
         public string PrintTime()
         {
-            String str = "";
-            foreach(Counter c in _myCounters)
+            StringBuilder strBuilder = new StringBuilder();
+
+            foreach (Counter c in _myCounters)
             {
-                str = str + String.Format("{0:00}", c.Count);
-                if(c != _myCounters[3])
+                strBuilder.AppendFormat("{0:00}", c.Count);
+
+                if (c != _myCounters[3])
                 {
-                    str = str + ":";
+                    strBuilder.Append(":");
                 }
             }
-            return str;
+
+            return strBuilder.ToString();
         }
 
         public float Seconds()

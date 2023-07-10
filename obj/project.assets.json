@@ -2,6 +2,37 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Aardvark.Base/5.2.25": {
+        "type": "package",
+        "dependencies": {
+          "Aardvark.Base.Telemetry": "[5.2.25]",
+          "System.Collections.Immutable": "5.0.0",
+          "System.Text.Json": "4.7.2"
+        },
+        "compile": {
+          "lib/net6.0/Aardvark.Base.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Aardvark.Base.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "Aardvark.Base.Telemetry/5.2.25": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "LiteNetLib/1.1.0": {
         "type": "package",
         "compile": {
@@ -126,10 +157,67 @@
             "copyToOutput": false
           }
         }
+      },
+      "System.Collections.Immutable/5.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Text.Json/4.7.2": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {
+            "related": ".xml"
+          }
+        }
       }
     }
   },
   "libraries": {
+    "Aardvark.Base/5.2.25": {
+      "sha512": "6nX7UjrcVOhKuDOu3XZkeSfntuRgLDW9f9XXRocRyNEDNnn5g0AZUvHuJAeyUnd75h4VGeXWPCVNuvIOapPEDQ==",
+      "type": "package",
+      "path": "aardvark.base/5.2.25",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "aardvark.base.5.2.25.nupkg.sha512",
+        "aardvark.base.nuspec",
+        "lib/net6.0/Aardvark.Base.dll",
+        "lib/net6.0/Aardvark.Base.pdb",
+        "lib/net6.0/Aardvark.Base.xml",
+        "lib/netstandard2.0/Aardvark.Base.dll",
+        "lib/netstandard2.0/Aardvark.Base.pdb",
+        "lib/netstandard2.0/Aardvark.Base.xml"
+      ]
+    },
+    "Aardvark.Base.Telemetry/5.2.25": {
+      "sha512": "4F4liDk2VY8iqM4557mwXJjjlC3HndklVJ2GSuD/MznAJ43DoQl6R/ffSw+0sdKxul5NEwWpWmKpPMTEVOdX/w==",
+      "type": "package",
+      "path": "aardvark.base.telemetry/5.2.25",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "aardvark.base.telemetry.5.2.25.nupkg.sha512",
+        "aardvark.base.telemetry.nuspec",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.dll",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.pdb",
+        "lib/netstandard2.0/Aardvark.Base.Telemetry.xml"
+      ]
+    },
     "LiteNetLib/1.1.0": {
       "sha512": "GavpDPs65Y4vvAeECbApWXynTOn7f7IVIHmRKpPmzLWSf3vllcxHN4XPN+Tu3YFqIwOYUdgI8fhkCMhn4FLQCw==",
       "type": "package",
@@ -219,10 +307,59 @@
         "monogame.penumbra.desktopgl.3.0.0.nupkg.sha512",
         "monogame.penumbra.desktopgl.nuspec"
       ]
+    },
+    "System.Collections.Immutable/5.0.0": {
+      "sha512": "FXkLXiK0sVVewcso0imKQoOxjoPAj42R8HtjjbSjVPAzwDfzoyoznWxgA3c38LDbN9SJux1xXoXYAhz98j7r2g==",
+      "type": "package",
+      "path": "system.collections.immutable/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Collections.Immutable.dll",
+        "lib/net461/System.Collections.Immutable.xml",
+        "lib/netstandard1.0/System.Collections.Immutable.dll",
+        "lib/netstandard1.0/System.Collections.Immutable.xml",
+        "lib/netstandard1.3/System.Collections.Immutable.dll",
+        "lib/netstandard1.3/System.Collections.Immutable.xml",
+        "lib/netstandard2.0/System.Collections.Immutable.dll",
+        "lib/netstandard2.0/System.Collections.Immutable.xml",
+        "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.dll",
+        "lib/portable-net45+win8+wp8+wpa81/System.Collections.Immutable.xml",
+        "system.collections.immutable.5.0.0.nupkg.sha512",
+        "system.collections.immutable.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Text.Json/4.7.2": {
+      "sha512": "TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
+      "type": "package",
+      "path": "system.text.json/4.7.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Text.Json.dll",
+        "lib/net461/System.Text.Json.xml",
+        "lib/netcoreapp3.0/System.Text.Json.dll",
+        "lib/netcoreapp3.0/System.Text.Json.xml",
+        "lib/netstandard2.0/System.Text.Json.dll",
+        "lib/netstandard2.0/System.Text.Json.xml",
+        "system.text.json.4.7.2.nupkg.sha512",
+        "system.text.json.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Aardvark.Base >= 5.2.25",
       "LiteNetLib >= 1.1.0",
       "MonoGame.Content.Builder.Task >= 3.8.1.303",
       "MonoGame.Framework.DesktopGL >= 3.8.1.303",
@@ -273,6 +410,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Aardvark.Base": {
+            "target": "Package",
+            "version": "[5.2.25, )"
+          },
           "LiteNetLib": {
             "target": "Package",
             "version": "[1.1.0, )"

@@ -10,19 +10,19 @@ using Penumbra;
 
 namespace CarbonField
 {
-	abstract class GameObject
-	{
-		protected Texture2D _image;
+    abstract class GameObject
+    {
+        protected Texture2D _image;
 
-		protected Vector2 _position;
-		protected Vector2 _origin;
+        protected Vector2 Position { get; set; }
+        protected Vector2 _origin;
         protected float _rotation;
         protected Color[] _textureData;
 
-        protected bool _collisionwait = false;
-        protected bool _colliding = false;
+        protected bool Collisionwait { get; set; } = false;
+        protected bool Colliding { get; set; } = false;
 
-        protected Hull _hull;
+        public Hull Hull { get; set; }
 
         public List<GameObject> Children { get; set; }
 
@@ -44,14 +44,8 @@ namespace CarbonField
 
 		public virtual void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(_image, _position, Color.White);
+			spriteBatch.Draw(_image, Position, Color.White);
 		}
-
-        public Vector2 position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
 
         private Matrix Transform
         {
@@ -59,7 +53,7 @@ namespace CarbonField
             {
                 return Matrix.CreateTranslation(new Vector3(-_origin, 0)) *
                  Matrix.CreateRotationZ(_rotation) *
-                 Matrix.CreateTranslation(new Vector3(_position, 0));
+                 Matrix.CreateTranslation(new Vector3(Position, 0));
             }
         }
 
@@ -67,7 +61,7 @@ namespace CarbonField
         {
             get
             {
-                return new Rectangle((int)_position.X - (int)_origin.X, (int)_position.Y - (int)_origin.Y, _image.Width, _image.Height);
+                return new Rectangle((int)Position.X - (int)_origin.X, (int)Position.Y - (int)_origin.Y, _image.Width, _image.Height);
             }
         }
 
@@ -123,24 +117,6 @@ namespace CarbonField
 
             // No intersection found
             return false;
-        }
-
-        public bool collisionwait
-        {
-            set { _collisionwait = value; }
-            get { return _collisionwait; }
-        }
-
-        public bool colliding
-        {
-            set { _colliding = value; }
-            get { return _colliding; }
-        }
-
-        public Hull Hull
-        {
-            get { return _hull; }
-            set { _hull = value; }
         }
     }
 }

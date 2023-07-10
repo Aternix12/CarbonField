@@ -8,12 +8,12 @@ namespace CarbonField
 {
 	static class EntityManager
 	{
-		static List<GameObject> entities = new List<GameObject>();
+		static List<GameObject> entities = new();
 		static bool isUpdating;
-		static List<GameObject> addedEntities = new List<GameObject>();
-		public static int _entityCounter;
+		static readonly List<GameObject> addedEntities = new();
+        public static int EntityCounter { get; set;  }
 
-		public static int Count { get { return entities.Count; } }
+        public static int Count { get { return entities.Count; } }
 
 		public static void Add(GameObject entity)
 		{
@@ -26,20 +26,20 @@ namespace CarbonField
 		private static void AddEntity(GameObject entity)
 		{
 			entities.Add(entity);
-			_entityCounter++;
+			EntityCounter++;
 		}
 
 		private static void RemoveEntity(GameObject entity)
 		{
 			entities.Remove(entity);
-			_entityCounter--;
+			EntityCounter--;
 		}
 
 		public static void Update(GameTime gameTime, GraphicsDeviceManager graphics)
 		{
 			
 			isUpdating = true;
-			UpdateCollision(gameTime);
+			//Collision Needs to be done
 			foreach (var entity in entities)
 				entity.Update(gameTime, graphics);
 			
@@ -54,41 +54,6 @@ namespace CarbonField
 			
 		}
 
-		public static void UpdateCollision(GameTime gameTime)
-        {
-			foreach(var objA in entities)
-            {
-				foreach(var objB in entities)
-                {
-					if (objA == objB)
-						continue;
-					if (objA.Intersects(objB))
-						objA.OnCollide(objB);
-					else
-                    {
-						objA.collisionwait = true;
-						objB.collisionwait = true;
-                    }
-                }
-            }
-
-			for (int i = 0; i < Count; i++)
-			{
-				foreach (var child in entities[i].Children)
-					entities.Add(child);
-
-				entities[i].Children.Clear();
-			}
-
-			for (int i = 0; i < Count; i++)
-			{
-				if (entities[i].IsExpired)
-				{
-					entities.RemoveAt(i);
-					i--;
-				}
-			}
-		}
 
 		public static void Draw(SpriteBatch spriteBatch)
 		{

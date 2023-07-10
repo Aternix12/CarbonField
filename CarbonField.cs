@@ -37,14 +37,13 @@ namespace CarbonField
         //Clock
         private readonly Clock _time = new Clock();
 
-        //LiteNetLib
-        readonly EventBasedNetListener listener;
-        readonly NetManager client;
-
         //Console
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
+
+        //Networking
+        readonly Client client;
 
         public CarbonField()
         {
@@ -58,8 +57,7 @@ namespace CarbonField
             penumbra.AmbientColor = _bgrCol;
             penumbra.SpriteBatchTransformEnabled = true;
 
-            listener = new();
-            client = new(listener);
+            client = new Client();
         }
 
         protected override void Initialize()
@@ -81,18 +79,12 @@ namespace CarbonField
             //Penumbra
             penumbra.Initialize();
 
+
+
             //LiteNetLib
+            client.Initialise();
 
-            client.Start();
-            client.Connect("localhost" /* host ip or name */, 42069 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
-            listener.NetworkReceiveEvent += (fromPeer, dataReader, channelNumber, deliveryMethod) =>
-            {
-                Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
-                dataReader.Recycle();
-            };
             Console.WriteLine("Initialisation Finished");
-
-
         }
 
         protected override void LoadContent()
@@ -106,11 +98,13 @@ namespace CarbonField
                 Random r = new Random();
                 int nextValue = r.Next(0, 1900);
                 Vector2 p = new Vector2(nextValue, 64);
-                WallBlock ent = new WallBlock(p);
-                ent.Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
+                WallBlock ent = new WallBlock(p)
                 {
-                    Position = new Vector2(nextValue, 64),
-                    Scale = new Vector2(16)
+                    Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
+                    {
+                        Position = new Vector2(nextValue, 64),
+                        Scale = new Vector2(16)
+                    }
                 };
                 penumbra.Hulls.Add(ent.Hull);
                 EntityManager.Add(ent);
@@ -150,8 +144,9 @@ namespace CarbonField
         {
             //TODO: Later for controller input
             base.Update(gameTime);
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+
+            UserInterface.Update(this);
+
             EntityManager.Update(gameTime, _graphics);
 
             ////Clock
@@ -177,9 +172,7 @@ namespace CarbonField
             penumbra.Transform = _cam.transform;
 
             //LitenetLib
-            client.PollEvents();
-            Thread.Sleep(15);
-            //client.Stop();
+            client.Update();
 
             base.Update(gameTime);
         }
@@ -205,7 +198,7 @@ namespace CarbonField
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
-            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager._entityCounter.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
+            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

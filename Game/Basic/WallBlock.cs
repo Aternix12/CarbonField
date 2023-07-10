@@ -15,8 +15,8 @@ namespace CarbonField
         public WallBlock(Vector2 pos)
         {
             _classtype = "WallBlock";
-            _image = Program.game.Content.Load<Texture2D>("spr_wallblock");
-            _position = pos;
+            _image = Program.Game.Content.Load<Texture2D>("spr_wallblock");
+            Position = pos;
             _rotation = 0;
             _origin = new Vector2(_image.Width / 2, _image.Height / 2);
 
@@ -43,13 +43,17 @@ namespace CarbonField
         {
 
             //Updating Hull
-            _hull.Position = _position + _origin;
+            Hull.Position = Position + _origin;
 
 
-            if (_collisionwait == false)
-            spriteBatch.Draw(_image, _position, Color.White);
+            if (!Collisionwait)
+            {
+                spriteBatch.Draw(_image, Position, Color.White);
+            }
             else
-            spriteBatch.Draw(_image, _position, Color.Red);
+            {
+                spriteBatch.Draw(_image, Position, Color.Red);
+            }
         }
 
 
@@ -58,7 +62,8 @@ namespace CarbonField
             
         }
 
-        public Vector2 velocity{
+        public Vector2 velocity
+        {
             get {return _velocity ;} 
             set { _velocity = value;}
         }
