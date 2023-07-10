@@ -10,7 +10,7 @@ namespace CarbonField
     class WallBlock : GameObject
     {
 
-        private Vector2 _velocity;
+        private Vector2 Velocity { get; set; }
 
         public WallBlock(Vector2 pos)
         {
@@ -26,11 +26,13 @@ namespace CarbonField
 
             
 
-            Random r = new Random();
+            Random r = new();
             int nextValue = r.Next(-100, 100);
-            _velocity.X = nextValue;
+            Velocity = new Vector2(nextValue, Velocity.Y);
+
             nextValue = r.Next(-100, 100);
-            _velocity.Y = nextValue;
+            Velocity = new Vector2(Velocity.X, nextValue);
+
         }
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
@@ -60,12 +62,6 @@ namespace CarbonField
         public override void OnCollide(GameObject obj)
         {
             
-        }
-
-        public Vector2 velocity
-        {
-            get {return _velocity ;} 
-            set { _velocity = value;}
         }
     }
 }

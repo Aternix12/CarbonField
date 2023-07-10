@@ -22,20 +22,22 @@ namespace CarbonField
 
         //FPS Counter
         private FrameCounter _frameCounter;
-        private SpriteFont _arial;
 
         //Penumbra
         readonly PenumbraComponent penumbra;
-        public Color _bgrCol = new(255, 255, 255, 0f);
+        private Color _bgrCol = new(255, 255, 255, 0f);
+
+        public Color BgrCol { get; set; }
+
         public readonly Light _sun = new TexturedLight();
 
 
         //Random Colours
-        private readonly Random rnd = new Random();
+        private readonly Random rnd = new();
         private readonly Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
         //Clock
-        private readonly Clock _time = new Clock();
+        private readonly Clock _time = new();
 
         //Console
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -53,9 +55,12 @@ namespace CarbonField
             IsMouseVisible = true;
             IsFixedTimeStep = false;
 
-            penumbra = new PenumbraComponent(this);
-            penumbra.AmbientColor = _bgrCol;
-            penumbra.SpriteBatchTransformEnabled = true;
+            PenumbraComponent penumbraComponent = new(this)
+            {
+                AmbientColor = _bgrCol,
+                SpriteBatchTransformEnabled = true
+            };
+            penumbra = penumbraComponent;
 
             client = new Client();
         }
@@ -142,7 +147,6 @@ namespace CarbonField
 
         protected override void Update(GameTime gameTime)
         {
-            //TODO: Later for controller input
             base.Update(gameTime);
 
             UserInterface.Update(this);
@@ -179,24 +183,24 @@ namespace CarbonField
 
         protected override void Draw(GameTime gameTime)
         {
-            ////Penumbra
+            //Penumbra
             penumbra.BeginDraw();
             GraphicsDevice.Clear(Color.Black);
 
-            ////Gameplane
+            //Gameplane
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
-
             penumbra.Draw(gameTime);
 
-            ////GUI 
+            //GUI 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
+
             //FPS
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
-            _arial = Content.Load<SpriteFont>("Fonts/Arial");
+            var _arial = Content.Load<SpriteFont>("Fonts/Arial"); // Changed to local variable here.
             _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
             _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
             _spriteBatch.End();

@@ -35,7 +35,6 @@ namespace CarbonField
         {
             client.PollEvents();
             Thread.Sleep(15);
-            //client.Stop();
         }
     }
 }

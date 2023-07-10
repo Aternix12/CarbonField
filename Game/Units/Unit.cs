@@ -7,15 +7,15 @@ namespace CarbonField
     abstract class Unit : GameObject
     {
 
-        private float _direction;
+        private readonly float _direction;
+
+        protected Unit()
+        {
+            _direction = 0;
+        }
 
         public abstract override void Update(GameTime gameTime, GraphicsDeviceManager graphics);
 
-        /* Can be overriden for unit facing direction
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-
-        }
-        */
+        //Unit Draw Needed
     }
 }
