@@ -12,7 +12,7 @@ namespace CarbonField
 {
     public class CarbonField : Game
     {
-        private readonly GraphicsDeviceManager _graphics;
+        public GraphicsDeviceManager Graphics { get; }
         private SpriteBatch _spriteBatch;
 
         private CtrCamera _cam;
@@ -50,7 +50,7 @@ namespace CarbonField
         public CarbonField()
         {
             AllocConsole();
-            _graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
@@ -70,10 +70,10 @@ namespace CarbonField
 
             base.Initialize();
 
-            _graphics.PreferredBackBufferWidth = 2160;
-            _graphics.PreferredBackBufferHeight = 1440;
-            _graphics.IsFullScreen = true;
-            _graphics.ApplyChanges();
+            Graphics.PreferredBackBufferWidth = 2160;
+            Graphics.PreferredBackBufferHeight = 1440;
+            Graphics.IsFullScreen = true;
+            Graphics.ApplyChanges();
 
             //Camera
             _cam = new CtrCamera(GraphicsDevice.Viewport);
@@ -83,8 +83,6 @@ namespace CarbonField
 
             //Penumbra
             penumbra.Initialize();
-
-
 
             //LiteNetLib
             client.Initialise();
@@ -100,10 +98,10 @@ namespace CarbonField
 
             for (int i = 0; i < 5; i++)
             {
-                Random r = new Random();
+                Random r = new();
                 int nextValue = r.Next(0, 1900);
-                Vector2 p = new Vector2(nextValue, 64);
-                WallBlock ent = new WallBlock(p)
+                Vector2 p = new (nextValue, 64);
+                WallBlock ent = new(p)
                 {
                     Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
                     {
@@ -145,13 +143,19 @@ namespace CarbonField
             return Colors[rnd.Next(Colors.Length)];
         }
 
+        public CtrCamera Cam
+        {
+            get { return _cam; }
+            set { _cam = value; }
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             UserInterface.Update(this);
 
-            EntityManager.Update(gameTime, _graphics);
+            EntityManager.Update(gameTime, Graphics);
 
             ////Clock
             //Update Time
@@ -173,7 +177,7 @@ namespace CarbonField
             _frameCounter.Update(deltaTime);
 
             //Penumbra screen lock
-            penumbra.Transform = _cam.transform;
+            penumbra.Transform = _cam.GetTransform();
 
             //LitenetLib
             client.Update();
@@ -188,7 +192,7 @@ namespace CarbonField
             GraphicsDevice.Clear(Color.Black);
 
             //Gameplane
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.GetTransform());
             _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
@@ -196,13 +200,13 @@ namespace CarbonField
             penumbra.Draw(gameTime);
 
             //GUI 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.transform);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.GetTransform());
 
             //FPS
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
-            var _arial = Content.Load<SpriteFont>("Fonts/Arial"); // Changed to local variable here.
-            _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.pos.X, _cam.pos.Y), Color.White);
-            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.pos.X, _cam.pos.Y + 40), Color.White);
+            var _arial = Content.Load<SpriteFont>("Fonts/Arial");
+            _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.GetPos().X, _cam.GetPos().Y), Color.White);
+            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.GetPos().X, _cam.GetPos().Y + 40), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
