@@ -1,45 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.1.32228.430
+VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField", "CarbonField.csproj", "{B226D886-FD7D-4BC8-87B1-57B3E88C9950}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField", "CarbonField.csproj", "{374A1227-50F5-4405-A52B-B283AA094DA9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonFieldServer", "CarbonFieldServer\CarbonFieldServer.csproj", "{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonField Server", "..\CarbonField Server\CarbonField Server.csproj", "{FB1E570F-A778-4FD8-B3FE-08137B322891}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Bindings", "Bindings\Bindings.shproj", "{F05B28FD-7197-4D04-AE70-E8E20BCD62DD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonFieldGameServer", "CarbonFieldGameServer\CarbonFieldGameServer.csproj", "{2BAEDBE8-636E-40C5-AF3B-7370FAA5DB79}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CarbonField Bindings", "..\CarbonField Bindings\CarbonField Bindings.shproj", "{6066963A-73BE-41BD-95B5-CB6312364F01}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Bindings\Bindings.projitems*{2baedbe8-636e-40c5-af3b-7370faa5db79}*SharedItemsImports = 5
-		Bindings\Bindings.projitems*{8c5f2d3f-9c2e-417b-ac53-f27846cb7acd}*SharedItemsImports = 5
-		Bindings\Bindings.projitems*{b226d886-fd7d-4bc8-87b1-57b3e88c9950}*SharedItemsImports = 5
-		Bindings\Bindings.projitems*{f05b28fd-7197-4d04-ae70-e8e20bcd62dd}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B226D886-FD7D-4BC8-87B1-57B3E88C9950}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C5F2D3F-9C2E-417B-AC53-F27846CB7ACD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BAEDBE8-636E-40C5-AF3B-7370FAA5DB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BAEDBE8-636E-40C5-AF3B-7370FAA5DB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BAEDBE8-636E-40C5-AF3B-7370FAA5DB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BAEDBE8-636E-40C5-AF3B-7370FAA5DB79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{374A1227-50F5-4405-A52B-B283AA094DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{374A1227-50F5-4405-A52B-B283AA094DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{374A1227-50F5-4405-A52B-B283AA094DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{374A1227-50F5-4405-A52B-B283AA094DA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4AEB0638-D6E4-4BEC-9EFB-B79941F8417E}
+		SolutionGuid = {9445D947-D956-41C6-ADBE-29A447BBF6F6}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\CarbonField Bindings\CarbonField Bindings.projitems*{6066963a-73be-41bd-95b5-cb6312364f01}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

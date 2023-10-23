@@ -4,12 +4,15 @@ namespace CarbonField
 {
     public static class Program
     {
-        public static CarbonField game;
+        private static CarbonField _game;
+
+        public static CarbonField Game { get { return _game; } }
+
         [STAThread]
         static void Main()
         {
-            game = new CarbonField();
-            game.Run();
+            _game = new CarbonField();
+            _game.Run();
         }
     }
 }

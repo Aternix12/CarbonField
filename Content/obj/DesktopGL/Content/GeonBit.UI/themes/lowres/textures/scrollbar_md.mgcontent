@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/xX12T/OneDrive/CarbonField/Content/GeonBit.UI/themes/lowres/textures/scrollbar_md.xml</SourceFile>
+  <SourceTime>2023-03-13T19:59:01.5404805+11:00</SourceTime>
+  <DestFile>C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/GeonBit.UI/themes/lowres/textures/scrollbar_md.xnb</DestFile>
+  <DestTime>2023-03-13T19:59:38.0569311+11:00</DestTime>
+  <Importer>XmlImporter</Importer>
+  <ImporterTime>2020-08-11T02:17:54+10:00</ImporterTime>
+  <Processor>PassThroughProcessor</Processor>
+  <ProcessorTime>2020-08-11T02:17:54+10:00</ProcessorTime>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
