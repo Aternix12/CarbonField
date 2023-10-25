@@ -46,7 +46,7 @@
           "dependencies": {
             "Aardvark.Base": {
               "target": "Package",
-              "version": "[5.2.25, )"
+              "version": "[5.2.27, )"
             },
             "LiteNetLib": {
               "target": "Package",
@@ -81,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -7,11 +7,18 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Threading;
 using System.Runtime.InteropServices;
+using CarbonField.Game;
 
 namespace CarbonField
 {
-    public class CarbonField : Game
+    public class CarbonField : Microsoft.Xna.Framework.Game
     {
+        //Version
+        public static readonly string Version = "1.0.0";
+
+        //Settings
+        private readonly GameSettings _gameSettings;
+
         public GraphicsDeviceManager Graphics { get; }
         private SpriteBatch _spriteBatch;
 
@@ -49,7 +56,8 @@ namespace CarbonField
 
         public CarbonField()
         {
-            AllocConsole();
+            AllocConsole(); 
+            _gameSettings = new GameSettings();
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -70,9 +78,9 @@ namespace CarbonField
 
             base.Initialize();
 
-            Graphics.PreferredBackBufferWidth = 2160;
-            Graphics.PreferredBackBufferHeight = 1440;
-            Graphics.IsFullScreen = true;
+            Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
+            Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
+            Graphics.IsFullScreen = _gameSettings.IsFullScreen;
             Graphics.ApplyChanges();
 
             //Camera
@@ -199,14 +207,13 @@ namespace CarbonField
 
             penumbra.Draw(gameTime);
 
-            //GUI 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.GetTransform());
-
-            //FPS
+            //GUI New separate code block for FPS and other UI elements
+            _spriteBatch.Begin();  // Note: No transformation matrix here
             var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
             var _arial = Content.Load<SpriteFont>("Fonts/Arial");
-            _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.GetPos().X, _cam.GetPos().Y), Color.White);
-            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.GetPos().X, _cam.GetPos().Y + 40), Color.White);
+            _spriteBatch.DrawString(_arial, Version, new Vector2(10, 0), Color.White);
+            _spriteBatch.DrawString(_arial, fps, new Vector2(10, 20), Color.White);  // Adjusted position
+            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(10, 40), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
