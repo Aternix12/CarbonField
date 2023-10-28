@@ -29,6 +29,7 @@ namespace CarbonField
 
         //FPS Counter
         private FrameCounter _frameCounter;
+        private string _latestFpsString = "";
 
         //Penumbra
         readonly PenumbraComponent penumbra;
@@ -54,6 +55,9 @@ namespace CarbonField
         //Networking
         readonly Client client;
 
+        //Fonts
+        SpriteFont _arial;
+
         public CarbonField()
         {
             AllocConsole(); 
@@ -62,6 +66,7 @@ namespace CarbonField
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 6900);
 
             PenumbraComponent penumbraComponent = new(this)
             {
@@ -81,6 +86,7 @@ namespace CarbonField
             Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
             Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
             Graphics.IsFullScreen = _gameSettings.IsFullScreen;
+            Graphics.SynchronizeWithVerticalRetrace = false;
             Graphics.ApplyChanges();
 
             //Camera
@@ -104,7 +110,7 @@ namespace CarbonField
 
             //Creating Wall
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Random r = new();
                 int nextValue = r.Next(0, 1900);
@@ -120,6 +126,9 @@ namespace CarbonField
                 penumbra.Hulls.Add(ent.Hull);
                 EntityManager.Add(ent);
             }
+
+            //Loading Fonts
+            _arial = Content.Load<SpriteFont>("Fonts/Arial");
 
             //Adding Lights
             for (int i = 0; i < 3; i++)
@@ -174,7 +183,7 @@ namespace CarbonField
             }
 
             //Change Penumbra Alpha
-            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f;
+            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
             penumbra.AmbientColor = new Color(255, 255, 255, 0.8f);
 
             //Updating View
@@ -182,21 +191,25 @@ namespace CarbonField
 
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _frameCounter.Update(deltaTime);
+            bool fpsUpdated = _frameCounter.Update(deltaTime);
+            if (fpsUpdated)
+            {
+                _latestFpsString = _frameCounter.FpsString;
+            }
 
             //Penumbra screen lock
             penumbra.Transform = _cam.GetTransform();
 
             //LitenetLib
-            client.Update();
+            //client.Update();
 
             base.Update(gameTime);
         }
-
+        
         protected override void Draw(GameTime gameTime)
         {
             //Penumbra
-            penumbra.BeginDraw();
+            //penumbra.BeginDraw();
             GraphicsDevice.Clear(Color.Black);
 
             //Gameplane
@@ -205,14 +218,12 @@ namespace CarbonField
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            penumbra.Draw(gameTime);
+            //penumbra.Draw(gameTime);
 
-            //GUI New separate code block for FPS and other UI elements
-            _spriteBatch.Begin();  // Note: No transformation matrix here
-            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
-            var _arial = Content.Load<SpriteFont>("Fonts/Arial");
+            //GUI
+            _spriteBatch.Begin();
             _spriteBatch.DrawString(_arial, Version, new Vector2(10, 0), Color.White);
-            _spriteBatch.DrawString(_arial, fps, new Vector2(10, 20), Color.White);  // Adjusted position
+            _spriteBatch.DrawString(_arial, _latestFpsString, new Vector2(10, 20), Color.White);
             _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(10, 40), Color.White);
             _spriteBatch.End();
 
