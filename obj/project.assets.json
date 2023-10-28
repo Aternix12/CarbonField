@@ -1,11 +1,11 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {
-      "Aardvark.Base/5.2.25": {
+    "net7.0": {
+      "Aardvark.Base/5.2.27": {
         "type": "package",
         "dependencies": {
-          "Aardvark.Base.Telemetry": "[5.2.25]",
+          "Aardvark.Base.Telemetry": "[5.2.27]",
           "System.Collections.Immutable": "5.0.0",
           "System.Text.Json": "4.7.2"
         },
@@ -20,7 +20,7 @@
           }
         }
       },
-      "Aardvark.Base.Telemetry/5.2.25": {
+      "Aardvark.Base.Telemetry/5.2.27": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
@@ -187,14 +187,14 @@
     }
   },
   "libraries": {
-    "Aardvark.Base/5.2.25": {
-      "sha512": "6nX7UjrcVOhKuDOu3XZkeSfntuRgLDW9f9XXRocRyNEDNnn5g0AZUvHuJAeyUnd75h4VGeXWPCVNuvIOapPEDQ==",
+    "Aardvark.Base/5.2.27": {
+      "sha512": "zH1NpyTy8FeWVxASxayK5P37DoFAY8GGMsg+ycQTBy8FKcqF7XfQECVWgUB+1mCLLnSUgs5eWcOirKnTzWz5Iw==",
       "type": "package",
-      "path": "aardvark.base/5.2.25",
+      "path": "aardvark.base/5.2.27",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "aardvark.base.5.2.25.nupkg.sha512",
+        "aardvark.base.5.2.27.nupkg.sha512",
         "aardvark.base.nuspec",
         "lib/net6.0/Aardvark.Base.dll",
         "lib/net6.0/Aardvark.Base.pdb",
@@ -204,14 +204,14 @@
         "lib/netstandard2.0/Aardvark.Base.xml"
       ]
     },
-    "Aardvark.Base.Telemetry/5.2.25": {
-      "sha512": "4F4liDk2VY8iqM4557mwXJjjlC3HndklVJ2GSuD/MznAJ43DoQl6R/ffSw+0sdKxul5NEwWpWmKpPMTEVOdX/w==",
+    "Aardvark.Base.Telemetry/5.2.27": {
+      "sha512": "hemMhIHyEvHSYYlzsDlOLRBvdKEAGU5GJ/RqLxBTglxcgQm72p1Xc5crdz1WldAjJhXqvracIl9KZNaZH4zbig==",
       "type": "package",
-      "path": "aardvark.base.telemetry/5.2.25",
+      "path": "aardvark.base.telemetry/5.2.27",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "aardvark.base.telemetry.5.2.25.nupkg.sha512",
+        "aardvark.base.telemetry.5.2.27.nupkg.sha512",
         "aardvark.base.telemetry.nuspec",
         "lib/netstandard2.0/Aardvark.Base.Telemetry.dll",
         "lib/netstandard2.0/Aardvark.Base.Telemetry.pdb",
@@ -358,8 +358,8 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0": [
-      "Aardvark.Base >= 5.2.25",
+    "net7.0": [
+      "Aardvark.Base >= 5.2.27",
       "LiteNetLib >= 1.1.0",
       "MonoGame.Content.Builder.Task >= 3.8.1.303",
       "MonoGame.Framework.DesktopGL >= 3.8.1.303",
@@ -388,15 +388,15 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0"
+        "net7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "projectReferences": {}
         }
       },
@@ -407,12 +407,12 @@
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "net6.0",
+      "net7.0": {
+        "targetAlias": "net7.0",
         "dependencies": {
           "Aardvark.Base": {
             "target": "Package",
-            "version": "[5.2.25, )"
+            "version": "[5.2.27, )"
           },
           "LiteNetLib": {
             "target": "Package",
@@ -447,7 +447,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }

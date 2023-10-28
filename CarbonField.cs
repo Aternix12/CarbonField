@@ -7,11 +7,18 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Threading;
 using System.Runtime.InteropServices;
+using CarbonField.Game;
 
 namespace CarbonField
 {
-    public class CarbonField : Game
+    public class CarbonField : Microsoft.Xna.Framework.Game
     {
+        //Version
+        public static readonly string Version = "1.0.0";
+
+        //Settings
+        private readonly GameSettings _gameSettings;
+
         public GraphicsDeviceManager Graphics { get; }
         private SpriteBatch _spriteBatch;
 
@@ -22,6 +29,7 @@ namespace CarbonField
 
         //FPS Counter
         private FrameCounter _frameCounter;
+        private string _latestFpsString = "";
 
         //Penumbra
         readonly PenumbraComponent penumbra;
@@ -47,13 +55,18 @@ namespace CarbonField
         //Networking
         readonly Client client;
 
+        //Fonts
+        SpriteFont _arial;
+
         public CarbonField()
         {
-            AllocConsole();
+            AllocConsole(); 
+            _gameSettings = new GameSettings();
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = false;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 6900);
 
             PenumbraComponent penumbraComponent = new(this)
             {
@@ -70,9 +83,10 @@ namespace CarbonField
 
             base.Initialize();
 
-            Graphics.PreferredBackBufferWidth = 2160;
-            Graphics.PreferredBackBufferHeight = 1440;
-            Graphics.IsFullScreen = true;
+            Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
+            Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
+            Graphics.IsFullScreen = _gameSettings.IsFullScreen;
+            Graphics.SynchronizeWithVerticalRetrace = false;
             Graphics.ApplyChanges();
 
             //Camera
@@ -96,7 +110,7 @@ namespace CarbonField
 
             //Creating Wall
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Random r = new();
                 int nextValue = r.Next(0, 1900);
@@ -112,6 +126,9 @@ namespace CarbonField
                 penumbra.Hulls.Add(ent.Hull);
                 EntityManager.Add(ent);
             }
+
+            //Loading Fonts
+            _arial = Content.Load<SpriteFont>("Fonts/Arial");
 
             //Adding Lights
             for (int i = 0; i < 3; i++)
@@ -166,7 +183,7 @@ namespace CarbonField
             }
 
             //Change Penumbra Alpha
-            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f;
+            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
             penumbra.AmbientColor = new Color(255, 255, 255, 0.8f);
 
             //Updating View
@@ -174,21 +191,25 @@ namespace CarbonField
 
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _frameCounter.Update(deltaTime);
+            bool fpsUpdated = _frameCounter.Update(deltaTime);
+            if (fpsUpdated)
+            {
+                _latestFpsString = _frameCounter.FpsString;
+            }
 
             //Penumbra screen lock
             penumbra.Transform = _cam.GetTransform();
 
             //LitenetLib
-            client.Update();
+            //client.Update();
 
             base.Update(gameTime);
         }
-
+        
         protected override void Draw(GameTime gameTime)
         {
             //Penumbra
-            penumbra.BeginDraw();
+            //penumbra.BeginDraw();
             GraphicsDevice.Clear(Color.Black);
 
             //Gameplane
@@ -197,16 +218,13 @@ namespace CarbonField
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            penumbra.Draw(gameTime);
+            //penumbra.Draw(gameTime);
 
-            //GUI 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, _cam.GetTransform());
-
-            //FPS
-            var fps = string.Format("FPS: {0}", _frameCounter.AverageFramesPerSecond);
-            var _arial = Content.Load<SpriteFont>("Fonts/Arial");
-            _spriteBatch.DrawString(_arial, fps, new Vector2(_cam.GetPos().X, _cam.GetPos().Y), Color.White);
-            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(_cam.GetPos().X, _cam.GetPos().Y + 40), Color.White);
+            //GUI
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(_arial, Version, new Vector2(10, 0), Color.White);
+            _spriteBatch.DrawString(_arial, _latestFpsString, new Vector2(10, 20), Color.White);
+            _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(10, 40), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

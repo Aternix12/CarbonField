@@ -86,6 +86,11 @@ namespace CarbonField
         }
 
         public Matrix GetTransform()
-        { return transform; }
+        {
+            return Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
+                   Matrix.CreateScale(_zoom, _zoom, 1) *
+                   Matrix.CreateTranslation(new Vector3(_viewport.Width * 0.5f, _viewport.Height * 0.5f, 0));
+        }
+
     }
 }

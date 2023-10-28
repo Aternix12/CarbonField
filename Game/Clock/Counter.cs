@@ -6,7 +6,7 @@ namespace CarbonField
 {
     class Counter
     {
-        private String _name;
+        private readonly String _name;
         private int _count;
 
         public Counter(String s)

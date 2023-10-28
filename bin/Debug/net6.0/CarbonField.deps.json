@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "CarbonField/1.0.0": {
         "dependencies": {
-          "Aardvark.Base": "5.2.25",
+          "Aardvark.Base": "5.2.27",
           "LiteNetLib": "1.1.0",
           "MonoGame.Content.Builder.Task": "3.8.1.303",
           "MonoGame.Framework.DesktopGL": "3.8.1.303",
@@ -18,9 +18,9 @@
           "CarbonField.dll": {}
         }
       },
-      "Aardvark.Base/5.2.25": {
+      "Aardvark.Base/5.2.27": {
         "dependencies": {
-          "Aardvark.Base.Telemetry": "5.2.25",
+          "Aardvark.Base.Telemetry": "5.2.27",
           "System.Collections.Immutable": "5.0.0",
           "System.Text.Json": "4.7.2"
         },
@@ -31,7 +31,7 @@
           }
         }
       },
-      "Aardvark.Base.Telemetry/5.2.25": {
+      "Aardvark.Base.Telemetry/5.2.27": {
         "runtime": {
           "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
             "assemblyVersion": "5.2.0.0",
@@ -120,19 +120,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Aardvark.Base/5.2.25": {
+    "Aardvark.Base/5.2.27": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6nX7UjrcVOhKuDOu3XZkeSfntuRgLDW9f9XXRocRyNEDNnn5g0AZUvHuJAeyUnd75h4VGeXWPCVNuvIOapPEDQ==",
-      "path": "aardvark.base/5.2.25",
-      "hashPath": "aardvark.base.5.2.25.nupkg.sha512"
+      "sha512": "sha512-zH1NpyTy8FeWVxASxayK5P37DoFAY8GGMsg+ycQTBy8FKcqF7XfQECVWgUB+1mCLLnSUgs5eWcOirKnTzWz5Iw==",
+      "path": "aardvark.base/5.2.27",
+      "hashPath": "aardvark.base.5.2.27.nupkg.sha512"
     },
-    "Aardvark.Base.Telemetry/5.2.25": {
+    "Aardvark.Base.Telemetry/5.2.27": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-4F4liDk2VY8iqM4557mwXJjjlC3HndklVJ2GSuD/MznAJ43DoQl6R/ffSw+0sdKxul5NEwWpWmKpPMTEVOdX/w==",
-      "path": "aardvark.base.telemetry/5.2.25",
-      "hashPath": "aardvark.base.telemetry.5.2.25.nupkg.sha512"
+      "sha512": "sha512-hemMhIHyEvHSYYlzsDlOLRBvdKEAGU5GJ/RqLxBTglxcgQm72p1Xc5crdz1WldAjJhXqvracIl9KZNaZH4zbig==",
+      "path": "aardvark.base.telemetry/5.2.27",
+      "hashPath": "aardvark.base.telemetry.5.2.27.nupkg.sha512"
     },
     "LiteNetLib/1.1.0": {
       "type": "package",

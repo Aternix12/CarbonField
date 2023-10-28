@@ -21,27 +21,52 @@ namespace CarbonField
 
         public const int MAXIMUM_SAMPLES = 100;
 
-        private Queue<float> _sampleBuffer = new Queue<float>();
+        private readonly Queue<float> _sampleBuffer = new Queue<float>();
+
+        public string FpsString { get; private set; }
+
+        // Add a timer to keep track of elapsed time
+        private float elapsedTime = 0.0f;
+
+        private readonly StringBuilder fpsStringBuilder = new StringBuilder();
+        private float sumOfFrames = 0;
+        private int sampleCount = 0;
 
         public bool Update(float deltaTime)
         {
-            CurrentFramesPerSecond = 1.0f / deltaTime;
+            elapsedTime += deltaTime;
 
-            _sampleBuffer.Enqueue(CurrentFramesPerSecond);
-
-            if (_sampleBuffer.Count > MAXIMUM_SAMPLES)
+            // Only update FPS counter once a second
+            if (elapsedTime >= 0.5f)
             {
-                _sampleBuffer.Dequeue();
-                AverageFramesPerSecond = _sampleBuffer.Average(i => i);
-            }
-            else
-            {
-                AverageFramesPerSecond = CurrentFramesPerSecond;
+                CurrentFramesPerSecond = 0.5f / deltaTime;
+                sumOfFrames += CurrentFramesPerSecond;
+                sampleCount++;
+
+                _sampleBuffer.Enqueue(CurrentFramesPerSecond);
+
+                if (_sampleBuffer.Count > MAXIMUM_SAMPLES)
+                {
+                    float oldestFrame = _sampleBuffer.Dequeue();
+                    sumOfFrames -= oldestFrame;
+                    sampleCount--;
+                }
+
+                AverageFramesPerSecond = sumOfFrames / sampleCount;
+
+                fpsStringBuilder.Clear();
+                fpsStringBuilder.AppendFormat("FPS: {0}", Math.Round(AverageFramesPerSecond));
+                FpsString = fpsStringBuilder.ToString();
+
+                TotalFrames++;
+                TotalSeconds += deltaTime;
+
+                // Reset the elapsed time
+                elapsedTime = 0.0f;
+                return true;
             }
 
-            TotalFrames++;
-            TotalSeconds += deltaTime;
-            return true;
+            return false;
         }
     }
 }
