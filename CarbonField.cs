@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using Penumbra;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Threading;
@@ -14,7 +13,7 @@ namespace CarbonField
     public class CarbonField : Microsoft.Xna.Framework.Game
     {
         //Version
-        public static readonly string Version = "1.0.0";
+        public static readonly string Version = "0.1.0";
 
         //Settings
         private readonly GameSettings _gameSettings;
@@ -32,13 +31,10 @@ namespace CarbonField
         private string _latestFpsString = "";
 
         //Penumbra
-        readonly PenumbraComponent penumbra;
+        private readonly LightingManager _lightingManager;
         private Color _bgrCol = new(255, 255, 255, 0f);
 
         public Color BgrCol { get; set; }
-
-        public readonly Light _sun = new TexturedLight();
-
 
         //Random Colours
         private readonly Random rnd = new();
@@ -68,12 +64,7 @@ namespace CarbonField
             IsFixedTimeStep = false;
             TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 6900);
 
-            PenumbraComponent penumbraComponent = new(this)
-            {
-                AmbientColor = _bgrCol,
-                SpriteBatchTransformEnabled = true
-            };
-            penumbra = penumbraComponent;
+            _lightingManager = new LightingManager(this);
 
             client = new Client();
         }
@@ -95,11 +86,12 @@ namespace CarbonField
             //FPS
             _frameCounter = new FrameCounter();
 
-            //Penumbra
-            penumbra.Initialize();
+            //LightingManager      
+            _lightingManager.Initialize();
 
             //LiteNetLib
             client.Initialise();
+            client.StartUpdateLoop();
 
             Console.WriteLine("Initialisation Finished");
         }
@@ -107,51 +99,36 @@ namespace CarbonField
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            
             //Creating Wall
 
-            for (int i = 0; i < 1; i++)
-            {
-                Random r = new();
-                int nextValue = r.Next(0, 1900);
-                Vector2 p = new (nextValue, 64);
-                WallBlock ent = new(p)
-                {
-                    Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
-                    {
-                        Position = new Vector2(nextValue, 64),
-                        Scale = new Vector2(16)
-                    }
-                };
-                penumbra.Hulls.Add(ent.Hull);
-                EntityManager.Add(ent);
-            }
+            //for (int i = 0; i < 1; i++)
+           // {
+               // Random r = new();
+               // int nextValue = r.Next(0, 1900);
+               // Vector2 p = new (nextValue, 64);
+               // WallBlock ent = new(p)
+               // {
+                    //Hull = new Hull(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
+                   // {
+                     //   Position = new Vector2(nextValue, 64),
+                    //    Scale = new Vector2(16)
+                   // }
+              //  };
+                //penumbra.Hulls.Add(ent.Hull);
+                //EntityManager.Add(ent);
+           // }
 
             //Loading Fonts
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
 
             //Adding Lights
-            for (int i = 0; i < 3; i++)
-            {
+            _lightingManager.LoadContent(Content);
 
-                Random ran1 = new Random();
-                int nextValue1 = ran1.Next(0, 1920);
-                Random ran2 = new Random();
-                int nextValue2 = ran2.Next(0, 1080);
+            //Creating Wall
+            _lightingManager.LoadHulls();
 
-                Texture2D _tex = Content.Load<Texture2D>("src_texturedlight");
-                Light _light = new TexturedLight(_tex)
-                {
-                    Position = new Vector2(nextValue1, nextValue2),
-                    //Color = RandomColor(),
-                    Scale = new Vector2(800, 400),
-                    Color = Color.White,
-                    Intensity = 2,
-                    ShadowType = ShadowType.Illuminated,
 
-                };
-                penumbra.Lights.Add(_light);
-            }
             _bgrTexture = Content.Load<Texture2D>("spr_background");
         }
 
@@ -168,8 +145,6 @@ namespace CarbonField
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             UserInterface.Update(this);
 
             EntityManager.Update(gameTime, Graphics);
@@ -184,8 +159,7 @@ namespace CarbonField
 
             //Change Penumbra Alpha
             //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
-            penumbra.AmbientColor = new Color(255, 255, 255, 0.8f);
-
+            
             //Updating View
             _cam.Update(gameTime);
 
@@ -198,10 +172,7 @@ namespace CarbonField
             }
 
             //Penumbra screen lock
-            penumbra.Transform = _cam.GetTransform();
-
-            //LitenetLib
-            //client.Update();
+            _lightingManager.Update(gameTime, _cam.GetTransform());
 
             base.Update(gameTime);
         }
@@ -209,7 +180,7 @@ namespace CarbonField
         protected override void Draw(GameTime gameTime)
         {
             //Penumbra
-            //penumbra.BeginDraw();
+            _lightingManager.BeginDraw();
             GraphicsDevice.Clear(Color.Black);
 
             //Gameplane
@@ -218,7 +189,7 @@ namespace CarbonField
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            //penumbra.Draw(gameTime);
+            _lightingManager.Draw(gameTime);
 
             //GUI
             _spriteBatch.Begin();

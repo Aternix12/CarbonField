@@ -29,26 +29,28 @@ namespace CarbonField
             transform = Matrix.Identity;
         }
 
-        public void Update(GameTime gametime)
+        public void Update(GameTime gameTime)
         {
-            //Keyboard input for moving view
-            _vel.X *= (float)0.75;
-            _vel.Y *= (float)0.75;
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            //This keyboard movement need to be handled by UserInterface.cs
+            _vel *= 0.8f;
+            float speed = 100.0f * elapsed; // Now speed is per second, not per frame
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                _vel.X += 3;
+                _vel.X += speed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                _vel.Y += 3;
+                _vel.Y += speed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                _vel.X -= 3;
+                _vel.X -= speed;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                _vel.Y -= 3;
+                _vel.Y -= speed;
             }
             _pos.X += _vel.X;
             _pos.Y += _vel.Y;

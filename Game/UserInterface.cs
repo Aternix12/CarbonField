@@ -32,17 +32,19 @@ namespace CarbonField
         private static void HandleScroll(CarbonField game)
         {
             var currentScrollWheelValue = Mouse.GetState().ScrollWheelValue;
-
-            if (currentScrollWheelValue > previousScrollWheelValue)
+            if (currentScrollWheelValue != previousScrollWheelValue)
             {
-                game.Cam.SetZoom(game.Cam.GetZoom() + 0.1f);
-            }
-            else if (currentScrollWheelValue < previousScrollWheelValue)
-            {
-                game.Cam.SetZoom(game.Cam.GetZoom() - 0.1f);
-            }
+                if (currentScrollWheelValue > previousScrollWheelValue)
+                {
+                    game.Cam.SetZoom(game.Cam.GetZoom() + 0.1f);
+                }
+                else if (currentScrollWheelValue < previousScrollWheelValue)
+                {
+                    game.Cam.SetZoom(game.Cam.GetZoom() - 0.1f);
+                }
 
-            previousScrollWheelValue = currentScrollWheelValue;
+                previousScrollWheelValue = currentScrollWheelValue;
+            }
         }
     }
 }

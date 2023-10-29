@@ -36,5 +36,17 @@ namespace CarbonField
             client.PollEvents();
             Thread.Sleep(15);
         }
+
+        public void StartUpdateLoop()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    Update();
+                    await Task.Delay(15); // Equivalent of Thread.Sleep but for Task
+                }
+            });
+        }
     }
 }
