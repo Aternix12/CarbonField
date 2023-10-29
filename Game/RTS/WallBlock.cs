@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CarbonField
 {
-    class WallBlock : GameObject
+    class WallBlock : GameObject, IHull
     {
 
         private Vector2 Velocity { get; set; }
@@ -56,6 +56,16 @@ namespace CarbonField
             {
                 spriteBatch.Draw(_image, Position, Color.Red);
             }
+        }
+
+        public void AddHull(LightingManager lightingManager)
+        {
+            Hull = new(new Vector2(1.0f), new Vector2(-1.0f, 1.0f), new Vector2(-1.0f), new Vector2(1.0f, -1.0f))
+            {
+                Position = this.Position,
+                Scale = new Vector2(16)
+            };
+            lightingManager.AddHull(Hull);
         }
 
 

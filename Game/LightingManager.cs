@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace CarbonField.Game
+namespace CarbonField
 {
     public class LightingManager
     {
@@ -18,6 +18,10 @@ namespace CarbonField.Game
         private Color _bgrCol = new(255, 255, 255, 0f);
 
         public readonly Light _sun = new TexturedLight();
+
+        //Random Colours
+        private readonly Random rnd = new();
+        private readonly Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple };
 
         public LightingManager(CarbonField game)
         {
@@ -39,7 +43,7 @@ namespace CarbonField.Game
             // Load any Penumbra-specific content (like textures for lights) here
             // and add lights and hulls to the PenumbraComponent.
             // Assuming that Content is your ContentManager instance.
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
 
                 Random ran1 = new Random();
@@ -53,7 +57,7 @@ namespace CarbonField.Game
                     Position = new Vector2(nextValue1, nextValue2),
                     //Color = RandomColor(),
                     Scale = new Vector2(800, 400),
-                    Color = Color.White,
+                    Color = RandomColor(),
                     Intensity = 2,
                     ShadowType = ShadowType.Illuminated,
 
@@ -100,6 +104,11 @@ namespace CarbonField.Game
         public void Draw(GameTime gameTime)
         {
             _penumbra.Draw(gameTime);
+        }
+
+        private Color RandomColor()
+        {
+            return Colors[rnd.Next(Colors.Length)];
         }
     }
 }

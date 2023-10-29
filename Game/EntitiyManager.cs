@@ -15,18 +15,22 @@ namespace CarbonField
 
         public static int Count { get { return entities.Count; } }
 
-		public static void Add(GameObject entity)
+		public static void Add(GameObject entity, LightingManager lightingManager)
 		{
 			if (!isUpdating)
-				AddEntity(entity);
+				AddEntity(entity, lightingManager);
 			else
 				addedEntities.Add(entity);
 		}
 
-		private static void AddEntity(GameObject entity)
+		private static void AddEntity(GameObject entity, LightingManager lightingManager)
 		{
 			entities.Add(entity);
-			EntityCounter++;
+            if (entity is IHull hullEntity)
+            {
+                hullEntity.AddHull(lightingManager);
+            }
+            EntityCounter++;
 		}
 
 		private static void RemoveEntity(GameObject entity)
@@ -35,7 +39,7 @@ namespace CarbonField
 			EntityCounter--;
 		}
 
-		public static void Update(GameTime gameTime, GraphicsDeviceManager graphics)
+		public static void Update(GameTime gameTime, GraphicsDeviceManager graphics, LightingManager lightingManager)
 		{
 			
 			isUpdating = true;
@@ -46,7 +50,7 @@ namespace CarbonField
 			isUpdating = false;
 
 			foreach (var entity in addedEntities)
-				AddEntity(entity);
+				AddEntity(entity, lightingManager);
 
 			addedEntities.Clear();
 
