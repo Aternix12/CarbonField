@@ -36,7 +36,27 @@ namespace CarbonField
         }
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-            
+            //This is just for demonstration! Will fuck FPS
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Update the position based on the velocity and deltaTime
+            Position += Velocity * deltaTime;
+
+            // Define your boundary values
+            float minX = 0;
+            float minY = 0;
+            float maxX = 1920;
+            float maxY = 1080;
+
+            // Check for boundary collision and reverse direction if needed
+            if (Position.X <= minX || Position.X >= maxX - _image.Width)
+            {
+                Velocity = new Vector2(-Velocity.X, Velocity.Y);
+            }
+            if (Position.Y <= minY || Position.Y >= maxY - _image.Height)
+            {
+                Velocity = new Vector2(Velocity.X, -Velocity.Y);
+            }
         }
 
 

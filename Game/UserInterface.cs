@@ -6,8 +6,7 @@ using System;
 namespace CarbonField
 {
     public class UserInterface
-    {
-        static float previousScrollWheelValue = 0f;
+    { 
 
         protected UserInterface()
         {
@@ -26,25 +25,7 @@ namespace CarbonField
                 game.Graphics.ToggleFullScreen();
             }
 
-            HandleScroll(game);
-        }
-
-        private static void HandleScroll(CarbonField game)
-        {
-            var currentScrollWheelValue = Mouse.GetState().ScrollWheelValue;
-            if (currentScrollWheelValue != previousScrollWheelValue)
-            {
-                if (currentScrollWheelValue > previousScrollWheelValue)
-                {
-                    game.Cam.SetZoom(game.Cam.GetZoom() + 0.1f);
-                }
-                else if (currentScrollWheelValue < previousScrollWheelValue)
-                {
-                    game.Cam.SetZoom(game.Cam.GetZoom() - 0.1f);
-                }
-
-                previousScrollWheelValue = currentScrollWheelValue;
-            }
+            game.HandleScroll();
         }
     }
 }

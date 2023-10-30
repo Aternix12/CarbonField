@@ -13,7 +13,7 @@ namespace CarbonField
     public class CarbonField : Microsoft.Xna.Framework.Game
     {
         //Version
-        public static readonly string Version = "0.1.0";
+        public static readonly string Version = "0.2.0";
 
         //Settings
         private readonly GameSettings _gameSettings;
@@ -21,15 +21,9 @@ namespace CarbonField
         public GraphicsDeviceManager Graphics { get; }
         private SpriteBatch _spriteBatch;
 
-        //Viewport Background Testing
-        private Texture2D _bgrTexture;
-
         //FPS Counter
         private FrameCounter _frameCounter;
         private string _latestFpsString = "";
-
-        //Penumbra
-        private readonly LightingManager _lightingManager;
 
         //Clock
         private readonly Clock _time = new();
@@ -45,6 +39,9 @@ namespace CarbonField
         //Fonts
         SpriteFont _arial;
 
+        //World
+        public World CurrentWorld { get; private set; }
+
         public CarbonField()
         {
             AllocConsole();
@@ -55,34 +52,31 @@ namespace CarbonField
             IsFixedTimeStep = false;
             TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 6900);
 
-            _lightingManager = new LightingManager(this);
-
             client = new Client();
         }
 
         protected override void Initialize()
         {
-
-            base.Initialize();
-
             Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
             Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
             Graphics.IsFullScreen = _gameSettings.IsFullScreen;
             Graphics.SynchronizeWithVerticalRetrace = false;
             Graphics.ApplyChanges();
 
-            //Camera
-            Cam = new CtrCamera(GraphicsDevice.Viewport);
+            
 
             //FPS
             _frameCounter = new FrameCounter();
 
-            //LightingManager      
-            _lightingManager.Initialize();
-
             //LiteNetLib
             client.Initialise();
             client.StartUpdateLoop();
+
+            //World - Will Eventually be scene management, UserInterface needs to be implemented as part of these scenes
+            CurrentWorld = new World(Graphics, Content, this);
+            CurrentWorld.Initialize();
+
+            base.Initialize();
 
             Console.WriteLine("Initialisation Finished");
         }
@@ -91,38 +85,24 @@ namespace CarbonField
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //Creating Wall
-            for (int i = 0; i < 100; i++)
-            {
-                Random r = new();
-                int randVal1 = r.Next(0, 1920);
-                int randVal2 = r.Next(0, 1080);
-                Vector2 p = new(randVal1, randVal2);
-                WallBlock ent = new(p);
-                EntityManager.Add(ent, _lightingManager);
-            }
-
             //Loading Fonts
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
 
-            //Adding Lights
-            _lightingManager.LoadContent(Content);
+            CurrentWorld.LoadContent();
+        }
 
-            //Creating Wall
-            _lightingManager.LoadHulls();
-
-            _bgrTexture = Content.Load<Texture2D>("spr_background");
+        public void HandleScroll()
+        {
+            if (CurrentWorld != null)
+            {
+                CurrentWorld.HandleScroll(this);
+            }
         }
 
 
-
-        public CtrCamera Cam { get; set; }
-
         protected override void Update(GameTime gameTime)
         {
-            UserInterface.Update(this);
-
-            EntityManager.Update(gameTime, Graphics, _lightingManager);
+            UserInterface.Update(this);     
 
             ////Clock
             //Update Time
@@ -135,9 +115,6 @@ namespace CarbonField
             //Change Penumbra Alpha
             //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
 
-            //Updating View
-            Cam.Update(gameTime);
-
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             bool fpsUpdated = _frameCounter.Update(deltaTime);
@@ -146,25 +123,15 @@ namespace CarbonField
                 _latestFpsString = _frameCounter.FpsString;
             }
 
-            //Penumbra screen lock
-            _lightingManager.Update(gameTime, Cam.GetTransform());
+            CurrentWorld.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            //Penumbra
-            _lightingManager.BeginDraw();
-            GraphicsDevice.Clear(Color.Black);
 
-            //Gameplane
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
-            _spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
-            EntityManager.Draw(_spriteBatch);
-            _spriteBatch.End();
-
-            _lightingManager.Draw(gameTime);
+            CurrentWorld.Draw(_spriteBatch, gameTime);
 
             //GUI
             _spriteBatch.Begin();
