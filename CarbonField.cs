@@ -73,6 +73,7 @@ namespace CarbonField
             client.StartUpdateLoop();
 
             //World - Will Eventually be scene management, UserInterface needs to be implemented as part of these scenes
+            //Requires a IGameState interface!!!
             CurrentWorld = new World(Graphics, Content, this);
             CurrentWorld.Initialize();
 
@@ -102,7 +103,7 @@ namespace CarbonField
 
         protected override void Update(GameTime gameTime)
         {
-            UserInterface.Update(this);     
+            UserInterface.Update(this);
 
             ////Clock
             //Update Time
