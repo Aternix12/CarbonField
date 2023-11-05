@@ -36,7 +36,7 @@ namespace CarbonField.Game
             Cam = new CtrCamera(_graphics.GraphicsDevice.Viewport);
 
             // Initialize IsometricManager and other properties
-            IsoManager = new IsometricManager();
+            IsoManager = new IsometricManager(100, 100);
 
             // Initialize the lighting
             _lightingManager.Initialize();
@@ -45,7 +45,7 @@ namespace CarbonField.Game
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Random r = new();
                 int randVal1 = r.Next(0, 1920);

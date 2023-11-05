@@ -367,23 +367,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\xX12T\\.nuget\\packages\\": {},
+    "C:\\Users\\Aternix\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\xX12T\\OneDrive\\CarbonField\\CarbonField.csproj",
+      "projectUniqueName": "C:\\Users\\Aternix\\OneDrive\\CarbonField\\CarbonField.csproj",
       "projectName": "CarbonField",
-      "projectPath": "C:\\Users\\xX12T\\OneDrive\\CarbonField\\CarbonField.csproj",
-      "packagesPath": "C:\\Users\\xX12T\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\xX12T\\OneDrive\\CarbonField\\obj\\",
+      "projectPath": "C:\\Users\\Aternix\\OneDrive\\CarbonField\\CarbonField.csproj",
+      "packagesPath": "C:\\Users\\Aternix\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Aternix\\OneDrive\\CarbonField\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\xX12T\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Aternix\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -392,6 +392,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
