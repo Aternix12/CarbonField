@@ -24,6 +24,15 @@ namespace CarbonField.Game
             _spriteMap[name] = new Rectangle(x, y, width, height);
         }
 
+        public Rectangle GetSprite(string name)
+        {
+            if (_spriteMap.TryGetValue(name, out Rectangle sourceRectangle))
+            {
+                return sourceRectangle;
+            }
+            throw new ArgumentException($"Sprite not found: {name}", nameof(name));
+        }
+
         public void DrawSprite(SpriteBatch spriteBatch, string name, Vector2 position, Color color)
         {
             if (_spriteMap.TryGetValue(name, out Rectangle sourceRectangle))

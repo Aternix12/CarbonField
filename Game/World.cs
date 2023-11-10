@@ -23,7 +23,8 @@ namespace CarbonField.Game
 
         float previousScrollWheelValue = 0f;
 
-        private SpriteSheet tileSpriteSheet;
+        private SpriteSheet grassSpriteSheet;
+        private SpriteSheet dirtSpriteSheet;
 
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
         {
@@ -62,24 +63,32 @@ namespace CarbonField.Game
 
             _bgrTexture = _content.Load<Texture2D>("spr_background");
 
-            // Load the spritesheet texture
-            Texture2D tileSheetTexture = _content.Load<Texture2D>("sprites/terrain/grasstest_terrain");
+            // Load grass terrain spritesheet
+            Texture2D grassSheetTexture = _content.Load<Texture2D>("sprites/terrain/grass_terrain");
+            grassSpriteSheet = new SpriteSheet(grassSheetTexture);
 
-            // Initialize the SpriteSheet object
-            tileSpriteSheet = new SpriteSheet(tileSheetTexture);
+            // Load dirt terrain spritesheet
+            Texture2D dirtSheetTexture = _content.Load<Texture2D>("sprites/terrain/dirt_terrain");
+            dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
+
 
             // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
             for (int y = 0; y < 10; y++)
             {
                 for (int x = 0; x < 10; x++)
                 {
-                    string tileName = $"tile_{x}_{y}";
-                    tileSpriteSheet.AddSprite(tileName, x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
                 }
             }
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(40, 40, tileSpriteSheet);
+            IsoManager = new IsometricManager(40, 40, new Dictionary<Terrain, SpriteSheet>
+            {
+                { Terrain.Grass, grassSpriteSheet },
+                { Terrain.Dirt, dirtSpriteSheet }
+            });
+
             IsoManager.Initialize();
         }
 
@@ -99,24 +108,35 @@ namespace CarbonField.Game
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            //Penumbra
             _lightingManager.BeginDraw();
             _graphics.GraphicsDevice.Clear(Color.Black);
 
-            //Gameplane
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
-            for (int y = 0; y < IsoManager.Height; y++)
-            {
-                for (int x = 0; x < IsoManager.Width; x++)
-                {
-                    IsoManager.TileMap[x, y].Draw(spriteBatch);
-                }
-            }
+
+            // Group tiles by terrain type and draw each group
+            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
+            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+
             EntityManager.Draw(spriteBatch);
             spriteBatch.End();
 
             _lightingManager.Draw(gameTime);
+        }
+
+        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
+        {
+            for (int y = 0; y < IsoManager.Height; y++)
+            {
+                for (int x = 0; x < IsoManager.Width; x++)
+                {
+                    Tile tile = IsoManager.TileMap[x, y];
+                    if (tile.Terrain == terrain)
+                    {
+                        tile.Draw(spriteBatch);
+                    }
+                }
+            }
         }
 
         public void HandleScroll(CarbonField game)
