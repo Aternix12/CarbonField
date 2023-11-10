@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/TerrainBlend.fx</SourceFile>
+  <SourceTime>2023-11-10T22:51:13.884667+11:00</SourceTime>
+  <DestFile>C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/TerrainBlend.xnb</DestFile>
+  <DestTime>2023-11-10T22:51:33.1621211+11:00</DestTime>
+  <Importer>EffectImporter</Importer>
+  <ImporterTime>2022-07-26T21:44:56+10:00</ImporterTime>
+  <Processor>EffectProcessor</Processor>
+  <ProcessorTime>2022-07-26T21:44:56+10:00</ProcessorTime>
+  <Parameters>
+    <Key>DebugMode</Key>
+    <Value>Auto</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

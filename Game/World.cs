@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -25,6 +26,9 @@ namespace CarbonField.Game
 
         private SpriteSheet grassSpriteSheet;
         private SpriteSheet dirtSpriteSheet;
+        private Effect terrainBlendEffect;
+        private Texture2D grassTexture;
+        private Texture2D dirtTexture;
 
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
         {
@@ -71,6 +75,10 @@ namespace CarbonField.Game
             Texture2D dirtSheetTexture = _content.Load<Texture2D>("sprites/terrain/dirt_terrain");
             dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
 
+            terrainBlendEffect = _content.Load<Effect>("shaders/TerrainBlend");
+            grassTexture = grassSpriteSheet.Texture;
+            dirtTexture = dirtSpriteSheet.Texture;
+
 
             // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
             for (int y = 0; y < 10; y++)
@@ -83,7 +91,7 @@ namespace CarbonField.Game
             }
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(40, 40, new Dictionary<Terrain, SpriteSheet>
+            IsoManager = new IsometricManager(5, 5, new Dictionary<Terrain, SpriteSheet>
             {
                 { Terrain.Grass, grassSpriteSheet },
                 { Terrain.Dirt, dirtSpriteSheet }
@@ -108,16 +116,29 @@ namespace CarbonField.Game
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
+
+            // Set shader parameters
+            terrainBlendEffect.Parameters["grassTexture"].SetValue(grassTexture);
+            terrainBlendEffect.Parameters["dirtTexture"].SetValue(dirtTexture);
+
+            // Apply shader
+            spriteBatch.End();
+
+
             _lightingManager.BeginDraw();
             _graphics.GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
+            spriteBatch.End();
 
-            // Group tiles by terrain type and draw each group
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, terrainBlendEffect, Cam.GetTransform());
             DrawTilesByTerrain(spriteBatch, Terrain.Grass);
             DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+            spriteBatch.End();
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             EntityManager.Draw(spriteBatch);
             spriteBatch.End();
 

@@ -1,5 +1,7 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/xX12T/OneDrive/CarbonField/Content/Fonts/Arial.spritefont","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/Fonts/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.2864766
+"C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/TerrainBlend.fx","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/TerrainBlend.xnb","EffectProcessor","CompiledEffectContent",1168,813,0.4519872
+"C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/Test.fx","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/Test.xnb","EffectProcessor","CompiledEffectContent",692,598,0.3075158
 "C:/Users/xX12T/OneDrive/CarbonField/Content/spr_background.jpg","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/spr_background.xnb","TextureProcessor","Texture2DContent",622058,8294485,0.2631752
 "C:/Users/xX12T/OneDrive/CarbonField/Content/spr_wallblock.png","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/spr_wallblock.xnb","TextureProcessor","Texture2DContent",299,4181,0.0023046
 "C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_diag_left.png","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/sprites/props/sandbag/sandbag_diag_left.xnb","TextureProcessor","Texture2DContent",3591,16469,0.0050492
