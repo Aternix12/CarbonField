@@ -8,7 +8,6 @@
     ".NETCoreApp,Version=v7.0": {
       "CarbonField/1.0.0": {
         "dependencies": {
-          "Aardvark.Base": "5.2.27",
           "LiteNetLib": "1.1.0",
           "MonoGame.Content.Builder.Task": "3.8.1.303",
           "MonoGame.Framework.DesktopGL": "3.8.1.303",
@@ -16,27 +15,6 @@
         },
         "runtime": {
           "CarbonField.dll": {}
-        }
-      },
-      "Aardvark.Base/5.2.27": {
-        "dependencies": {
-          "Aardvark.Base.Telemetry": "5.2.27",
-          "System.Collections.Immutable": "5.0.0",
-          "System.Text.Json": "4.7.2"
-        },
-        "runtime": {
-          "lib/net6.0/Aardvark.Base.dll": {
-            "assemblyVersion": "5.2.0.0",
-            "fileVersion": "5.2.0.0"
-          }
-        }
-      },
-      "Aardvark.Base.Telemetry/5.2.27": {
-        "runtime": {
-          "lib/netstandard2.0/Aardvark.Base.Telemetry.dll": {
-            "assemblyVersion": "5.2.0.0",
-            "fileVersion": "5.2.0.0"
-          }
         }
       },
       "LiteNetLib/1.1.0": {
@@ -109,9 +87,7 @@
             "fileVersion": "3.0.0.0"
           }
         }
-      },
-      "System.Collections.Immutable/5.0.0": {},
-      "System.Text.Json/4.7.2": {}
+      }
     }
   },
   "libraries": {
@@ -119,20 +95,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "Aardvark.Base/5.2.27": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-zH1NpyTy8FeWVxASxayK5P37DoFAY8GGMsg+ycQTBy8FKcqF7XfQECVWgUB+1mCLLnSUgs5eWcOirKnTzWz5Iw==",
-      "path": "aardvark.base/5.2.27",
-      "hashPath": "aardvark.base.5.2.27.nupkg.sha512"
-    },
-    "Aardvark.Base.Telemetry/5.2.27": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-hemMhIHyEvHSYYlzsDlOLRBvdKEAGU5GJ/RqLxBTglxcgQm72p1Xc5crdz1WldAjJhXqvracIl9KZNaZH4zbig==",
-      "path": "aardvark.base.telemetry/5.2.27",
-      "hashPath": "aardvark.base.telemetry.5.2.27.nupkg.sha512"
     },
     "LiteNetLib/1.1.0": {
       "type": "package",
@@ -161,20 +123,6 @@
       "sha512": "sha512-QmnlTWpM5HpHayLFABDpx9wlqhabD19Cr51XeuI/PUKZck2+u5lEaW8HE4UCHYt0ENtWTSJdFghAwDule7VUMg==",
       "path": "monogame.penumbra.desktopgl/3.0.0",
       "hashPath": "monogame.penumbra.desktopgl.3.0.0.nupkg.sha512"
-    },
-    "System.Collections.Immutable/5.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-FXkLXiK0sVVewcso0imKQoOxjoPAj42R8HtjjbSjVPAzwDfzoyoznWxgA3c38LDbN9SJux1xXoXYAhz98j7r2g==",
-      "path": "system.collections.immutable/5.0.0",
-      "hashPath": "system.collections.immutable.5.0.0.nupkg.sha512"
-    },
-    "System.Text.Json/4.7.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
-      "path": "system.text.json/4.7.2",
-      "hashPath": "system.text.json.4.7.2.nupkg.sha512"
     }
   }
 }

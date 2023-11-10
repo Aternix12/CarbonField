@@ -11,7 +11,7 @@ namespace CarbonField.Game
     public class SpriteSheet
     {
         public Texture2D Texture { get; private set; }
-        private Dictionary<string, Rectangle> _spriteMap;
+        private readonly Dictionary<string, Rectangle> _spriteMap;
 
         public SpriteSheet(Texture2D texture)
         {

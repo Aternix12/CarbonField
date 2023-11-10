@@ -590,8 +590,6 @@ C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.deps.json
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.runtimeconfig.json
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.dll
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.pdb
-C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Aardvark.Base.dll
-C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Aardvark.Base.Telemetry.dll
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\LiteNetLib.dll
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\MonoGame.Framework.dll
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\MonoGame.Penumbra.DesktopGL.dll
@@ -1220,3 +1218,10 @@ C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\runtimes\win-x86\native\s
 C:\Users\Aternix\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.csproj.CopyComplete
 C:\Users\Aternix\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.genruntimeconfig.cache
 C:\Users\Aternix\OneDrive\CarbonField\obj\Debug\net7.0\ref\CarbonField.dll
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_diag_left.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_diag_right.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_lr.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_ud.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\dirt_terrain.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grass_terrain.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grasstest_terrain.xnb

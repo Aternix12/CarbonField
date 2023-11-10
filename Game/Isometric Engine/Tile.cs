@@ -12,17 +12,22 @@ namespace CarbonField.Game
     {
         public static readonly int Width = 64;
         public static readonly int Height = 32;  // Height is half of width
+        private readonly string spriteName;
+        private readonly SpriteSheet spriteSheet;
+
 
         public Vector2 Position { get; set; }
 
-        public Tile(Vector2 position)
+        public Tile(Vector2 position, string spriteName, SpriteSheet spriteSheet)
         {
             this.Position = position;
+            this.spriteName = spriteName;
+            this.spriteSheet = spriteSheet;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw your tile here
+            spriteSheet.DrawSprite(spriteBatch, spriteName, Position, Color.White);
         }
     }
 }

@@ -23,6 +23,8 @@ namespace CarbonField.Game
 
         float previousScrollWheelValue = 0f;
 
+        private SpriteSheet tileSpriteSheet;
+
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
         {
             _graphics = graphics;
@@ -34,9 +36,6 @@ namespace CarbonField.Game
         {
             //Camera
             Cam = new CtrCamera(_graphics.GraphicsDevice.Viewport);
-
-            // Initialize IsometricManager and other properties
-            IsoManager = new IsometricManager(100, 100);
 
             // Initialize the lighting
             _lightingManager.Initialize();
@@ -62,6 +61,26 @@ namespace CarbonField.Game
             _lightingManager.LoadHulls();
 
             _bgrTexture = _content.Load<Texture2D>("spr_background");
+
+            // Load the spritesheet texture
+            Texture2D tileSheetTexture = _content.Load<Texture2D>("sprites/terrain/grasstest_terrain");
+
+            // Initialize the SpriteSheet object
+            tileSpriteSheet = new SpriteSheet(tileSheetTexture);
+
+            // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
+            for (int y = 0; y < 10; y++)
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    string tileName = $"tile_{x}_{y}";
+                    tileSpriteSheet.AddSprite(tileName, x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                }
+            }
+
+            // Initialize IsometricManager
+            IsoManager = new IsometricManager(40, 40, tileSpriteSheet);
+            IsoManager.Initialize();
         }
 
         public void Update(GameTime gameTime)
@@ -85,8 +104,15 @@ namespace CarbonField.Game
             _graphics.GraphicsDevice.Clear(Color.Black);
 
             //Gameplane
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
+            for (int y = 0; y < IsoManager.Height; y++)
+            {
+                for (int x = 0; x < IsoManager.Width; x++)
+                {
+                    IsoManager.TileMap[x, y].Draw(spriteBatch);
+                }
+            }
             EntityManager.Draw(spriteBatch);
             spriteBatch.End();
 

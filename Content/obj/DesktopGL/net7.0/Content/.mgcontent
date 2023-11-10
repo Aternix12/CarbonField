@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/Fonts/Arial.spritefont</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/spr_background.jpg</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/spr_wallblock.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_diag_left.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_diag_right.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_lr.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_ud.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/terrain/dirt_terrain.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/terrain/grass_terrain.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/sprites/terrain/grasstest_terrain.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/src_texturedisolight.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/src_texturedlight.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
