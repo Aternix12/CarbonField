@@ -11,6 +11,9 @@ Texture2D grassTexture : register(s0);
 Texture2D dirtTexture : register(s1);
 sampler2D grassSampler = sampler_state { Texture = <grassTexture>; };
 sampler2D dirtSampler = sampler_state { Texture = <dirtTexture>; };
+Texture2D blendMap : register(s2);
+sampler2D blendMapSampler = sampler_state { Texture = <blendMap>; };
+
 
 // Vertex shader output structure
 struct VertexShaderOutput
@@ -20,12 +23,16 @@ struct VertexShaderOutput
     float2 TextureCoordinates : TEXCOORD0;
 };
 
+
 // Pixel shader
 float4 BlendPS(VertexShaderOutput input) : COLOR
 {
     float4 grassColor = tex2D(grassSampler, input.TextureCoordinates);
     float4 dirtColor = tex2D(dirtSampler, input.TextureCoordinates);
-    float blendFactor = 0.5; // Example blend factor
+    
+    // Use the blend map to determine the blend factor
+    float blendFactor = tex2D(blendMapSampler, input.TextureCoordinates).r;
+
     return lerp(dirtColor, grassColor, blendFactor) * input.Color;
 }
 

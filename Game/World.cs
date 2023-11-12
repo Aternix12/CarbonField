@@ -26,6 +26,7 @@ namespace CarbonField.Game
 
         private SpriteSheet grassSpriteSheet;
         private SpriteSheet dirtSpriteSheet;
+        private SpriteSheet blendMaps;
         private Effect terrainBlendEffect;
         private Texture2D grassTexture;
         private Texture2D dirtTexture;
@@ -78,6 +79,12 @@ namespace CarbonField.Game
             terrainBlendEffect = _content.Load<Effect>("shaders/TerrainBlend");
             grassTexture = grassSpriteSheet.Texture;
             dirtTexture = dirtSpriteSheet.Texture;
+            Texture2D blendMapTexture = _content.Load<Texture2D>("shaders/blendmaps/terrain");
+            blendMaps = new SpriteSheet(blendMapTexture);
+            for (int i = 0; i < 4; i++)
+            {
+                blendMaps.AddSprite($"blendMap{i}", i * blendMapTexture.Width / 4, 0, blendMapTexture.Width / 4, blendMapTexture.Height);
+            }
 
 
             // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
@@ -98,6 +105,15 @@ namespace CarbonField.Game
             });
 
             IsoManager.Initialize();
+
+            // Initialize blend maps for each tile
+            for (int y = 0; y < IsoManager.Height; y++)
+            {
+                for (int x = 0; x < IsoManager.Width; x++)
+                {
+                    IsoManager.TileMap[x, y].InitializeBlendMap(blendMaps, IsoManager);
+                }
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -134,8 +150,8 @@ namespace CarbonField.Game
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, terrainBlendEffect, Cam.GetTransform());
-            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+            DrawTilesByTerrain(spriteBatch, Terrain.Grass, terrainBlendEffect);
+            DrawTilesByTerrain(spriteBatch, Terrain.Dirt, terrainBlendEffect);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
@@ -145,7 +161,7 @@ namespace CarbonField.Game
             _lightingManager.Draw(gameTime);
         }
 
-        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
+        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain, Effect terrainBlendEffect)
         {
             for (int y = 0; y < IsoManager.Height; y++)
             {
@@ -154,11 +170,12 @@ namespace CarbonField.Game
                     Tile tile = IsoManager.TileMap[x, y];
                     if (tile.Terrain == terrain)
                     {
-                        tile.Draw(spriteBatch);
+                        tile.Draw(spriteBatch, terrainBlendEffect);
                     }
                 }
             }
         }
+
 
         public void HandleScroll(CarbonField game)
         {
