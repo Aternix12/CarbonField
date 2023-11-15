@@ -24,12 +24,6 @@ namespace CarbonField.Game
 
         float previousScrollWheelValue = 0f;
 
-        private SpriteSheet grassSpriteSheet;
-        private SpriteSheet dirtSpriteSheet;
-        private SpriteSheet blendMaps;
-        private Effect terrainBlendEffect;
-        private Texture2D grassTexture;
-        private Texture2D dirtTexture;
 
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
         {
@@ -45,6 +39,15 @@ namespace CarbonField.Game
 
             // Initialize the lighting
             _lightingManager.Initialize();
+
+            // Initialize IsometricManager
+            IsoManager = new IsometricManager(5, 5, new Dictionary<Terrain, SpriteSheet>
+            {
+                { Terrain.Grass, grassSpriteSheet },
+                { Terrain.Dirt, dirtSpriteSheet }
+            });
+
+            IsoManager.Initialize();
         }
 
         public void LoadContent()
@@ -68,52 +71,7 @@ namespace CarbonField.Game
 
             _bgrTexture = _content.Load<Texture2D>("spr_background");
 
-            // Load grass terrain spritesheet
-            Texture2D grassSheetTexture = _content.Load<Texture2D>("sprites/terrain/grass_terrain");
-            grassSpriteSheet = new SpriteSheet(grassSheetTexture);
-
-            // Load dirt terrain spritesheet
-            Texture2D dirtSheetTexture = _content.Load<Texture2D>("sprites/terrain/dirt_terrain");
-            dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
-
-            terrainBlendEffect = _content.Load<Effect>("shaders/TerrainBlend");
-            grassTexture = grassSpriteSheet.Texture;
-            dirtTexture = dirtSpriteSheet.Texture;
-            Texture2D blendMapTexture = _content.Load<Texture2D>("shaders/blendmaps/terrain");
-            blendMaps = new SpriteSheet(blendMapTexture);
-            for (int i = 0; i < 4; i++)
-            {
-                blendMaps.AddSprite($"blendMap{i}", i * blendMapTexture.Width / 4, 0, blendMapTexture.Width / 4, blendMapTexture.Height);
-            }
-
-
-            // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
-            for (int y = 0; y < 10; y++)
-            {
-                for (int x = 0; x < 10; x++)
-                {
-                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
-                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
-                }
-            }
-
-            // Initialize IsometricManager
-            IsoManager = new IsometricManager(5, 5, new Dictionary<Terrain, SpriteSheet>
-            {
-                { Terrain.Grass, grassSpriteSheet },
-                { Terrain.Dirt, dirtSpriteSheet }
-            });
-
-            IsoManager.Initialize();
-
-            // Initialize blend maps for each tile
-            for (int y = 0; y < IsoManager.Height; y++)
-            {
-                for (int x = 0; x < IsoManager.Width; x++)
-                {
-                    IsoManager.TileMap[x, y].InitializeBlendMap(blendMaps, IsoManager);
-                }
-            }
+            
         }
 
         public void Update(GameTime gameTime)
@@ -150,8 +108,7 @@ namespace CarbonField.Game
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, terrainBlendEffect, Cam.GetTransform());
-            DrawTilesByTerrain(spriteBatch, Terrain.Grass, terrainBlendEffect);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt, terrainBlendEffect);
+            IsoManager.Draw(spriteBatch);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
@@ -161,20 +118,7 @@ namespace CarbonField.Game
             _lightingManager.Draw(gameTime);
         }
 
-        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain, Effect terrainBlendEffect)
-        {
-            for (int y = 0; y < IsoManager.Height; y++)
-            {
-                for (int x = 0; x < IsoManager.Width; x++)
-                {
-                    Tile tile = IsoManager.TileMap[x, y];
-                    if (tile.Terrain == terrain)
-                    {
-                        tile.Draw(spriteBatch, terrainBlendEffect);
-                    }
-                }
-            }
-        }
+
 
 
         public void HandleScroll(CarbonField game)
