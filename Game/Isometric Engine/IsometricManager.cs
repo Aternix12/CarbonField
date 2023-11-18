@@ -11,9 +11,6 @@ namespace CarbonField.Game
         private readonly int width;
         private readonly int height;
         private readonly Tile[,] tileMap;
-        private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
-        private SpriteSheet grassSpriteSheet;
-        private SpriteSheet dirtSpriteSheet;
         private SpriteFont tileCoordinateFont;
         private RenderTarget2D coordinatesRenderTarget;
         private Vector2 renderTargetPosition;
@@ -28,20 +25,20 @@ namespace CarbonField.Game
 
         public void Initialize()
         {
-            
+
         }
 
         public void LoadContent(ContentManager content)
         {
             // Load grass terrain spritesheet
             Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/grass_terrain");
-            grassSpriteSheet = new SpriteSheet(grassSheetTexture);
+            SpriteSheet grassSpriteSheet = new(grassSheetTexture);
 
             // Load dirt terrain spritesheet
             Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/dirt_terrain");
-            dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
+            SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
-            terrainSpriteSheets = new Dictionary<Terrain, SpriteSheet>
+            Dictionary<Terrain, SpriteSheet> terrainSpriteSheets = new()
             {
                 { Terrain.Grass, grassSpriteSheet },
                 { Terrain.Dirt, dirtSpriteSheet }
@@ -78,7 +75,7 @@ namespace CarbonField.Game
                     // Correctly passing the terrainSpriteSheets dictionary
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
-                    tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY);
+                    tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
                 }
             }
 
@@ -86,6 +83,11 @@ namespace CarbonField.Game
                -width * Tile.Width / 2, // Half the width of a single column of tiles
                0 // No vertical offset needed
            );
+
+            foreach (var tile in tileMap)
+            {
+                tile.DetermineNeighbors(this);
+            }
         }
 
         public void CreateCoordinatesRenderTarget(GraphicsDevice graphicsDevice)
@@ -129,14 +131,21 @@ namespace CarbonField.Game
             graphicsDevice.SetRenderTarget(null);
         }
 
+        public Tile GetTileAtGridPosition(int x, int y)
+        {
+            if (x >= 0 && x < width && y >= 0 && y < height)
+            {
+                return tileMap[x, y];
+            }
+            return null;
+        }
+
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawTilesByTerrain(spriteBatch, Terrain.Grass);
             DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
-
-            
 
             spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
         }
