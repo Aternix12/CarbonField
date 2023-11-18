@@ -16,13 +16,13 @@ namespace CarbonField.Game
         private readonly GraphicsDeviceManager _graphics;
         private readonly ContentManager _content;
         private readonly LightingManager _lightingManager;
+        private readonly WorldUserInterface _worldUI;
 
         public IsometricManager IsoManager { get; private set; }
 
         //Viewport Background Testing
         private Texture2D _bgrTexture;
 
-        float previousScrollWheelValue = 0f;
 
 
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
@@ -30,6 +30,7 @@ namespace CarbonField.Game
             _graphics = graphics;
             _content = content;
             _lightingManager = new LightingManager(carbonFieldInstance);
+            _worldUI = new WorldUserInterface(this);
         }
 
         public void Initialize()
@@ -71,6 +72,8 @@ namespace CarbonField.Game
 
         public void Update(GameTime gameTime)
         {
+            _worldUI.Update(gameTime);
+
             // Update entities, check collisions, etc.
             EntityManager.Update(gameTime, _graphics, _lightingManager);
 
@@ -104,24 +107,6 @@ namespace CarbonField.Game
             spriteBatch.End();
 
             _lightingManager.Draw(gameTime);
-        }
-
-        public void HandleScroll(CarbonField game)
-        {
-            var currentScrollWheelValue = Mouse.GetState().ScrollWheelValue;
-            if (currentScrollWheelValue != previousScrollWheelValue)
-            {
-                if (currentScrollWheelValue > previousScrollWheelValue)
-                {
-                    Cam.SetZoom(Cam.GetZoom() + 0.1f);
-                }
-                else if (currentScrollWheelValue < previousScrollWheelValue)
-                {
-                    Cam.SetZoom(Cam.GetZoom() - 0.1f);
-                }
-
-                previousScrollWheelValue = currentScrollWheelValue;
-            }
         }
     }
 }

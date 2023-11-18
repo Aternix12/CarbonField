@@ -140,8 +140,6 @@ namespace CarbonField.Game
             return null;
         }
 
-
-
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawTilesByTerrain(spriteBatch, Terrain.Grass);

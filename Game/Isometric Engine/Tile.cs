@@ -78,6 +78,17 @@ namespace CarbonField.Game
             }
         }
 
+        public string GetNeighborInfo()
+        {
+            var info = new StringBuilder();
+            info.AppendLine($"Top Neighbor: {adjacentTerrainTypes[Direction.Top]?.ToString() ?? "None"}");
+            info.AppendLine($"Left Neighbor: {adjacentTerrainTypes[Direction.Left]?.ToString() ?? "None"}");
+            info.AppendLine($"Right Neighbor: {adjacentTerrainTypes[Direction.Right]?.ToString() ?? "None"}");
+            info.AppendLine($"Bottom Neighbor: {adjacentTerrainTypes[Direction.Bottom]?.ToString() ?? "None"}");
+            return info.ToString();
+        }
+
+
         /*public Texture2D GetBlendMap()
         {
             // Logic to determine and return the appropriate blend map texture based on adjacent terrains

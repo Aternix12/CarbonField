@@ -24,8 +24,6 @@ namespace CarbonField
             {
                 game.Graphics.ToggleFullScreen();
             }
-
-            game.HandleScroll();
         }
     }
 }

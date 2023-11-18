@@ -92,15 +92,6 @@ namespace CarbonField
             CurrentWorld.LoadContent();
         }
 
-        public void HandleScroll()
-        {
-            if (CurrentWorld != null)
-            {
-                CurrentWorld.HandleScroll(this);
-            }
-        }
-
-
         protected override void Update(GameTime gameTime)
         {
             UserInterface.Update(this);
