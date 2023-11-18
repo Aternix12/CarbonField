@@ -1227,3 +1227,4 @@ C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\gra
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grasstest_terrain.xnb
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\TerrainBlend.xnb
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\Test.xnb
+C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\blendmaps\terrain.xnb

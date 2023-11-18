@@ -15,7 +15,6 @@ namespace CarbonField.Game
         private readonly SpriteSheet spriteSheet;
         private readonly string spriteName;
         private readonly Rectangle _sourceRectangle;
-        private Texture2D blendMap;
         public Terrain Terrain { get; private set; }
 
         public Vector2 Position { get; private set; }
@@ -30,7 +29,7 @@ namespace CarbonField.Game
             this.Position = position;
             this.Terrain = terrain;
             this.spriteSheet = spriteSheets[terrain];
-            this.spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
+            spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
 
             CalculateCorners();
@@ -49,27 +48,8 @@ namespace CarbonField.Game
             BottomCorner = new Vector2(Center.X, Position.Y + Height);
         }
 
-        public void InitializeBlendMap(SpriteSheet blendMaps, IsometricManager isoManager)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            // Determine and set the blend map
-            this.blendMap = DetermineBlendMap(blendMaps, isoManager);
-        }
-
-        private Texture2D DetermineBlendMap(SpriteSheet blendMaps, IsometricManager isoManager)
-        {
-            // Similar logic as previously in DetermineBlendMap in World class
-            // Return the appropriate blend map texture
-        }
-
-        public void Draw(SpriteBatch spriteBatch, Effect terrainBlendEffect)
-        {
-            // Set blend map in shader parameters if available
-            if (this.blendMap != null)
-            {
-                terrainBlendEffect.Parameters["blendMap"].SetValue(this.blendMap);
-            }
-
-            // Draw the tile
             spriteBatch.Draw(spriteSheet.Texture, Position, _sourceRectangle, Color.White);
         }
     }

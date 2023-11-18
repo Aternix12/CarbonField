@@ -41,13 +41,7 @@ namespace CarbonField.Game
             _lightingManager.Initialize();
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(5, 5, new Dictionary<Terrain, SpriteSheet>
-            {
-                { Terrain.Grass, grassSpriteSheet },
-                { Terrain.Dirt, dirtSpriteSheet }
-            });
-
-            IsoManager.Initialize();
+            IsoManager = new IsometricManager(50, 50);
         }
 
         public void LoadContent()
@@ -71,7 +65,8 @@ namespace CarbonField.Game
 
             _bgrTexture = _content.Load<Texture2D>("spr_background");
 
-            
+            IsoManager.LoadContent(_content);
+            IsoManager.CreateCoordinatesRenderTarget(_graphics.GraphicsDevice);
         }
 
         public void Update(GameTime gameTime)
@@ -90,36 +85,26 @@ namespace CarbonField.Game
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
-
-            // Set shader parameters
-            terrainBlendEffect.Parameters["grassTexture"].SetValue(grassTexture);
-            terrainBlendEffect.Parameters["dirtTexture"].SetValue(dirtTexture);
-
-            // Apply shader
-            spriteBatch.End();
-
-
             _lightingManager.BeginDraw();
             _graphics.GraphicsDevice.Clear(Color.Black);
 
+            //Background Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, terrainBlendEffect, Cam.GetTransform());
+            //Isometric Draw
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
             IsoManager.Draw(spriteBatch);
             spriteBatch.End();
 
+            //Entity Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             EntityManager.Draw(spriteBatch);
             spriteBatch.End();
 
             _lightingManager.Draw(gameTime);
         }
-
-
-
 
         public void HandleScroll(CarbonField game)
         {

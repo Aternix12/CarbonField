@@ -1,6 +1,7 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/xX12T/OneDrive/CarbonField/Content/Fonts/Arial.spritefont","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/Fonts/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.2864766
-"C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/TerrainBlend.fx","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/TerrainBlend.xnb","EffectProcessor","CompiledEffectContent",1168,813,0.4519872
+"C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/blendmaps/terrain.png","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/blendmaps/terrain.xnb","TextureProcessor","Texture2DContent",4295,32853,0.1649344
+"C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/TerrainBlend.fx","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/TerrainBlend.xnb","EffectProcessor","CompiledEffectContent",1365,881,0.3747379
 "C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/Test.fx","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/shaders/Test.xnb","EffectProcessor","CompiledEffectContent",692,598,0.3075158
 "C:/Users/xX12T/OneDrive/CarbonField/Content/spr_background.jpg","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/spr_background.xnb","TextureProcessor","Texture2DContent",622058,8294485,0.2631752
 "C:/Users/xX12T/OneDrive/CarbonField/Content/spr_wallblock.png","C:/Users/xX12T/OneDrive/CarbonField/Content/bin/DesktopGL/Content/spr_wallblock.xnb","TextureProcessor","Texture2DContent",299,4181,0.0023046

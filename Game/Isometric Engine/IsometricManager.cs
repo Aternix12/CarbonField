@@ -11,28 +11,55 @@ namespace CarbonField.Game
         private readonly int width;
         private readonly int height;
         private readonly Tile[,] tileMap;
-        private readonly Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
-        private Effect terrainBlendEffect;
-        private SpriteSheet blendMaps;
+        private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private SpriteSheet grassSpriteSheet;
         private SpriteSheet dirtSpriteSheet;
-        private SpriteSheet blendMaps;
-        private Effect terrainBlendEffect;
-        private Texture2D grassTexture;
-        private Texture2D dirtTexture;
+        private SpriteFont tileCoordinateFont;
+        private RenderTarget2D coordinatesRenderTarget;
+        private Vector2 renderTargetPosition;
 
-
-
-        public IsometricManager(int width, int height, Dictionary<Terrain, SpriteSheet> spriteSheets)
+        public IsometricManager(int width, int height)
         {
             this.width = width;
             this.height = height;
-            this.terrainSpriteSheets = spriteSheets;
-            this.tileMap = new Tile[width, height];
+            tileMap = new Tile[width, height];
+
         }
 
         public void Initialize()
         {
+            
+        }
+
+        public void LoadContent(ContentManager content)
+        {
+            // Load grass terrain spritesheet
+            Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/grass_terrain");
+            grassSpriteSheet = new SpriteSheet(grassSheetTexture);
+
+            // Load dirt terrain spritesheet
+            Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/dirt_terrain");
+            dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
+
+            terrainSpriteSheets = new Dictionary<Terrain, SpriteSheet>
+            {
+                { Terrain.Grass, grassSpriteSheet },
+                { Terrain.Dirt, dirtSpriteSheet }
+            };
+
+            // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
+            for (int y = 0; y < 10; y++)
+            {
+                for (int x = 0; x < 10; x++)
+                {
+                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                }
+            }
+
+            tileCoordinateFont = content.Load<SpriteFont>("Fonts/Arial");
+
+
             float halfTileWidth = Tile.Width / 2f;
             float halfTileHeight = Tile.Height / 2f;
 
@@ -47,7 +74,6 @@ namespace CarbonField.Game
                     );
 
                     Terrain type = (x + y) % 2 == 0 ? Terrain.Grass : Terrain.Dirt;
-                    //Terrain type = Terrain.Grass;
 
                     // Correctly passing the terrainSpriteSheets dictionary
                     int spriteIndexX = x % 10;
@@ -55,92 +81,80 @@ namespace CarbonField.Game
                     tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY);
                 }
             }
+
+            renderTargetPosition = new Vector2(
+               -width * Tile.Width / 2, // Half the width of a single column of tiles
+               0 // No vertical offset needed
+           );
         }
 
-        public void LoadContent(ContentManager content)
+        public void CreateCoordinatesRenderTarget(GraphicsDevice graphicsDevice)
         {
-            // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
-            for (int y = 0; y < 10; y++)
+            // Adjust the size of the render target to cover the entire isometric grid
+            int renderTargetWidth = (width + height) * Tile.Width / 2;
+            int renderTargetHeight = (width + height) * Tile.Height / 2;
+
+            coordinatesRenderTarget = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight);
+            graphicsDevice.SetRenderTarget(coordinatesRenderTarget);
+            graphicsDevice.Clear(Color.Transparent);
+
+            var spriteBatch = new SpriteBatch(graphicsDevice);
+            spriteBatch.Begin();
+
+            // Adjusting position for isometric tiles
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
-                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    var text = $"[{x},{y}]";
+                    var textSize = tileCoordinateFont.MeasureString(text);
+
+                    // Calculate isometric position
+                    Vector2 isoPosition = new Vector2(
+                        (x - y) * Tile.Width / 2 + renderTargetWidth / 2, // Centering horizontally
+                        (x + y) * Tile.Height / 2 // Staggering vertically
+                    );
+
+                    // Center the text in the tile
+                    Vector2 textPosition = new Vector2(
+                        isoPosition.X + (Tile.Width - textSize.X) / 2,
+                        isoPosition.Y + (Tile.Height - textSize.Y) / 2 - Tile.Height / 8 // Adjust for isometric height
+                    );
+
+                    spriteBatch.DrawString(tileCoordinateFont, text, textPosition, Color.White);
                 }
             }
 
-            
-
-            // Initialize blend maps for each tile
-            for (int y = 0; y < IsoManager.Height; y++)
-            {
-                for (int x = 0; x < IsoManager.Width; x++)
-                {
-                    IsoManager.TileMap[x, y].InitializeBlendMap(blendMaps, IsoManager);
-                }
-            }
-
-            // Load the blend effect and blend maps
-            terrainBlendEffect = content.Load<Effect>("shaders/TerrainBlend");
-            Texture2D blendMapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain");
-            blendMaps = new SpriteSheet(blendMapTexture);
-            for (int i = 0; i < 4; i++)
-            {
-                blendMaps.AddSprite($"blendMap{i}", i * blendMapTexture.Width / 4, 0, blendMapTexture.Width / 4, blendMapTexture.Height);
-            }
-
-            // Initialize blend maps for each tile
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    TileMap[x, y].InitializeBlendMap(blendMaps, this);
-                }
-            }
-
-            // Load grass terrain spritesheet
-            Texture2D grassSheetTexture = _content.Load<Texture2D>("sprites/terrain/grass_terrain");
-            grassSpriteSheet = new SpriteSheet(grassSheetTexture);
-
-            // Load dirt terrain spritesheet
-            Texture2D dirtSheetTexture = _content.Load<Texture2D>("sprites/terrain/dirt_terrain");
-            dirtSpriteSheet = new SpriteSheet(dirtSheetTexture);
-
-            terrainBlendEffect = _content.Load<Effect>("shaders/TerrainBlend");
-            grassTexture = grassSpriteSheet.Texture;
-            dirtTexture = dirtSpriteSheet.Texture;
-            Texture2D blendMapTexture = _content.Load<Texture2D>("shaders/blendmaps/terrain");
-            blendMaps = new SpriteSheet(blendMapTexture);
-            for (int i = 0; i < 4; i++)
-            {
-                blendMaps.AddSprite($"blendMap{i}", i * blendMapTexture.Width / 4, 0, blendMapTexture.Width / 4, blendMapTexture.Height);
-            }
+            spriteBatch.End();
+            graphicsDevice.SetRenderTarget(null);
         }
+
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            DrawTilesByTerrain(spriteBatch, Terrain.Grass, terrainBlendEffect);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt, terrainBlendEffect);  
+            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
+            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+
+            
+
+            spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
         }
 
-        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain, Effect terrainBlendEffect)
+        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
         {
-            for (int y = 0; y < IsoManager.Height; y++)
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < IsoManager.Width; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    Tile tile = IsoManager.TileMap[x, y];
+                    Tile tile = TileMap[x, y];
                     if (tile.Terrain == terrain)
                     {
-                        tile.Draw(spriteBatch, terrainBlendEffect);
+                        tile.Draw(spriteBatch);
                     }
                 }
             }
         }
-
-
-        public int Width => width;
-        public int Height => height;
         public Tile[,] TileMap => tileMap;
     }
 }
