@@ -1202,8 +1202,6 @@ C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.deps.json
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.runtimeconfig.json
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.dll
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\CarbonField.pdb
-C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Aardvark.Base.dll
-C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Aardvark.Base.Telemetry.dll
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\LiteNetLib.dll
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\MonoGame.Framework.dll
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\MonoGame.Penumbra.DesktopGL.dll
@@ -1228,3 +1226,13 @@ C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\gra
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\TerrainBlend.xnb
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\Test.xnb
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\blendmaps\terrain.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\blendmaps\terrain.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\TerrainBlend.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\shaders\Test.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_diag_left.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_diag_right.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_lr.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\props\sandbag\sandbag_ud.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\dirt_terrain.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grasstest_terrain.xnb
+C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grass_terrain.xnb

@@ -10,6 +10,7 @@ namespace CarbonField.Game
     {
         private readonly World _world;
         float previousScrollWheelValue = 0f;
+        private MouseState previousMouseState;
 
         public WorldUserInterface(World world)
         {
@@ -24,12 +25,16 @@ namespace CarbonField.Game
 
         private void HandleMouseInput()
         {
-            MouseState mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            MouseState currentMouseState = Mouse.GetState();
+
+            if (previousMouseState.LeftButton == ButtonState.Pressed &&
+                currentMouseState.LeftButton == ButtonState.Released)
             {
-                Vector2 clickPosition = new Vector2(mouseState.X, mouseState.Y);
+                Vector2 clickPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
                 HandleTileClick(clickPosition);
             }
+
+            previousMouseState = currentMouseState;
         }
 
         private void HandleTileClick(Vector2 screenPosition)
@@ -37,12 +42,20 @@ namespace CarbonField.Game
             // Convert screen position to isometric grid coordinates
             Point gridPosition = ScreenToTile(screenPosition);
             Tile clickedTile = _world.IsoManager.GetTileAtGridPosition(gridPosition.X, gridPosition.Y);
+
             if (clickedTile != null)
             {
-                // Logic to display tile information
+                // Toggle the terrain of the clicked tile
+                clickedTile.ToggleTerrain(_world.IsoManager.TerrainSpriteSheets);
+
+                // Optionally, update the neighbors of the clicked tile
+                //clickedTile.DetermineNeighbors(_world.IsoManager);
+
+                // Logic to display tile information (optional)
                 ShowTileInfo(clickedTile);
             }
         }
+
 
         private Point ScreenToTile(Vector2 screenPosition)
         {

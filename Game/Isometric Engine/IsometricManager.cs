@@ -14,6 +14,8 @@ namespace CarbonField.Game
         private SpriteFont tileCoordinateFont;
         private RenderTarget2D coordinatesRenderTarget;
         private Vector2 renderTargetPosition;
+        private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
+        public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
         public IsometricManager(int width, int height)
         {
@@ -38,7 +40,7 @@ namespace CarbonField.Game
             Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/dirt_terrain");
             SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
-            Dictionary<Terrain, SpriteSheet> terrainSpriteSheets = new()
+            terrainSpriteSheets = new()
             {
                 { Terrain.Grass, grassSpriteSheet },
                 { Terrain.Dirt, dirtSpriteSheet }
@@ -145,7 +147,7 @@ namespace CarbonField.Game
             DrawTilesByTerrain(spriteBatch, Terrain.Grass);
             DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
 
-            spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
+            //spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
         }
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)

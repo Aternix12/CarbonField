@@ -12,8 +12,8 @@ namespace CarbonField.Game
     {
         public static readonly int Width = 64;
         public static readonly int Height = 32;
-        private readonly SpriteSheet spriteSheet;
-        private readonly Rectangle _sourceRectangle;
+        private SpriteSheet spriteSheet;
+        private Rectangle _sourceRectangle;
         public Terrain Terrain { get; private set; }
         private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
 
@@ -23,6 +23,8 @@ namespace CarbonField.Game
         public Vector2 LeftCorner { get; private set; }
         public Vector2 RightCorner { get; private set; }
         public Vector2 BottomCorner { get; private set; }
+        private readonly int spriteIndexX;
+        private readonly int spriteIndexY;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
 
@@ -36,6 +38,8 @@ namespace CarbonField.Game
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
             GridX = gridX;
             GridY = gridY;
+            this.spriteIndexX = spriteIndexX;
+            this.spriteIndexY = spriteIndexY;
 
             adjacentTerrainTypes = new Dictionary<Direction, Terrain?>
         {
@@ -87,6 +91,28 @@ namespace CarbonField.Game
             info.AppendLine($"Bottom Neighbor: {adjacentTerrainTypes[Direction.Bottom]?.ToString() ?? "None"}");
             return info.ToString();
         }
+
+        public void ToggleTerrain(Dictionary<Terrain, SpriteSheet> terrainSpriteSheets)
+        {
+            Console.WriteLine($"Toggling terrain at [{GridX},{GridY}]");
+            Console.WriteLine($"Current terrain: {Terrain}");
+            // Toggle the terrain
+            Terrain = Terrain == Terrain.Grass ? Terrain.Dirt : Terrain.Grass;
+            Console.WriteLine($"New terrain: {Terrain}");
+
+
+            // Update the sprite sheet based on the new terrain
+            spriteSheet = terrainSpriteSheets[Terrain];
+
+            // Update the sprite name to use the same remainder
+            Console.WriteLine($"Index X: {spriteIndexX}");
+            Console.WriteLine($"Index Y: {spriteIndexY}");
+            string spriteName = $"{Terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
+            Console.WriteLine($"Index X: {spriteIndexX}");
+            Console.WriteLine($"Index Y: {spriteIndexY}");
+            _sourceRectangle = spriteSheet.GetSprite(spriteName);
+        }
+
 
 
         /*public Texture2D GetBlendMap()

@@ -42,7 +42,7 @@ namespace CarbonField.Game
             _lightingManager.Initialize();
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(50, 50);
+            IsoManager = new IsometricManager(10, 10);
         }
 
         public void LoadContent()
