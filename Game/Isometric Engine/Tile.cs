@@ -29,9 +29,9 @@ namespace CarbonField.Game
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
-            this.Position = position;
-            this.Terrain = terrain;
-            this.spriteSheet = spriteSheets[terrain];
+            Position = position;
+            Terrain = terrain;
+            spriteSheet = spriteSheets[terrain];
             string spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
             GridX = gridX;
@@ -99,5 +99,4 @@ namespace CarbonField.Game
             spriteBatch.Draw(spriteSheet.Texture, Position, _sourceRectangle, Color.White);
         }
     }
-
 }

@@ -60,9 +60,6 @@ namespace CarbonField.Game
             return new Point(tileX, tileY);
         }
 
-
-
-
         private static void ShowTileInfo(Tile tile)
         {
             string tileInfo = $"Clicked Tile: [{tile.GridX},{tile.GridY}]\n";
