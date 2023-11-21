@@ -92,7 +92,7 @@ namespace CarbonField.Game
             return info.ToString();
         }
 
-        public void ToggleTerrain(Dictionary<Terrain, SpriteSheet> terrainSpriteSheets)
+        public void ToggleTerrain(Dictionary<Terrain, SpriteSheet> terrainSpriteSheets, IsometricManager isometricManager)
         {
             Console.WriteLine($"Toggling terrain at [{GridX},{GridY}]");
             Console.WriteLine($"Current terrain: {Terrain}");
@@ -111,6 +111,7 @@ namespace CarbonField.Game
             Console.WriteLine($"Index X: {spriteIndexX}");
             Console.WriteLine($"Index Y: {spriteIndexY}");
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
+            isometricManager.UpdateRenderTarget();
         }
 
 

@@ -42,7 +42,7 @@ namespace CarbonField.Game
             _lightingManager.Initialize();
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(10, 10);
+            IsoManager = new IsometricManager(10, 10, _graphics.GraphicsDevice, _content);
         }
 
         public void LoadContent()
@@ -66,8 +66,8 @@ namespace CarbonField.Game
 
             _bgrTexture = _content.Load<Texture2D>("spr_background");
 
-            IsoManager.LoadContent(_content);
-            IsoManager.CreateCoordinatesRenderTarget(_graphics.GraphicsDevice);
+            IsoManager.LoadContent();
+            IsoManager.CreateCoordinatesRenderTarget();
         }
 
         public void Update(GameTime gameTime)

@@ -46,7 +46,7 @@ namespace CarbonField.Game
             if (clickedTile != null)
             {
                 // Toggle the terrain of the clicked tile
-                clickedTile.ToggleTerrain(_world.IsoManager.TerrainSpriteSheets);
+                clickedTile.ToggleTerrain(_world.IsoManager.TerrainSpriteSheets, _world.IsoManager);
 
                 // Optionally, update the neighbors of the clicked tile
                 //clickedTile.DetermineNeighbors(_world.IsoManager);

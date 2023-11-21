@@ -13,16 +13,20 @@ namespace CarbonField.Game
         private readonly Tile[,] tileMap;
         private SpriteFont tileCoordinateFont;
         private RenderTarget2D coordinatesRenderTarget;
+        private RenderTarget2D tileRenderTarget;
         private Vector2 renderTargetPosition;
+        private GraphicsDevice graphicsDevice;
+        private ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
-        public IsometricManager(int width, int height)
+        public IsometricManager(int width, int height, GraphicsDevice graphicsDevice, ContentManager content)
         {
             this.width = width;
             this.height = height;
             tileMap = new Tile[width, height];
-
+            this.graphicsDevice = graphicsDevice;
+            this.content = content;
         }
 
         public void Initialize()
@@ -30,7 +34,7 @@ namespace CarbonField.Game
 
         }
 
-        public void LoadContent(ContentManager content)
+        public void LoadContent()
         {
             // Load grass terrain spritesheet
             Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/grass_terrain");
@@ -90,9 +94,13 @@ namespace CarbonField.Game
             {
                 tile.DetermineNeighbors(this);
             }
+
+            // Initialize the render target
+            InitializeRenderTarget();
+            UpdateRenderTarget();
         }
 
-        public void CreateCoordinatesRenderTarget(GraphicsDevice graphicsDevice)
+        public void CreateCoordinatesRenderTarget()
         {
             // Adjust the size of the render target to cover the entire isometric grid
             int renderTargetWidth = (width + height) * Tile.Width / 2;
@@ -133,6 +141,32 @@ namespace CarbonField.Game
             graphicsDevice.SetRenderTarget(null);
         }
 
+        private void InitializeRenderTarget()
+        {
+            tileRenderTarget = new RenderTarget2D(graphicsDevice,
+                graphicsDevice.PresentationParameters.BackBufferWidth,
+                graphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                graphicsDevice.PresentationParameters.BackBufferFormat,
+                DepthFormat.Depth24);
+        }
+
+        public void UpdateRenderTarget()
+        {
+            graphicsDevice.SetRenderTarget(tileRenderTarget);
+            graphicsDevice.Clear(Color.Transparent);
+
+            var spriteBatch = new SpriteBatch(graphicsDevice);
+            spriteBatch.Begin();
+
+            // Draw tiles here
+            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
+            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+
+            spriteBatch.End();
+            graphicsDevice.SetRenderTarget(null); // Reset to default render target
+        }
+
         public Tile GetTileAtGridPosition(int x, int y)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
@@ -144,10 +178,13 @@ namespace CarbonField.Game
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+            /*DrawTilesByTerrain(spriteBatch, Terrain.Grass);
+            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);*/
 
             //spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
+            spriteBatch.Draw(tileRenderTarget, Vector2.Zero, Color.White);
+
+
         }
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
