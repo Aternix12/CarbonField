@@ -68,9 +68,23 @@ namespace CarbonField
                 transform = Matrix.CreateTranslation(new Vector3(-worldMousePosition.X, -worldMousePosition.Y, 0)) *
                             Matrix.CreateScale(_zoom) *
                             Matrix.CreateTranslation(new Vector3(worldMousePosition.X, worldMousePosition.Y, 0));
+                
             }
+            AdjustCameraAfterZoom();
             _previousZoom = _zoom;
         }
+
+        public void AdjustCameraAfterZoom()
+        {
+            // Calculate the visible world area based on the current zoom level
+            float visibleWorldWidth = _viewport.Width / _zoom;
+            float visibleWorldHeight = _viewport.Height / _zoom;
+
+            // Adjust the camera position to ensure the world area at (0,0) is at the edge of the viewport
+            _pos.X = Math.Max(_pos.X, visibleWorldWidth / 2);
+            _pos.Y = Math.Max(_pos.Y, visibleWorldHeight / 2);
+        }
+
 
         public Vector2 GetPos()
         { return _pos; }
@@ -84,7 +98,7 @@ namespace CarbonField
         public void SetZoom(float value)
         {
             // You might want to limit the zoom level to a certain range.
-            _zoom = MathHelper.Clamp(value, 0.1f, 5f);
+            _zoom = MathHelper.Clamp(value, 0.1f, 2f);
         }
 
         public Matrix GetTransform()

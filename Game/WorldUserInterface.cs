@@ -63,7 +63,12 @@ namespace CarbonField.Game
             screenPosition = Vector2.Transform(screenPosition, Matrix.Invert(_world.Cam.GetTransform()));
 
             // Account for the offset where the top of the diamond starts (half the tile width)
-            float correctedX = screenPosition.X - Tile.Width / 2.0f;
+
+            // Calculate the half total width of all tiles
+            float halfTotalWidth = _world.IsoManager.width * Tile.Width / 2f;
+
+            // Adjust the X position of the screen based on the new tile drawing logic
+            float correctedX = screenPosition.X - halfTotalWidth;
             float correctedY = screenPosition.Y;
 
             // Calculate the isometric grid coordinates

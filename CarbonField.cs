@@ -130,6 +130,8 @@ namespace CarbonField
             _spriteBatch.DrawString(_arial, Version, new Vector2(10, 0), Color.White);
             _spriteBatch.DrawString(_arial, _latestFpsString, new Vector2(10, 20), Color.White);
             _spriteBatch.DrawString(_arial, "Entities: " + EntityManager.EntityCounter.ToString(), new Vector2(10, 40), Color.White);
+            _spriteBatch.DrawString(_arial, "X: " + CurrentWorld.Cam.GetPos().X.ToString(), new Vector2(10, 60), Color.White);
+            _spriteBatch.DrawString(_arial, "Y: " + CurrentWorld.Cam.GetPos().Y.ToString(), new Vector2(10, 80), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

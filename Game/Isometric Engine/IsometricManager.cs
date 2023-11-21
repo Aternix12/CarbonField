@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace CarbonField.Game
 {
     public class IsometricManager
     {
-        private readonly int width;
+        public readonly int width;
         private readonly int height;
         private readonly Tile[,] tileMap;
         private SpriteFont tileCoordinateFont;
@@ -65,6 +66,7 @@ namespace CarbonField.Game
 
             float halfTileWidth = Tile.Width / 2f;
             float halfTileHeight = Tile.Height / 2f;
+            float halfTotalWidth = width * Tile.Width / 2f;
 
             for (int x = 0; x < width; x++)
             {
@@ -72,7 +74,7 @@ namespace CarbonField.Game
                 {
                     // Calculate the isometric position
                     Vector2 isoPosition = new Vector2(
-                        x * halfTileWidth - y * halfTileWidth,
+                        halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
                         x * halfTileHeight + y * halfTileHeight
                     );
 
@@ -123,7 +125,7 @@ namespace CarbonField.Game
 
                     // Calculate isometric position
                     Vector2 isoPosition = new Vector2(
-                        (x - y) * Tile.Width / 2 + renderTargetWidth / 2, // Centering horizontally
+                        (x - y) * Tile.Width / 2 + renderTargetWidth / 2 - Tile.Width / 2, // Centering horizontally
                         (x + y) * Tile.Height / 2 // Staggering vertically
                     );
 
@@ -143,18 +145,21 @@ namespace CarbonField.Game
 
         private void InitializeRenderTarget()
         {
+            int renderTargetWidth = (width + height) * Tile.Width / 2;
+            int renderTargetHeight = (width + height) * Tile.Height / 2;
             tileRenderTarget = new RenderTarget2D(graphicsDevice,
-                graphicsDevice.PresentationParameters.BackBufferWidth,
-                graphicsDevice.PresentationParameters.BackBufferHeight,
-                false,
-                graphicsDevice.PresentationParameters.BackBufferFormat,
-                DepthFormat.Depth24);
+                            renderTargetWidth,
+                            renderTargetHeight,
+                            false,
+                            graphicsDevice.PresentationParameters.BackBufferFormat,
+                            DepthFormat.Depth24);
         }
+
 
         public void UpdateRenderTarget()
         {
             graphicsDevice.SetRenderTarget(tileRenderTarget);
-            graphicsDevice.Clear(Color.Transparent);
+            graphicsDevice.Clear(Color.Transparent); // Clear with a transparent color
 
             var spriteBatch = new SpriteBatch(graphicsDevice);
             spriteBatch.Begin();
@@ -167,6 +172,7 @@ namespace CarbonField.Game
             graphicsDevice.SetRenderTarget(null); // Reset to default render target
         }
 
+
         public Tile GetTileAtGridPosition(int x, int y)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
@@ -176,13 +182,29 @@ namespace CarbonField.Game
             return null;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition, Viewport viewport)
         {
             /*DrawTilesByTerrain(spriteBatch, Terrain.Grass);
             DrawTilesByTerrain(spriteBatch, Terrain.Dirt);*/
 
-            //spriteBatch.Draw(coordinatesRenderTarget, renderTargetPosition, Color.White);
-            spriteBatch.Draw(tileRenderTarget, Vector2.Zero, Color.White);
+
+            // Calculate the visible area
+            Rectangle visibleArea = new Rectangle(
+                (int)cameraPosition.X,
+                (int)cameraPosition.Y,
+                (int)cameraPosition.X + viewport.Width,
+                (int)cameraPosition.Y + viewport.Height);
+
+            // Adjust the visible area to ensure it doesn't extend beyond the render target bounds
+            visibleArea.X = Math.Max(visibleArea.X, 0);
+            visibleArea.Y = Math.Max(visibleArea.Y, 0);
+            visibleArea.Width = Math.Min(visibleArea.Width, tileRenderTarget.Width - visibleArea.X);
+            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);
+
+            // Draw only the visible part of the render target
+            spriteBatch.Draw(tileRenderTarget, Vector2.Zero, /*visibleArea,*/ Color.White);
+
+            //spriteBatch.Draw(coordinatesRenderTarget, Vector2.Zero, Color.White);
 
 
         }
