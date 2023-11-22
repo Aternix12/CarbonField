@@ -42,7 +42,7 @@ namespace CarbonField.Game
             _lightingManager.Initialize();
 
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(50, 50, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
         }
 
         public void LoadContent()
@@ -98,7 +98,7 @@ namespace CarbonField.Game
 
             //Isometric Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
-            IsoManager.Draw(spriteBatch, Cam.GetPos(), _graphics.GraphicsDevice.Viewport);
+            IsoManager.Draw(spriteBatch, Cam.GetVisibleArea());
             spriteBatch.End();
 
             //Entity Draw

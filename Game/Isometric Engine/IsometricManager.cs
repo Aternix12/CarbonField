@@ -182,13 +182,13 @@ namespace CarbonField.Game
             return null;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition, Viewport viewport)
+        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
             /*DrawTilesByTerrain(spriteBatch, Terrain.Grass);
             DrawTilesByTerrain(spriteBatch, Terrain.Dirt);*/
 
 
-            // Calculate the visible area
+/*            // Calculate the visible area
             Rectangle visibleArea = new Rectangle(
                 (int)cameraPosition.X,
                 (int)cameraPosition.Y,
@@ -199,10 +199,10 @@ namespace CarbonField.Game
             visibleArea.X = Math.Max(visibleArea.X, 0);
             visibleArea.Y = Math.Max(visibleArea.Y, 0);
             visibleArea.Width = Math.Min(visibleArea.Width, tileRenderTarget.Width - visibleArea.X);
-            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);
+            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);*/
 
             // Draw only the visible part of the render target
-            spriteBatch.Draw(tileRenderTarget, Vector2.Zero, /*visibleArea,*/ Color.White);
+            spriteBatch.Draw(tileRenderTarget, new Vector2(visibleArea.X, visibleArea.Y), visibleArea, Color.White);
 
             //spriteBatch.Draw(coordinatesRenderTarget, Vector2.Zero, Color.White);
 

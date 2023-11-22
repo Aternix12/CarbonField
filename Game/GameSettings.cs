@@ -8,8 +8,8 @@ namespace CarbonField.Game
 {
     public class GameSettings
     {
-        public int PreferredBackBufferWidth { get; set; } = 2160;
-        public int PreferredBackBufferHeight { get; set; } = 1440;
+        public int PreferredBackBufferWidth { get; set; } = 1920;
+        public int PreferredBackBufferHeight { get; set; } = 1080;
         public bool IsFullScreen { get; set; } = true;
     }
 

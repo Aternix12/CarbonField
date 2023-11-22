@@ -20,8 +20,8 @@ namespace CarbonField
         public CtrCamera(Viewport newview)
         {
             _viewport = newview;
-            _pos.X = 0;
-            _pos.Y = 0;
+            _pos.X = 4000;
+            _pos.Y = 4000;
             _vel.X = 0;
             _vel.Y = 0;
             _zoom = 1f;
@@ -74,6 +74,45 @@ namespace CarbonField
             _previousZoom = _zoom;
         }
 
+        public Rectangle GetVisibleArea()
+        {
+            // Calculate the top-left corner of the visible area in world coordinates
+            float left = _pos.X - (_viewport.Width / _zoom / 2);
+            float top = _pos.Y - (_viewport.Height / _zoom / 2);
+
+            // Calculate the width and height of the visible area
+            int width = (int)(_viewport.Width / _zoom);
+            int height = (int)(_viewport.Height / _zoom);
+
+            // Return the visible area as a Rectangle
+            return new Rectangle((int)left, (int)top, width, height);
+        }
+
+
+
+        public (Vector2 topLeft, Vector2 bottomRight) GetVisibleAreaCoordinates()
+        {
+            var visibleArea = GetVisibleArea();
+            Vector2 topLeft = new Vector2(visibleArea.Left, visibleArea.Top);
+            Vector2 bottomRight = new Vector2(visibleArea.Right, visibleArea.Bottom);
+            return (topLeft, bottomRight);
+        }
+
+        public (Vector2 topLeft, Vector2 bottomRight) GetTransformedViewportCorners()
+        {
+            // Define corners of the viewport
+            Vector2 topLeft = new Vector2(0, 0);
+            Vector2 bottomRight = new Vector2(_viewport.Width, _viewport.Height);
+
+            // Apply the transformation
+            topLeft = Vector2.Transform(topLeft, GetTransform());
+            bottomRight = Vector2.Transform(bottomRight, GetTransform());
+
+            return (topLeft, bottomRight);
+        }
+
+
+
         public void AdjustCameraAfterZoom()
         {
             // Calculate the visible world area based on the current zoom level
@@ -98,7 +137,7 @@ namespace CarbonField
         public void SetZoom(float value)
         {
             // You might want to limit the zoom level to a certain range.
-            _zoom = MathHelper.Clamp(value, 0.1f, 2f);
+            _zoom = MathHelper.Clamp(value, 0.4f, 2f);
         }
 
         public Matrix GetTransform()
