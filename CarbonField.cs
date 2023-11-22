@@ -134,9 +134,7 @@ namespace CarbonField
             _spriteBatch.DrawString(_arial, "Y: " + CurrentWorld.Cam.GetPos().Y.ToString(), new Vector2(10, 80), Color.White);
             _spriteBatch.DrawString(_arial, "Top Left: " + CurrentWorld.Cam.GetVisibleAreaCoordinates().topLeft.ToString(), new Vector2(10, 100), Color.Red);
             _spriteBatch.DrawString(_arial, "Top Right: " + CurrentWorld.Cam.GetVisibleAreaCoordinates().bottomRight.ToString(), new Vector2(10, 120), Color.Red);
-            _spriteBatch.DrawString(_arial, "Top Left: " + CurrentWorld.Cam.GetTransformedViewportCorners().topLeft.ToString(), new Vector2(10, 140), Color.Blue);
-            _spriteBatch.DrawString(_arial, "Bottom Right: " + CurrentWorld.Cam.GetTransformedViewportCorners().bottomRight.ToString(), new Vector2(10, 160), Color.Blue);
-            _spriteBatch.DrawString(_arial, "Viewport: " + Graphics.GraphicsDevice.Viewport.ToString(), new Vector2(10, 180), Color.Yellow);
+            _spriteBatch.DrawString(_arial, "Viewport: " + Graphics.GraphicsDevice.Viewport.ToString(), new Vector2(10, 140), Color.Blue);
             _spriteBatch.End();
 
             base.Draw(gameTime);

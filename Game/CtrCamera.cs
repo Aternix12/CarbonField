@@ -33,46 +33,57 @@ namespace CarbonField
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            //This keyboard movement need to be handled by UserInterface.cs
+            // Handle keyboard movement
             _vel *= 0.8f;
-            float speed = 100.0f * elapsed; // Now speed is per second, not per frame
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                _vel.X += speed;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                _vel.Y += speed;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                _vel.X -= speed;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                _vel.Y -= speed;
-            }
+            float speed = 100.0f * elapsed;
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) { _vel.X += speed; }
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) { _vel.Y += speed; }
+            if (Keyboard.GetState().IsKeyDown(Keys.A)) { _vel.X -= speed; }
+            if (Keyboard.GetState().IsKeyDown(Keys.W)) { _vel.Y -= speed; }
             _pos.X += _vel.X;
             _pos.Y += _vel.Y;
 
-            if (_zoom != _previousZoom)
+            // Handle zooming
+            float newZoom = _zoom; // Replace with your zoom input logic
+            if (newZoom != _previousZoom)
             {
-                // Get mouse state and position
                 MouseState mouseState = Mouse.GetState();
                 Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
 
-                // Convert the screen space mouse coordinates to world space
-                Vector2 worldMousePosition = Vector2.Transform(mousePosition, Matrix.Invert(transform));
+                // Check if the mouse is within the viewport
+                if (_viewport.Bounds.Contains(mouseState.X, mouseState.Y))
+                {
+                    // Convert the screen space mouse coordinates to world space BEFORE the zoom change
+                    Vector2 worldMousePositionBeforeZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
 
-                // Create the scale transform at the world mouse position
-                transform = Matrix.CreateTranslation(new Vector3(-worldMousePosition.X, -worldMousePosition.Y, 0)) *
-                            Matrix.CreateScale(_zoom) *
-                            Matrix.CreateTranslation(new Vector3(worldMousePosition.X, worldMousePosition.Y, 0));
-                
+                    // Update the zoom
+                    _zoom = newZoom;
+
+                    // Re-calculate the transformation matrix with the new zoom level
+                    UpdateTransform();
+
+                    // Convert the screen space mouse coordinates to world space AFTER the zoom change
+                    Vector2 worldMousePositionAfterZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
+
+                    // Adjust the camera position
+                    Vector2 movement = worldMousePositionBeforeZoom - worldMousePositionAfterZoom;
+                    _pos += movement;
+                }
+
+                _previousZoom = _zoom;
             }
+
             AdjustCameraAfterZoom();
-            _previousZoom = _zoom;
+            UpdateTransform();
         }
+
+        private void UpdateTransform()
+        {
+            transform = Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
+                        Matrix.CreateScale(_zoom, _zoom, 1) *
+                        Matrix.CreateTranslation(new Vector3(_viewport.Width * 0.5f, _viewport.Height * 0.5f, 0));
+        }
+
 
         public Rectangle GetVisibleArea()
         {
@@ -97,20 +108,6 @@ namespace CarbonField
             Vector2 bottomRight = new Vector2(visibleArea.Right, visibleArea.Bottom);
             return (topLeft, bottomRight);
         }
-
-        public (Vector2 topLeft, Vector2 bottomRight) GetTransformedViewportCorners()
-        {
-            // Define corners of the viewport
-            Vector2 topLeft = new Vector2(0, 0);
-            Vector2 bottomRight = new Vector2(_viewport.Width, _viewport.Height);
-
-            // Apply the transformation
-            topLeft = Vector2.Transform(topLeft, GetTransform());
-            bottomRight = Vector2.Transform(bottomRight, GetTransform());
-
-            return (topLeft, bottomRight);
-        }
-
 
 
         public void AdjustCameraAfterZoom()
