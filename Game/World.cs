@@ -35,26 +35,25 @@ namespace CarbonField.Game
 
         public void Initialize()
         {
-            //Camera
-            Cam = new CtrCamera(_graphics.GraphicsDevice.Viewport);
-
-            // Initialize the lighting
-            _lightingManager.Initialize();
+            
 
             // Initialize IsometricManager
             IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
+
+            // Initialize the lighting
+            _lightingManager.Initialize(IsoManager);
+
+            //Camera
+            Cam = new CtrCamera(_graphics.GraphicsDevice.Viewport, IsoManager.worldWidth, IsoManager.worldHeight);
         }
 
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 55; i++)
             {
-                Random r = new();
-                int randVal1 = r.Next(0, 1920);
-                int randVal2 = r.Next(0, 1080);
-                Vector2 p = new(randVal1, randVal2);
-                WallBlock ent = new(p);
+                Vector2 pos = GenerateRandomPositionWithinDiamond();
+                WallBlock ent = new(pos, IsoManager);
                 EntityManager.Add(ent, _lightingManager);
             }
 
@@ -68,6 +67,38 @@ namespace CarbonField.Game
 
             IsoManager.LoadContent();
             IsoManager.CreateCoordinatesRenderTarget();
+        }
+
+        private Vector2 GenerateRandomPositionWithinDiamond()
+        {
+            Random random = new Random();
+            Vector2 position;
+            do
+            {
+                float x = random.Next(0, IsoManager.worldWidth);
+                float y = random.Next(0, IsoManager.worldHeight);
+                position = new Vector2(x, y);
+            } while (!IsWithinDiamond(position));
+
+            return position;
+        }
+
+        private bool IsWithinDiamond(Vector2 position)
+        {
+            // Get the center of the diamond
+            Vector2 center = new Vector2(IsoManager.worldWidth / 2, IsoManager.worldHeight / 2);
+
+            // Calculate distances from the center
+            float dx = Math.Abs(position.X - center.X);
+            float dy = Math.Abs(position.Y - center.Y);
+
+            // The diamond's width and height at the center
+            float diamondWidth = IsoManager.worldWidth / 2;
+            float diamondHeight = IsoManager.worldHeight / 2;
+
+            // Check if the point is within the diamond
+            // The dividing by 2 is because the diamondWidth and diamondHeight represent full widths and heights
+            return (dx / diamondWidth + dy / diamondHeight) <= 1;
         }
 
         public void Update(GameTime gameTime)

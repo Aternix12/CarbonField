@@ -11,6 +11,8 @@ namespace CarbonField.Game
     {
         public readonly int width;
         private readonly int height;
+        public readonly int worldWidth;
+        public readonly int worldHeight;
         private readonly Tile[,] tileMap;
         private SpriteFont tileCoordinateFont;
         private RenderTarget2D coordinatesRenderTarget;
@@ -21,6 +23,12 @@ namespace CarbonField.Game
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
+        public Vector2 WorldTop { get; private set; }
+        public Vector2 WorldRight { get; private set; }
+        public Vector2 WorldBottom { get; private set; }
+        public Vector2 WorldLeft { get; private set; }
+
+
         public IsometricManager(int width, int height, GraphicsDevice graphicsDevice, ContentManager content)
         {
             this.width = width;
@@ -28,6 +36,17 @@ namespace CarbonField.Game
             tileMap = new Tile[width, height];
             this.graphicsDevice = graphicsDevice;
             this.content = content;
+            worldWidth = (width + height) * Tile.Width / 2;
+            worldHeight = (width + height) * Tile.Height / 2;
+            CalculateWorldBounds();
+        }
+
+        private void CalculateWorldBounds()
+        {
+            WorldTop = new Vector2(worldWidth / 2, 0);
+            WorldRight = new Vector2(0, worldHeight / 2);
+            WorldBottom = new Vector2(worldWidth / 2, 0);
+            WorldLeft = new Vector2(0, worldHeight / 2);
         }
 
         public void Initialize()
@@ -184,29 +203,16 @@ namespace CarbonField.Game
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            /*DrawTilesByTerrain(spriteBatch, Terrain.Grass);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);*/
-
-
-/*            // Calculate the visible area
-            Rectangle visibleArea = new Rectangle(
-                (int)cameraPosition.X,
-                (int)cameraPosition.Y,
-                (int)cameraPosition.X + viewport.Width,
-                (int)cameraPosition.Y + viewport.Height);
-
             // Adjust the visible area to ensure it doesn't extend beyond the render target bounds
             visibleArea.X = Math.Max(visibleArea.X, 0);
             visibleArea.Y = Math.Max(visibleArea.Y, 0);
             visibleArea.Width = Math.Min(visibleArea.Width, tileRenderTarget.Width - visibleArea.X);
-            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);*/
+            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);
 
             // Draw only the visible part of the render target
             spriteBatch.Draw(tileRenderTarget, new Vector2(visibleArea.X, visibleArea.Y), visibleArea, Color.White);
 
-            //spriteBatch.Draw(coordinatesRenderTarget, Vector2.Zero, Color.White);
-
-
+            //spriteBatch.Draw(coordinatesRenderTarget, new Vector2(visibleArea.X, visibleArea.Y), visibleArea, Color.White);
         }
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)

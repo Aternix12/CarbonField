@@ -62,9 +62,7 @@ namespace CarbonField.Game
             // Adjust the screen position based on the camera's transform
             screenPosition = Vector2.Transform(screenPosition, Matrix.Invert(_world.Cam.GetTransform()));
 
-            // Account for the offset where the top of the diamond starts (half the tile width)
-
-            // Calculate the half total width of all tiles
+            // Calculate the half total width of all tiles // Why does this only use width? Weird
             float halfTotalWidth = _world.IsoManager.width * Tile.Width / 2f;
 
             // Adjust the X position of the screen based on the new tile drawing logic

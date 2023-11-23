@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CarbonField.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,14 +12,16 @@ namespace CarbonField
     {
 
         private Vector2 Velocity { get; set; }
-
-        public WallBlock(Vector2 pos)
+        private readonly IsometricManager IsoManager; //This will eventually be somehow a variable shared amongst all entities?
+        
+        public WallBlock(Vector2 pos, IsometricManager isoManager)
         {
             _classtype = "WallBlock";
             _image = Program.Game.Content.Load<Texture2D>("spr_wallblock");
             Position = pos;
             _rotation = 0;
             _origin = new Vector2(_image.Width / 2, _image.Height / 2);
+            IsoManager = isoManager;
 
             _textureData = new Color[_image.Width * _image.Height];
             _image.GetData(_textureData);
@@ -27,37 +30,67 @@ namespace CarbonField
             
 
             Random r = new();
-            int nextValue = r.Next(-100, 100);
+            int nextValue = r.Next(-300, 300);
             Velocity = new Vector2(nextValue, Velocity.Y);
 
-            nextValue = r.Next(-100, 100);
+            nextValue = r.Next(-300, 300);
             Velocity = new Vector2(Velocity.X, nextValue);
 
+            
+
         }
+
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+            //This will eventually need to be handled through ICollision Interface!
+
+
             //This is just for demonstration! Will fuck FPS
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Update the position based on the velocity and deltaTime
             Position += Velocity * deltaTime;
 
-            // Define your boundary values
-            float minX = 0;
-            float minY = 0;
-            float maxX = 1920;
-            float maxY = 1080;
-
             // Check for boundary collision and reverse direction if needed
-            if (Position.X <= minX || Position.X >= maxX - _image.Width)
+            if (!IsWithinDiamond(Position))
             {
-                Velocity = new Vector2(-Velocity.X, Velocity.Y);
-            }
-            if (Position.Y <= minY || Position.Y >= maxY - _image.Height)
-            {
-                Velocity = new Vector2(Velocity.X, -Velocity.Y);
+                BounceOffBoundary();
             }
         }
+
+        private bool IsWithinDiamond(Vector2 position)
+        {
+            Vector2 center = new Vector2(IsoManager.worldWidth / 2, IsoManager.worldHeight / 2);
+            Vector2 relativePosition = position - center;
+            return (Math.Abs(relativePosition.X) / (IsoManager.worldWidth / 2) +
+                    Math.Abs(relativePosition.Y) / (IsoManager.worldHeight / 2)) <= 1;
+        }
+
+        private void BounceOffBoundary()
+        {
+            Vector2 normal = CalculateBoundaryNormal(Position);
+            Velocity = Vector2.Reflect(Velocity, normal);
+        }
+
+        private Vector2 CalculateBoundaryNormal(Vector2 position)
+        {
+            Vector2 center = new Vector2(IsoManager.worldWidth / 2, IsoManager.worldHeight / 2);
+            Vector2 relativePosition = position - center;
+
+            // Normalizing the relative position
+            relativePosition.Normalize();
+
+            // Depending on the quadrant, determine the normal
+            if (Math.Abs(relativePosition.X) > Math.Abs(relativePosition.Y))
+            {
+                return new Vector2(Math.Sign(relativePosition.X), 0);
+            }
+            else
+            {
+                return new Vector2(0, Math.Sign(relativePosition.Y));
+            }
+        }
+
 
 
 

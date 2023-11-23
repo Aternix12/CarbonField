@@ -16,8 +16,10 @@ namespace CarbonField
         private Vector2 _vel;
         private float _zoom;
         private float _previousZoom;
+        private int worldWidth;
+        private int worldHeight;
 
-        public CtrCamera(Viewport newview)
+        public CtrCamera(Viewport newview, int worldWidth, int worldHeight)
         {
             _viewport = newview;
             _pos.X = 4000;
@@ -27,6 +29,8 @@ namespace CarbonField
             _zoom = 1f;
             _previousZoom = 1f;
             transform = Matrix.Identity;
+            this.worldWidth = worldWidth;
+            this.worldHeight = worldHeight;
         }
 
         public void Update(GameTime gameTime)
@@ -35,7 +39,7 @@ namespace CarbonField
 
             // Handle keyboard movement
             _vel *= 0.8f;
-            float speed = 100.0f * elapsed;
+            float speed = 400.0f * elapsed;
             if (Keyboard.GetState().IsKeyDown(Keys.D)) { _vel.X += speed; }
             if (Keyboard.GetState().IsKeyDown(Keys.S)) { _vel.Y += speed; }
             if (Keyboard.GetState().IsKeyDown(Keys.A)) { _vel.X -= speed; }
@@ -60,7 +64,7 @@ namespace CarbonField
                     _zoom = newZoom;
 
                     // Re-calculate the transformation matrix with the new zoom level
-                    UpdateTransform();
+                    transform = GetTransform();
 
                     // Convert the screen space mouse coordinates to world space AFTER the zoom change
                     Vector2 worldMousePositionAfterZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
@@ -74,14 +78,7 @@ namespace CarbonField
             }
 
             AdjustCameraAfterZoom();
-            UpdateTransform();
-        }
-
-        private void UpdateTransform()
-        {
-            transform = Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
-                        Matrix.CreateScale(_zoom, _zoom, 1) *
-                        Matrix.CreateTranslation(new Vector3(_viewport.Width * 0.5f, _viewport.Height * 0.5f, 0));
+            transform = GetTransform();
         }
 
 
@@ -116,9 +113,11 @@ namespace CarbonField
             float visibleWorldWidth = _viewport.Width / _zoom;
             float visibleWorldHeight = _viewport.Height / _zoom;
 
-            // Adjust the camera position to ensure the world area at (0,0) is at the edge of the viewport
-            _pos.X = Math.Max(_pos.X, visibleWorldWidth / 2);
-            _pos.Y = Math.Max(_pos.Y, visibleWorldHeight / 2);
+            // Adjust the camera position to ensure the world area at (-256,-256) is at the edge of the viewport
+            _pos.X = Math.Max(_pos.X, visibleWorldWidth / 2 - 256);
+            _pos.Y = Math.Max(_pos.Y, visibleWorldHeight / 2 - 256);
+            _pos.X = Math.Min(_pos.X, worldWidth + 256 - visibleWorldWidth / 2);
+            _pos.Y = Math.Min(_pos.Y, worldHeight + 256 - visibleWorldHeight / 2);
         }
 
 
