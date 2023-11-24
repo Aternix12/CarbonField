@@ -5,9 +5,9 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField", "CarbonField.csproj", "{374A1227-50F5-4405-A52B-B283AA094DA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbonField Server", "..\CarbonField Server\CarbonField Server.csproj", "{FB1E570F-A778-4FD8-B3FE-08137B322891}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CarbonField Bindings", "CarbonField Bindings\CarbonField Bindings.shproj", "{6066963A-73BE-41BD-95B5-CB6312364F01}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CarbonField Bindings", "..\CarbonField Bindings\CarbonField Bindings.shproj", "{6066963A-73BE-41BD-95B5-CB6312364F01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarbonField Server", "CarbonField Server\CarbonField Server.csproj", "{F12E4FAB-93C3-4D56-9FED-5979CB4E44B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{374A1227-50F5-4405-A52B-B283AA094DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{374A1227-50F5-4405-A52B-B283AA094DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{374A1227-50F5-4405-A52B-B283AA094DA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB1E570F-A778-4FD8-B3FE-08137B322891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F12E4FAB-93C3-4D56-9FED-5979CB4E44B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F12E4FAB-93C3-4D56-9FED-5979CB4E44B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F12E4FAB-93C3-4D56-9FED-5979CB4E44B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F12E4FAB-93C3-4D56-9FED-5979CB4E44B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -31,6 +31,6 @@ Global
 		SolutionGuid = {9445D947-D956-41C6-ADBE-29A447BBF6F6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\CarbonField Bindings\CarbonField Bindings.projitems*{6066963a-73be-41bd-95b5-cb6312364f01}*SharedItemsImports = 13
+		CarbonField Bindings\CarbonField Bindings.projitems*{6066963a-73be-41bd-95b5-cb6312364f01}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

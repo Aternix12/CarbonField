@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CarbonField Bindings", "CarbonField Bindings.shproj", "{6066963A-73BE-41BD-95B5-CB6312364F01}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C6FB587-DB10-406F-9598-E3A2D1376C2E}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CarbonField Bindings.projitems*{6066963a-73be-41bd-95b5-cb6312364f01}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
