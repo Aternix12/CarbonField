@@ -1,11 +1,10 @@
-﻿using CarbonField.Game;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace CarbonField.Game
+namespace CarbonField
 {
     public class IsometricManager
     {
@@ -17,7 +16,6 @@ namespace CarbonField.Game
         private SpriteFont tileCoordinateFont;
         private RenderTarget2D coordinatesRenderTarget;
         private RenderTarget2D tileRenderTarget;
-        private Vector2 renderTargetPosition;
         private GraphicsDevice graphicsDevice;
         private ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
@@ -105,11 +103,6 @@ namespace CarbonField.Game
                     tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
                 }
             }
-
-            renderTargetPosition = new Vector2(
-               -width * Tile.Width / 2, // Half the width of a single column of tiles
-               0 // No vertical offset needed
-           );
 
             foreach (var tile in tileMap)
             {

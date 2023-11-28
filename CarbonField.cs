@@ -6,7 +6,6 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Threading;
 using System.Runtime.InteropServices;
-using CarbonField.Game;
 
 namespace CarbonField
 {

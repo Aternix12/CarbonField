@@ -8,7 +8,6 @@ using Penumbra;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using CarbonField.Game;
 
 namespace CarbonField
 {

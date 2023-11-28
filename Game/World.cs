@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace CarbonField.Game
+namespace CarbonField
 {
     public class World
     {
@@ -17,6 +17,7 @@ namespace CarbonField.Game
         private readonly ContentManager _content;
         private readonly LightingManager _lightingManager;
         private readonly WorldUserInterface _worldUI;
+        private readonly EntityManager _entityManager;
 
         public IsometricManager IsoManager { get; private set; }
 
@@ -31,6 +32,7 @@ namespace CarbonField.Game
             _content = content;
             _lightingManager = new LightingManager(carbonFieldInstance);
             _worldUI = new WorldUserInterface(this);
+            _entityManager = new EntityManager();
         }
 
         public void Initialize()
@@ -54,7 +56,7 @@ namespace CarbonField.Game
             {
                 Vector2 pos = GenerateRandomPositionWithinDiamond();
                 WallBlock ent = new(pos, IsoManager);
-                EntityManager.Add(ent, _lightingManager);
+                _entityManager.Add(ent, _lightingManager);
             }
 
             //Adding Lights
@@ -71,7 +73,7 @@ namespace CarbonField.Game
 
         private Vector2 GenerateRandomPositionWithinDiamond()
         {
-            Random random = new Random();
+            Random random = new();
             Vector2 position;
             do
             {
@@ -86,15 +88,15 @@ namespace CarbonField.Game
         private bool IsWithinDiamond(Vector2 position)
         {
             // Get the center of the diamond
-            Vector2 center = new Vector2(IsoManager.worldWidth / 2, IsoManager.worldHeight / 2);
+            Vector2 center = new(IsoManager.worldWidth / 2, IsoManager.worldHeight / 2);
 
             // Calculate distances from the center
             float dx = Math.Abs(position.X - center.X);
             float dy = Math.Abs(position.Y - center.Y);
 
             // The diamond's width and height at the center
-            float diamondWidth = IsoManager.worldWidth / 2;
-            float diamondHeight = IsoManager.worldHeight / 2;
+            float diamondWidth = IsoManager.worldWidth / 2f;
+            float diamondHeight = IsoManager.worldHeight / 2f;
 
             // Check if the point is within the diamond
             // The dividing by 2 is because the diamondWidth and diamondHeight represent full widths and heights
@@ -106,7 +108,7 @@ namespace CarbonField.Game
             _worldUI.Update(gameTime);
 
             // Update entities, check collisions, etc.
-            EntityManager.Update(gameTime, _graphics, _lightingManager);
+            _entityManager.Update(gameTime, _graphics, _lightingManager);
 
             //Updating View
             Cam.Update(gameTime);
@@ -134,7 +136,7 @@ namespace CarbonField.Game
 
             //Entity Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
-            EntityManager.Draw(spriteBatch);
+            _entityManager.Draw(spriteBatch);
             spriteBatch.End();
 
             _lightingManager.Draw(gameTime);

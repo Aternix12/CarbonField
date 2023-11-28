@@ -32,3 +32,21 @@ C:\Users\Aternix\OneDrive\CarbonField Server\obj\Debug\net6.0\refint\CarbonField
 C:\Users\Aternix\OneDrive\CarbonField Server\obj\Debug\net6.0\CarbonField Server.pdb
 C:\Users\Aternix\OneDrive\CarbonField Server\obj\Debug\net6.0\CarbonField Server.genruntimeconfig.cache
 C:\Users\Aternix\OneDrive\CarbonField Server\obj\Debug\net6.0\ref\CarbonField Server.dll
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\CarbonField Server.exe
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\CarbonField Server.deps.json
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\CarbonField Server.runtimeconfig.json
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\CarbonField Server.dll
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\CarbonField Server.pdb
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\bin\Debug\net6.0\LiteNetLib.dll
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.csproj.AssemblyReference.cache
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.AssemblyInfoInputs.cache
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.AssemblyInfo.cs
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.csproj.CoreCompileInputs.cache
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.sourcelink.json
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.csproj.CopyComplete
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.dll
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\refint\CarbonField Server.dll
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.pdb
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\CarbonField Server.genruntimeconfig.cache
+C:\Users\Aternix\OneDrive\CarbonField\CarbonField Server\obj\Debug\net6.0\ref\CarbonField Server.dll
