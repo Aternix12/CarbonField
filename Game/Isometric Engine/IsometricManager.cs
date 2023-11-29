@@ -21,7 +21,7 @@ namespace CarbonField
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private RenderTarget2D[,] renderTargets;
         private Texture2D[,] textures;
-        private int MaxRenderTargetSize = 2000;
+        private int MaxRenderTargetSize = 640;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -295,51 +295,38 @@ namespace CarbonField
 
                     if (IsTileWithinRenderTarget(updatedTile, offsetX, offsetY, MaxRenderTargetSize, MaxRenderTargetSize))
                     {
-                        // Recreate the render target
-                        renderTargets[x, y] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-
-                        // Set the render target
-                        graphicsDevice.SetRenderTarget(renderTargets[x, y]);
-                        graphicsDevice.Clear(Color.Transparent);
-                        var spriteBatch = new SpriteBatch(graphicsDevice);
-                        spriteBatch.Begin();
-
-                        // Redraw all tiles within this render target
-                        for (int tileY = 0; tileY < height; tileY++)
+                        // Restore the render target from the texture
+                        if (textures[x, y] != null)
                         {
-                            for (int tileX = 0; tileX < width; tileX++)
-                            {
-                                Tile tile = tileMap[tileX, tileY];
-                                if (IsTileWithinRenderTarget(tile, offsetX, offsetY, MaxRenderTargetSize, MaxRenderTargetSize))
-                                {
-                                    Vector2 adjustedPosition = new Vector2(tile.Position.X - offsetX, tile.Position.Y - offsetY);
-                                    tile.Draw(spriteBatch, adjustedPosition);
-                                }
-                            }
+                            renderTargets[x, y] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+                            graphicsDevice.SetRenderTarget(renderTargets[x, y]);
+                            graphicsDevice.Clear(Color.Transparent);
+                            var spriteBatch = new SpriteBatch(graphicsDevice);
+                            spriteBatch.Begin();
+                            spriteBatch.Draw(textures[x, y], new Rectangle(0, 0, MaxRenderTargetSize, MaxRenderTargetSize), Color.White);
+
+                            // Draw the updated tile
+                            Vector2 adjustedPosition = new Vector2(updatedTile.Position.X - offsetX, updatedTile.Position.Y - offsetY);
+                            updatedTile.Draw(spriteBatch, adjustedPosition);
+                            spriteBatch.End();
+
+                            // Update the texture with the new render target content
+                            Color[] renderTargetData = new Color[MaxRenderTargetSize * MaxRenderTargetSize];
+                            renderTargets[x, y].GetData(renderTargetData);
+                            textures[x, y].SetData(renderTargetData);
+
+                            // Dispose of the render target
+                            graphicsDevice.SetRenderTarget(null);
+                            renderTargets[x, y].Dispose();
+                            renderTargets[x, y] = null;
                         }
-
-                        spriteBatch.End();
-
-                        // Copy the updated render target data to the corresponding texture
-                        if (textures[x, y] == null)
-                        {
-                            textures[x, y] = new Texture2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize);
-                        }
-
-                        Color[] renderTargetData = new Color[MaxRenderTargetSize * MaxRenderTargetSize];
-                        renderTargets[x, y].GetData(renderTargetData);
-                        textures[x, y].SetData(renderTargetData);
-
-                        // Dispose of the render target
-                        graphicsDevice.SetRenderTarget(null);
-                        renderTargets[x, y].Dispose();
-                        renderTargets[x, y] = null;
 
                         return; // Render target found and updated
                     }
                 }
             }
         }
+
 
 
 
