@@ -37,7 +37,6 @@ namespace CarbonField
         public void Initialize(IsometricManager IsoManager)
         {
             this.IsoManager = IsoManager;
-            // Any Penumbra-specific initialization logic can go here.
             _penumbra.Initialize();
         }
 
