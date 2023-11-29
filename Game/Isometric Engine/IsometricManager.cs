@@ -20,6 +20,7 @@ namespace CarbonField
         private ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private RenderTarget2D[,] renderTargets;
+        private Texture2D[,] textures;
         private int MaxRenderTargetSize = 8000;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -164,7 +165,9 @@ namespace CarbonField
             Console.WriteLine("-------------------------------");
             int numTargetsX = (int)Math.Ceiling((double)worldWidth / MaxRenderTargetSize);
             int numTargetsY = (int)Math.Ceiling((double)worldHeight / MaxRenderTargetSize);
+
             renderTargets = new RenderTarget2D[numTargetsX, numTargetsY];
+            textures = new Texture2D[numTargetsX, numTargetsY];
 
             for (int x = 0; x < numTargetsX; x++)
             {
@@ -173,8 +176,6 @@ namespace CarbonField
                     int renderTargetWidth = Math.Min(MaxRenderTargetSize, worldWidth - x * MaxRenderTargetSize);
                     int renderTargetHeight = Math.Min(MaxRenderTargetSize, worldHeight - y * MaxRenderTargetSize);
                     renderTargets[x, y] = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-
-                    Console.WriteLine($"RenderTarget[{x},{y}] - Width: {renderTargetWidth}, Height: {renderTargetHeight}, WorldPos: ({x * MaxRenderTargetSize}, {y * MaxRenderTargetSize})");
                 }
             }
         }
@@ -213,13 +214,77 @@ namespace CarbonField
                         }
                     }
 
-                    Console.WriteLine($"RenderTarget[{x},{y}] - Offset: ({offsetX}, {offsetY})");
                     spriteBatch.End();
+
+                    // Create a texture and copy the render target's content into it
+                    Texture2D texture = new Texture2D(graphicsDevice, renderTarget.Width, renderTarget.Height);
+                    Color[] renderTargetData = new Color[renderTarget.Width * renderTarget.Height];
+                    renderTarget.GetData(renderTargetData);
+                    texture.SetData(renderTargetData);
+                    textures[x, y] = texture;
+
+                    Console.WriteLine($"RenderTarget[{x},{y}] - Offset: ({offsetX}, {offsetY})");
+
+                    // Unload render target to save GPU memory
+                    renderTarget.Dispose();
                 }
             }
 
             graphicsDevice.SetRenderTarget(null);
         }
+
+        private void StoreRenderTargetContent()
+        {
+            for (int x = 0; x < renderTargets.GetLength(0); x++)
+            {
+                for (int y = 0; y < renderTargets.GetLength(1); y++)
+                {
+                    if (renderTargets[x, y] != null)
+                    {
+                        // Create texture and copy content from render target
+                        Texture2D texture = new Texture2D(graphicsDevice, renderTargets[x, y].Width, renderTargets[x, y].Height);
+                        Color[] renderTargetData = new Color[renderTargets[x, y].Width * renderTargets[x, y].Height];
+                        renderTargets[x, y].GetData(renderTargetData);
+                        texture.SetData(renderTargetData);
+                        textures[x, y] = texture;
+
+                        // Dispose render target to free GPU memory
+                        renderTargets[x, y].Dispose();
+                        renderTargets[x, y] = null;
+                    }
+                }
+            }
+        }
+
+        public void RestoreRenderTargetContent()
+        {
+            for (int x = 0; x < textures.GetLength(0); x++)
+            {
+                for (int y = 0; y < textures.GetLength(1); y++)
+                {
+                    if (textures[x, y] != null)
+                    {
+                        // Reinitialize render target
+                        int width = textures[x, y].Width;
+                        int height = textures[x, y].Height;
+                        renderTargets[x, y] = new RenderTarget2D(graphicsDevice, width, height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+
+                        // Set the render target and draw the texture onto it
+                        graphicsDevice.SetRenderTarget(renderTargets[x, y]);
+                        graphicsDevice.Clear(Color.Transparent);
+                        var spriteBatch = new SpriteBatch(graphicsDevice);
+                        spriteBatch.Begin();
+                        spriteBatch.Draw(textures[x, y], new Rectangle(0, 0, width, height), Color.White);
+                        spriteBatch.End();
+
+                        // Unset the render target
+                        graphicsDevice.SetRenderTarget(null);
+                    }
+                }
+            }
+        }
+
+
 
         private bool IsTileWithinRenderTarget(Tile tile, int offsetX, int offsetY, int width, int height)
         {
@@ -241,24 +306,20 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            int numTargetsX = renderTargets.GetLength(0);
-            int numTargetsY = renderTargets.GetLength(1);
-
-            for (int x = 0; x < numTargetsX; x++)
+            for (int x = 0; x < textures.GetLength(0); x++)
             {
-                for (int y = 0; y < numTargetsY; y++)
+                for (int y = 0; y < textures.GetLength(1); y++)
                 {
-                    RenderTarget2D renderTarget = renderTargets[x, y];
-                    int worldPosX = x * MaxRenderTargetSize;
-                    int worldPosY = y * MaxRenderTargetSize;
-                    spriteBatch.Draw(renderTarget, new Vector2(worldPosX, worldPosY), Color.White);
+                    Texture2D texture = textures[x, y];
+                    if (texture != null)
+                    {
+                        int worldPosX = x * MaxRenderTargetSize;
+                        int worldPosY = y * MaxRenderTargetSize;
+                        spriteBatch.Draw(texture, new Vector2(worldPosX, worldPosY), Color.White);
+                    }
                 }
             }
         }
-        
-
-
-
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
         {

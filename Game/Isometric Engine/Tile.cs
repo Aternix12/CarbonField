@@ -105,12 +105,11 @@ namespace CarbonField
             spriteSheet = terrainSpriteSheets[Terrain];
 
             // Update the sprite name to use the same remainder
-            Console.WriteLine($"Index X: {spriteIndexX}");
-            Console.WriteLine($"Index Y: {spriteIndexY}");
             string spriteName = $"{Terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
-            Console.WriteLine($"Index X: {spriteIndexX}");
-            Console.WriteLine($"Index Y: {spriteIndexY}");
+            Console.WriteLine($"Terrain SpriteIndex X: {spriteIndexX}");
+            Console.WriteLine($"Terrain SpriteIndex Y: {spriteIndexY}");
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
+            isometricManager.RestoreRenderTargetContent();
             isometricManager.PopulateRenderTarget();
         }
 
