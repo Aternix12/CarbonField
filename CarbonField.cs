@@ -6,6 +6,7 @@ using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace CarbonField
 {
@@ -60,9 +61,9 @@ namespace CarbonField
             Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
             Graphics.IsFullScreen = _gameSettings.IsFullScreen;
             Graphics.SynchronizeWithVerticalRetrace = false;
+            Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.ApplyChanges();
 
-            
 
             //FPS
             _frameCounter = new FrameCounter();
