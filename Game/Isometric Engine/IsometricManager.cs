@@ -19,6 +19,9 @@ namespace CarbonField
         private GraphicsDevice graphicsDevice;
         private ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
+        private RenderTarget2D[,] renderTargets;
+        private int MaxRenderTargetSize = 8000;
+
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
         public Vector2 WorldTop { get; private set; }
@@ -111,7 +114,7 @@ namespace CarbonField
 
             // Initialize the render target
             InitializeRenderTarget();
-            UpdateRenderTarget();
+            PopulateRenderTarget();
         }
 
         public void CreateCoordinatesRenderTarget()
@@ -157,33 +160,75 @@ namespace CarbonField
 
         private void InitializeRenderTarget()
         {
-            int renderTargetWidth = (width + height) * Tile.Width / 2;
-            int renderTargetHeight = (width + height) * Tile.Height / 2;
-            tileRenderTarget = new RenderTarget2D(graphicsDevice,
-                            renderTargetWidth,
-                            renderTargetHeight,
-                            false,
-                            graphicsDevice.PresentationParameters.BackBufferFormat,
-                            DepthFormat.Depth24);
+            Console.WriteLine("Initialising Render Targets");
+            Console.WriteLine("-------------------------------");
+            int numTargetsX = (int)Math.Ceiling((double)worldWidth / MaxRenderTargetSize);
+            int numTargetsY = (int)Math.Ceiling((double)worldHeight / MaxRenderTargetSize);
+            renderTargets = new RenderTarget2D[numTargetsX, numTargetsY];
+
+            for (int x = 0; x < numTargetsX; x++)
+            {
+                for (int y = 0; y < numTargetsY; y++)
+                {
+                    int renderTargetWidth = Math.Min(MaxRenderTargetSize, worldWidth - x * MaxRenderTargetSize);
+                    int renderTargetHeight = Math.Min(MaxRenderTargetSize, worldHeight - y * MaxRenderTargetSize);
+                    renderTargets[x, y] = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+
+                    Console.WriteLine($"RenderTarget[{x},{y}] - Width: {renderTargetWidth}, Height: {renderTargetHeight}, WorldPos: ({x * MaxRenderTargetSize}, {y * MaxRenderTargetSize})");
+                }
+            }
         }
 
-
-        public void UpdateRenderTarget()
+        public void PopulateRenderTarget()
         {
-            graphicsDevice.SetRenderTarget(tileRenderTarget);
-            graphicsDevice.Clear(Color.Transparent); // Clear with a transparent color
+            Console.WriteLine("Populating Render Targets");
+            Console.WriteLine("-------------------------------");
+            int numTargetsX = renderTargets.GetLength(0);
+            int numTargetsY = renderTargets.GetLength(1);
 
-            var spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin();
+            for (int x = 0; x < numTargetsX; x++)
+            {
+                for (int y = 0; y < numTargetsY; y++)
+                {
+                    RenderTarget2D renderTarget = renderTargets[x, y];
+                    graphicsDevice.SetRenderTarget(renderTarget);
+                    graphicsDevice.Clear(Color.Transparent);
 
-            // Draw tiles here
-            DrawTilesByTerrain(spriteBatch, Terrain.Grass);
-            DrawTilesByTerrain(spriteBatch, Terrain.Dirt);
+                    var spriteBatch = new SpriteBatch(graphicsDevice);
+                    spriteBatch.Begin();
 
-            spriteBatch.End();
-            graphicsDevice.SetRenderTarget(null); // Reset to default render target
+                    int offsetX = x * MaxRenderTargetSize;
+                    int offsetY = y * MaxRenderTargetSize;
+
+                    for (int tileY = 0; tileY < height; tileY++)
+                    {
+                        for (int tileX = 0; tileX < width; tileX++)
+                        {
+                            Tile tile = tileMap[tileX, tileY];
+                            if (IsTileWithinRenderTarget(tile, offsetX, offsetY, renderTarget.Width, renderTarget.Height))
+                            {
+                                Vector2 adjustedPosition = new Vector2(tile.Position.X - offsetX, tile.Position.Y - offsetY);
+                                tile.Draw(spriteBatch, adjustedPosition);
+                            }
+                        }
+                    }
+
+                    Console.WriteLine($"RenderTarget[{x},{y}] - Offset: ({offsetX}, {offsetY})");
+                    spriteBatch.End();
+                }
+            }
+
+            graphicsDevice.SetRenderTarget(null);
         }
 
+        private bool IsTileWithinRenderTarget(Tile tile, int offsetX, int offsetY, int width, int height)
+        {
+            //NEEDS TO APPLY DRAW TILES BY TERRAIN FOR PERFORMANCE 
+            // Check if the tile's position is within the bounds of the render target segment
+            // based on its offsetX and offsetY
+            return tile.Position.X >= offsetX - width && tile.Position.X < offsetX + width &&
+                   tile.Position.Y >= offsetY - height && tile.Position.Y < offsetY + height;
+        }
 
         public Tile GetTileAtGridPosition(int x, int y)
         {
@@ -196,17 +241,24 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            // Adjust the visible area to ensure it doesn't extend beyond the render target bounds
-            visibleArea.X = Math.Max(visibleArea.X, 0);
-            visibleArea.Y = Math.Max(visibleArea.Y, 0);
-            visibleArea.Width = Math.Min(visibleArea.Width, tileRenderTarget.Width - visibleArea.X);
-            visibleArea.Height = Math.Min(visibleArea.Height, tileRenderTarget.Height - visibleArea.Y);
+            int numTargetsX = renderTargets.GetLength(0);
+            int numTargetsY = renderTargets.GetLength(1);
 
-            // Draw only the visible part of the render target
-            spriteBatch.Draw(tileRenderTarget, new Vector2(visibleArea.X, visibleArea.Y), visibleArea, Color.White);
-
-            //spriteBatch.Draw(coordinatesRenderTarget, new Vector2(visibleArea.X, visibleArea.Y), visibleArea, Color.White);
+            for (int x = 0; x < numTargetsX; x++)
+            {
+                for (int y = 0; y < numTargetsY; y++)
+                {
+                    RenderTarget2D renderTarget = renderTargets[x, y];
+                    int worldPosX = x * MaxRenderTargetSize;
+                    int worldPosY = y * MaxRenderTargetSize;
+                    spriteBatch.Draw(renderTarget, new Vector2(worldPosX, worldPosY), Color.White);
+                }
+            }
         }
+
+
+
+
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
         {

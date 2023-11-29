@@ -111,7 +111,22 @@ namespace CarbonField
             Console.WriteLine($"Index X: {spriteIndexX}");
             Console.WriteLine($"Index Y: {spriteIndexY}");
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
-            isometricManager.UpdateRenderTarget();
+            isometricManager.PopulateRenderTarget();
+        }
+
+        public bool IsWithinBounds(int offsetX, int offsetY, int width, int height)
+        {
+            // Calculate the bounds of the rectangular area
+            int leftBound = offsetX;
+            int rightBound = offsetX + width;
+            int topBound = offsetY;
+            int bottomBound = offsetY + height;
+
+            // Check if any part of the tile is within the rectangular area
+            bool isWithinHorizontalBounds = Position.X + Width > leftBound && Position.X < rightBound;
+            bool isWithinVerticalBounds = Position.Y + Height > topBound && Position.Y < bottomBound;
+
+            return isWithinHorizontalBounds && isWithinVerticalBounds;
         }
 
 
@@ -120,6 +135,12 @@ namespace CarbonField
         {
             // Logic to determine and return the appropriate blend map texture based on adjacent terrains
         }*/
+
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
+        {
+            spriteBatch.Draw(spriteSheet.Texture, adjustedPosition, _sourceRectangle, Color.White);
+        }
 
         public void Draw(SpriteBatch spriteBatch)
         {
