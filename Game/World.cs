@@ -17,7 +17,7 @@ namespace CarbonField
         private readonly ContentManager _content;
         private readonly LightingManager _lightingManager;
         private readonly WorldUserInterface _worldUI;
-        private readonly EntityManager _entityManager;
+        public readonly EntityManager _entityManager;
 
         public IsometricManager IsoManager { get; private set; }
 

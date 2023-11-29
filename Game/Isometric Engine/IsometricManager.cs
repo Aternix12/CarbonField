@@ -49,7 +49,7 @@ namespace CarbonField
 
         public void Initialize()
         {
-
+            //Bruh
         }
 
         public void LoadContent()

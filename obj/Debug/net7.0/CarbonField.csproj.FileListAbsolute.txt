@@ -1237,3 +1237,4 @@ C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\d
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grasstest_terrain.xnb
 C:\Users\Aternix\OneDrive\CarbonField\bin\Debug\net7.0\Content\sprites\terrain\grass_terrain.xnb
 C:\Users\Aternix\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.sourcelink.json
+C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.sourcelink.json

@@ -10,7 +10,7 @@ using Penumbra;
 
 namespace CarbonField
 {
-    abstract class GameObject
+    public abstract class GameObject
     {
         protected Texture2D _image;
 

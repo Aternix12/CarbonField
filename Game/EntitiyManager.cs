@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CarbonField
 {
-    class EntityManager
+    public class EntityManager
     {
         private readonly List<GameObject> entities = new();
         private readonly List<GameObject> addedEntities = new();
