@@ -109,8 +109,7 @@ namespace CarbonField
             Console.WriteLine($"Terrain SpriteIndex X: {spriteIndexX}");
             Console.WriteLine($"Terrain SpriteIndex Y: {spriteIndexY}");
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
-            isometricManager.RestoreRenderTargetContent();
-            isometricManager.PopulateRenderTarget();
+            isometricManager.UpdateTile(this);
         }
 
         public bool IsWithinBounds(int offsetX, int offsetY, int width, int height)
@@ -127,8 +126,6 @@ namespace CarbonField
 
             return isWithinHorizontalBounds && isWithinVerticalBounds;
         }
-
-
 
         /*public Texture2D GetBlendMap()
         {
