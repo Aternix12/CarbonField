@@ -313,13 +313,30 @@ namespace CarbonField
                     Texture2D texture = textures[x, y];
                     if (texture != null)
                     {
+                        // Calculate the world position for the texture
                         int worldPosX = x * MaxRenderTargetSize;
                         int worldPosY = y * MaxRenderTargetSize;
-                        spriteBatch.Draw(texture, new Vector2(worldPosX, worldPosY), Color.White);
+
+                        // Create a rectangle representing the position and size of the texture
+                        Rectangle textureRectangle = new Rectangle(worldPosX, worldPosY, texture.Width, texture.Height);
+
+                        // Check if the texture rectangle intersects with the visible area
+                        if (visibleArea.Intersects(textureRectangle))
+                        {
+                            // Find the intersection area
+                            Rectangle intersection = Rectangle.Intersect(visibleArea, textureRectangle);
+
+                            // Adjust the intersection area to the texture's local coordinates
+                            Rectangle sourceRectangle = new Rectangle(intersection.X - worldPosX, intersection.Y - worldPosY, intersection.Width, intersection.Height);
+
+                            // Draw only the intersection part of the texture
+                            spriteBatch.Draw(texture, intersection, sourceRectangle, Color.White);
+                        }
                     }
                 }
             }
         }
+
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
         {
