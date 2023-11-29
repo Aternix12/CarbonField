@@ -1,7 +1,5 @@
 C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.csproj.AssemblyReference.cache
 C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.AssemblyInfoInputs.cache
-C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.AssemblyInfo.cs
 C:\Users\xX12T\OneDrive\CarbonField\obj\Debug\net7.0\CarbonField.csproj.CoreCompileInputs.cache
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\Fonts\Arial.xnb
 C:\Users\xX12T\OneDrive\CarbonField\bin\Debug\net7.0\Content\GeonBit.UI\themes\editor\effects\disabled.xnb
