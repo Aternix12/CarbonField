@@ -37,6 +37,7 @@ obj/
 [Rr]elease*/
 Ankh.NoLoad
 FileContentIndex
+/obj/
 
 #Tooling
 _ReSharper*/
