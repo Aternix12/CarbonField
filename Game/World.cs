@@ -18,8 +18,6 @@ namespace CarbonField
         //Viewport Background Testing
         private Texture2D _bgrTexture;
 
-
-
         public World(GraphicsDeviceManager graphics, ContentManager content, CarbonField carbonFieldInstance)
         {
             _graphics = graphics;
@@ -32,7 +30,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(300, 300, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(500, 500, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);

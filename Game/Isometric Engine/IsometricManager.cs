@@ -22,6 +22,7 @@ namespace CarbonField
         private RenderTarget2D[,] renderTargets;
         private Texture2D[,] textures;
         private int MaxRenderTargetSize = 640;
+        private TerrainManager terrainManager;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -40,6 +41,7 @@ namespace CarbonField
             this.content = content;
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
+            terrainManager = new TerrainManager();
             CalculateWorldBounds();
         }
 
@@ -99,12 +101,19 @@ namespace CarbonField
                         x * halfTileHeight + y * halfTileHeight
                     );
 
-                    Terrain type = (x + y) % 2 == 0 ? Terrain.Grass : Terrain.Dirt;
+                    //Terrain type = (x + y) % 2 == 0 ? Terrain.Grass : Terrain.Dirt;
+                    // Use TerrainManager to determine the terrain type
+                    Terrain terrainType = terrainManager.GetTerrainType(x, y);
 
-                    // Correctly passing the terrainSpriteSheets dictionary
+                    // Use the determined terrainType instead of random selection
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
-                    tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
+                    tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
+
+                    // Correctly passing the terrainSpriteSheets dictionary
+                   /* int spriteIndexX = x % 10;
+                    int spriteIndexY = y % 10;
+                    tileMap[x, y] = new Tile(isoPosition, type, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);*/
                 }
             }
 
@@ -176,6 +185,7 @@ namespace CarbonField
                     int renderTargetWidth = Math.Min(MaxRenderTargetSize, worldWidth - x * MaxRenderTargetSize);
                     int renderTargetHeight = Math.Min(MaxRenderTargetSize, worldHeight - y * MaxRenderTargetSize);
                     renderTargets[x, y] = new RenderTarget2D(graphicsDevice, renderTargetWidth, renderTargetHeight, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+                    Console.WriteLine($"RenderTarget[{x},{y}] - Size: ({renderTargetWidth}, {renderTargetHeight})");
                 }
             }
         }
@@ -286,49 +296,44 @@ namespace CarbonField
 
         public void UpdateTile(Tile updatedTile)
         {
-            for (int x = 0; x < renderTargets.GetLength(0); x++)
+            // Calculate which render target the tile is in
+            Vector2 worldPosition = updatedTile.Position;
+            int rtIndexX = (int)(worldPosition.X / MaxRenderTargetSize);
+            int rtIndexY = (int)(worldPosition.Y / MaxRenderTargetSize);
+
+            // Ensure indices are within bounds
+            rtIndexX = Math.Clamp(rtIndexX, 0, renderTargets.GetLength(0) - 1);
+            rtIndexY = Math.Clamp(rtIndexY, 0, renderTargets.GetLength(1) - 1);
+
+            // Restore the render target from the texture
+            if (textures[rtIndexX, rtIndexY] != null)
             {
-                for (int y = 0; y < renderTargets.GetLength(1); y++)
-                {
-                    int offsetX = x * MaxRenderTargetSize;
-                    int offsetY = y * MaxRenderTargetSize;
+                int offsetX = rtIndexX * MaxRenderTargetSize;
+                int offsetY = rtIndexY * MaxRenderTargetSize;
 
-                    if (IsTileWithinRenderTarget(updatedTile, offsetX, offsetY, MaxRenderTargetSize, MaxRenderTargetSize))
-                    {
-                        // Restore the render target from the texture
-                        if (textures[x, y] != null)
-                        {
-                            renderTargets[x, y] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-                            graphicsDevice.SetRenderTarget(renderTargets[x, y]);
-                            graphicsDevice.Clear(Color.Transparent);
-                            var spriteBatch = new SpriteBatch(graphicsDevice);
-                            spriteBatch.Begin();
-                            spriteBatch.Draw(textures[x, y], new Rectangle(0, 0, MaxRenderTargetSize, MaxRenderTargetSize), Color.White);
+                renderTargets[rtIndexX, rtIndexY] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+                graphicsDevice.SetRenderTarget(renderTargets[rtIndexX, rtIndexY]);
+                graphicsDevice.Clear(Color.Transparent);
+                var spriteBatch = new SpriteBatch(graphicsDevice);
+                spriteBatch.Begin();
+                spriteBatch.Draw(textures[rtIndexX, rtIndexY], new Rectangle(0, 0, MaxRenderTargetSize, MaxRenderTargetSize), Color.White);
 
-                            // Draw the updated tile
-                            Vector2 adjustedPosition = new Vector2(updatedTile.Position.X - offsetX, updatedTile.Position.Y - offsetY);
-                            updatedTile.Draw(spriteBatch, adjustedPosition);
-                            spriteBatch.End();
+                // Draw the updated tile
+                Vector2 adjustedPosition = new Vector2(updatedTile.Position.X - offsetX, updatedTile.Position.Y - offsetY);
+                updatedTile.Draw(spriteBatch, adjustedPosition);
+                spriteBatch.End();
 
-                            // Update the texture with the new render target content
-                            Color[] renderTargetData = new Color[MaxRenderTargetSize * MaxRenderTargetSize];
-                            renderTargets[x, y].GetData(renderTargetData);
-                            textures[x, y].SetData(renderTargetData);
+                // Update the texture with the new render target content
+                Color[] renderTargetData = new Color[MaxRenderTargetSize * MaxRenderTargetSize];
+                renderTargets[rtIndexX, rtIndexY].GetData(renderTargetData);
+                textures[rtIndexX, rtIndexY].SetData(renderTargetData);
 
-                            // Dispose of the render target
-                            graphicsDevice.SetRenderTarget(null);
-                            renderTargets[x, y].Dispose();
-                            renderTargets[x, y] = null;
-                        }
-
-                        return; // Render target found and updated
-                    }
-                }
+                // Dispose of the render target
+                graphicsDevice.SetRenderTarget(null);
+                renderTargets[rtIndexX, rtIndexY].Dispose();
+                renderTargets[rtIndexX, rtIndexY] = null;
             }
         }
-
-
-
 
 
         private void RestoreRenderTargetContent(int rtIndexX, int rtIndexY)
@@ -354,11 +359,6 @@ namespace CarbonField
                 graphicsDevice.SetRenderTarget(null);
             }
         }
-
-
-
-
-
 
         private bool IsTileWithinRenderTarget(Tile tile, int offsetX, int offsetY, int width, int height)
         {
@@ -410,7 +410,6 @@ namespace CarbonField
                 }
             }
         }
-
 
         private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
         {

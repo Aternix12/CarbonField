@@ -64,7 +64,6 @@ namespace CarbonField
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.ApplyChanges();
 
-
             //FPS
             _frameCounter = new FrameCounter();
 
