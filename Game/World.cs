@@ -30,7 +30,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(500, 500, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -58,7 +58,6 @@ namespace CarbonField
             _bgrTexture = _content.Load<Texture2D>("spr_background");
 
             IsoManager.LoadContent();
-            IsoManager.CreateCoordinatesRenderTarget();
         }
 
         private Vector2 GenerateRandomPositionWithinDiamond()
