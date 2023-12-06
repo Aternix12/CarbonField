@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace CarbonField
 {
@@ -205,44 +206,64 @@ namespace CarbonField
 
         public void UpdateTile(Tile updatedTile)
         {
-            // Calculate which render target the tile is in
-            Vector2 worldPosition = updatedTile.Position;
-            int rtIndexX = (int)(worldPosition.X / MaxRenderTargetSize);
-            int rtIndexY = (int)(worldPosition.Y / MaxRenderTargetSize);
+            // Calculate the bounds of the tile
+            var tileBounds = new Rectangle(
+                (int)updatedTile.Position.X,
+                (int)updatedTile.Position.Y,
+                Tile.Width,
+                Tile.Height);
 
-            // Ensure indices are within bounds
-            rtIndexX = Math.Clamp(rtIndexX, 0, renderTargets.GetLength(0) - 1);
-            rtIndexY = Math.Clamp(rtIndexY, 0, renderTargets.GetLength(1) - 1);
+            // Determine the chunks that the corners of the tile fall into
+            var affectedChunks = new HashSet<(int, int)>();
+            affectedChunks.Add(GetChunkIndices(tileBounds.Left, tileBounds.Top));
+            affectedChunks.Add(GetChunkIndices(tileBounds.Left, tileBounds.Bottom));
+            affectedChunks.Add(GetChunkIndices(tileBounds.Right, tileBounds.Top));
+            affectedChunks.Add(GetChunkIndices(tileBounds.Right, tileBounds.Bottom));
 
-            // Restore the render target from the texture
-            if (textures[rtIndexX, rtIndexY] != null)
+            foreach (var (chunkX, chunkY) in affectedChunks)
             {
-                int offsetX = rtIndexX * MaxRenderTargetSize;
-                int offsetY = rtIndexY * MaxRenderTargetSize;
+                UpdateChunkForTile(updatedTile, chunkX, chunkY);
+            }
+        }
 
-                renderTargets[rtIndexX, rtIndexY] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-                graphicsDevice.SetRenderTarget(renderTargets[rtIndexX, rtIndexY]);
+        private (int, int) GetChunkIndices(int x, int y)
+        {
+            int rtIndexX = Math.Clamp(x / MaxRenderTargetSize, 0, renderTargets.GetLength(0) - 1);
+            int rtIndexY = Math.Clamp(y / MaxRenderTargetSize, 0, renderTargets.GetLength(1) - 1);
+            return (rtIndexX, rtIndexY);
+        }
+
+        private void UpdateChunkForTile(Tile updatedTile, int chunkX, int chunkY)
+        {
+            if (textures[chunkX, chunkY] != null)
+            {
+                int offsetX = chunkX * MaxRenderTargetSize;
+                int offsetY = chunkY * MaxRenderTargetSize;
+
+                renderTargets[chunkX, chunkY] = new RenderTarget2D(graphicsDevice, MaxRenderTargetSize, MaxRenderTargetSize, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+                graphicsDevice.SetRenderTarget(renderTargets[chunkX, chunkY]);
                 graphicsDevice.Clear(Color.Transparent);
                 var spriteBatch = new SpriteBatch(graphicsDevice);
                 spriteBatch.Begin();
-                spriteBatch.Draw(textures[rtIndexX, rtIndexY], new Rectangle(0, 0, MaxRenderTargetSize, MaxRenderTargetSize), Color.White);
+                spriteBatch.Draw(textures[chunkX, chunkY], new Rectangle(0, 0, MaxRenderTargetSize, MaxRenderTargetSize), Color.White);
 
-                // Draw the updated tile
+                // Draw the updated tile at the adjusted position
                 Vector2 adjustedPosition = new Vector2(updatedTile.Position.X - offsetX, updatedTile.Position.Y - offsetY);
                 updatedTile.Draw(spriteBatch, adjustedPosition);
                 spriteBatch.End();
 
                 // Update the texture with the new render target content
                 Color[] renderTargetData = new Color[MaxRenderTargetSize * MaxRenderTargetSize];
-                renderTargets[rtIndexX, rtIndexY].GetData(renderTargetData);
-                textures[rtIndexX, rtIndexY].SetData(renderTargetData);
+                renderTargets[chunkX, chunkY].GetData(renderTargetData);
+                textures[chunkX, chunkY].SetData(renderTargetData);
 
                 // Dispose of the render target
                 graphicsDevice.SetRenderTarget(null);
-                renderTargets[rtIndexX, rtIndexY].Dispose();
-                renderTargets[rtIndexX, rtIndexY] = null;
+                renderTargets[chunkX, chunkY].Dispose();
+                renderTargets[chunkX, chunkY] = null;
             }
         }
+
 
 
         private void RestoreRenderTargetContent(int rtIndexX, int rtIndexY)

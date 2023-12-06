@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CarbonField Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f506f1de37239b513afc5bd0a8710e69663d084")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("CarbonField Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CarbonField Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
