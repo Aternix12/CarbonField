@@ -214,11 +214,13 @@ namespace CarbonField
                 Tile.Height);
 
             // Determine the chunks that the corners of the tile fall into
-            var affectedChunks = new HashSet<(int, int)>();
-            affectedChunks.Add(GetChunkIndices(tileBounds.Left, tileBounds.Top));
-            affectedChunks.Add(GetChunkIndices(tileBounds.Left, tileBounds.Bottom));
-            affectedChunks.Add(GetChunkIndices(tileBounds.Right, tileBounds.Top));
-            affectedChunks.Add(GetChunkIndices(tileBounds.Right, tileBounds.Bottom));
+            var affectedChunks = new HashSet<(int, int)>
+            {
+                GetChunkIndices(tileBounds.Left, tileBounds.Top),
+                GetChunkIndices(tileBounds.Left, tileBounds.Bottom),
+                GetChunkIndices(tileBounds.Right, tileBounds.Top),
+                GetChunkIndices(tileBounds.Right, tileBounds.Bottom)
+            };
 
             foreach (var (chunkX, chunkY) in affectedChunks)
             {
