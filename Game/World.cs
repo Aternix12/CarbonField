@@ -30,7 +30,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(50, 50, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -42,7 +42,7 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 55; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Vector2 pos = GenerateRandomPositionWithinDiamond();
                 WallBlock ent = new(pos, IsoManager);

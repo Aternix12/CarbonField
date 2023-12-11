@@ -45,7 +45,7 @@ namespace CarbonField
             // Load any Penumbra-specific content (like textures for lights) here
             // and add lights and hulls to the PenumbraComponent.
             // Assuming that Content is your ContentManager instance.
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Texture2D _tex = content.Load<Texture2D>("src_texturedlight");
                 Light _light = new TexturedLight(_tex)
