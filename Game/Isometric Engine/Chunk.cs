@@ -65,25 +65,32 @@ namespace CarbonField
 
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch)
         {
+            // Create a new render target
+            RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 
-            // Set the render target to the chunk's texture
-            graphicsDevice.SetRenderTarget(RenderTarget);
+            // Set the new render target
+            graphicsDevice.SetRenderTarget(newRenderTarget);
+            graphicsDevice.Clear(Color.Transparent);
 
-            // Draw only the updated tile
+            // Draw the existing texture first
             spriteBatch.Begin();
+            spriteBatch.Draw(Texture, Vector2.Zero, Color.White);
+
+            // Then draw the updated tile
             Vector2 adjustedPosition = new Vector2(tile.Position.X - Bounds.X, tile.Position.Y - Bounds.Y);
             tile.Draw(spriteBatch, adjustedPosition);
             spriteBatch.End();
 
-            // Update the chunk's texture
-            Color[] renderTargetData = new Color[RenderTarget.Width * RenderTarget.Height];
-            RenderTarget.GetData(renderTargetData);
+            // Update the texture with the new render target content
+            Color[] renderTargetData = new Color[Bounds.Width * Bounds.Height];
+            newRenderTarget.GetData(renderTargetData);
             Texture.SetData(renderTargetData);
 
-            // Reset the render target
+            // Clean up
             graphicsDevice.SetRenderTarget(null);
-
+            newRenderTarget.Dispose();
         }
+
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
