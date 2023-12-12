@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 
 namespace CarbonField
 {
@@ -20,7 +21,7 @@ namespace CarbonField
             Texture = new Texture2D(graphicsDevice, width, height);
         }
 
-        public void PopulateChunk(Tile[,] tileMap, SpriteBatch spriteBatch, int offsetX, int offsetY)
+        public void PopulateChunk(SpriteBatch spriteBatch, int offsetX, int offsetY, ChunkManager chunkManager)
         {
             Console.WriteLine($"Populating Chunk at Offset ({offsetX}, {offsetY}) with Size ({Bounds.Width}, {Bounds.Height})");
 
@@ -28,16 +29,18 @@ namespace CarbonField
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin();
 
-            for (int tileY = 0; tileY < tileMap.GetLength(1); tileY++)
+            // Group tiles by terrain type
+            var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(offsetX, offsetY, Bounds.Width, Bounds.Height))
+                                              .GroupBy(tile => tile.Terrain)
+                                              .ToDictionary(group => group.Key, group => group.ToList());
+
+            // Draw each group of tiles
+            foreach (var terrainGroup in tilesByTerrain)
             {
-                for (int tileX = 0; tileX < tileMap.GetLength(0); tileX++)
+                foreach (Tile tile in terrainGroup.Value)
                 {
-                    Tile tile = tileMap[tileX, tileY];
-                    if (IsTileWithinBounds(tile, offsetX, offsetY))
-                    {
-                        Vector2 adjustedPosition = new Vector2(tile.Position.X - offsetX, tile.Position.Y - offsetY);
-                        tile.Draw(spriteBatch, adjustedPosition);
-                    }
+                    Vector2 adjustedPosition = new Vector2(tile.Position.X - offsetX, tile.Position.Y - offsetY);
+                    tile.Draw(spriteBatch, adjustedPosition);
                 }
             }
 
@@ -49,6 +52,7 @@ namespace CarbonField
             graphicsDevice.SetRenderTarget(null);
             RenderTarget.Dispose();
         }
+
 
         private bool IsTileWithinBounds(Tile tile, int offsetX, int offsetY)
         {
@@ -101,8 +105,11 @@ namespace CarbonField
             // Adjust the intersection area to the chunk's local coordinates
             Rectangle sourceRectangle = new Rectangle(intersection.X - Bounds.X, intersection.Y - Bounds.Y, intersection.Width, intersection.Height);
 
-            // Draw only the intersection part of the texture
-            spriteBatch.Draw(Texture, intersection, sourceRectangle, Color.White);
+            if (Texture != null)
+            {
+                // Draw only the intersection part of the texture
+                spriteBatch.Draw(Texture, intersection, sourceRectangle, Color.White);
+            }
         }
     }
 }
