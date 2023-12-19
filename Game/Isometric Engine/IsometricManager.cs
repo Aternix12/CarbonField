@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CarbonField
 {
@@ -18,9 +19,10 @@ namespace CarbonField
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
         /*private readonly ChunkManager chunkManager;*/
-        private CtrCamera _camera;
         private QuadtreeNode quadtreeRoot;
+        private TilePool tilePool;
         Texture2D pixel;
+
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -45,8 +47,11 @@ namespace CarbonField
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
-            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
+            tilePool = new TilePool(1000);
+            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight), tilePool);
         }
+
+
 
         private void CalculateWorldBounds()
         {
@@ -54,11 +59,6 @@ namespace CarbonField
             WorldRight = new Vector2(worldWidth, worldHeight / 2); // Right center
             WorldBottom = new Vector2(worldWidth / 2, worldHeight); // Bottom center
             WorldLeft = new Vector2(0, worldHeight / 2); // Left center
-        }
-
-        public void SetCamera(CtrCamera camera)
-        {
-            _camera = camera;
         }
 
 
@@ -114,7 +114,7 @@ namespace CarbonField
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
                     tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
-                    quadtreeRoot.AddTile(tileMap[x, y]);
+                    quadtreeRoot.AddTile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
 
                 }
             }
@@ -160,7 +160,15 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            foreach (Tile tile in GetVisibleTiles(visibleArea))
+            var groupedTiles = GetVisibleTiles(visibleArea)
+                       .GroupBy(tile => tile.Terrain)
+                       .SelectMany(group => group)
+                       .ToList();
+
+            Console.WriteLine($"Number of tiles in area: {groupedTiles.Count}");
+
+            // Draw each tile
+            foreach (Tile tile in groupedTiles)
             {
                 tile.Draw(spriteBatch);
             }

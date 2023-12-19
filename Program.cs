@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime;
 
 namespace CarbonField
 {
@@ -11,6 +12,7 @@ namespace CarbonField
         [STAThread]
         static void Main()
         {
+            GCSettings.LatencyMode = GCLatencyMode.LowLatency;
             _game = new CarbonField();
             _game.Run();
         }

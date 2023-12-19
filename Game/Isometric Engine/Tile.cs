@@ -15,8 +15,8 @@ namespace CarbonField
         private SpriteSheet spriteSheet;
         private Rectangle _sourceRectangle;
         public Terrain Terrain { get; private set; }
-        private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
-        private readonly int Elevation;
+        private Dictionary<Direction, Terrain?> adjacentTerrainTypes;
+        private int Elevation;
         public Vector2 IsometricPosition { get; private set; }
 
         public Vector2 Position { get; private set; }
@@ -25,10 +25,14 @@ namespace CarbonField
         public Vector2 LeftCorner { get; private set; }
         public Vector2 RightCorner { get; private set; }
         public Vector2 BottomCorner { get; private set; }
-        private readonly int spriteIndexX;
-        private readonly int spriteIndexY;
+        private int spriteIndexX;
+        private int spriteIndexY;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
+        public Tile()
+        {
+            // Parameterless constructor (leaves the tile in an uninitialized state)
+        }
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
@@ -50,20 +54,28 @@ namespace CarbonField
             { Direction.Right, null },
             { Direction.Bottom, null }
         };
-            CalculateCorners();
         }
 
-        private void CalculateCorners()
+        public void Initialize(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
-            // Assuming the position is the top-left corner of the tile
-            float halfWidth = Width / 2f;
-            float halfHeight = Height / 2f;
+            Position = position;
+            Terrain = terrain;
+            spriteSheet = spriteSheets[terrain];
+            string spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
+            _sourceRectangle = spriteSheet.GetSprite(spriteName);
+            GridX = gridX;
+            GridY = gridY;
+            this.spriteIndexX = spriteIndexX;
+            this.spriteIndexY = spriteIndexY;
+            this.Elevation = 0;
 
-            Center = new Vector2(Position.X + halfWidth, Position.Y + halfHeight);
-            TopCorner = new Vector2(Center.X, Position.Y);
-            LeftCorner = new Vector2(Position.X, Center.Y);
-            RightCorner = new Vector2(Position.X + Width, Center.Y);
-            BottomCorner = new Vector2(Center.X, Position.Y + Height);
+            adjacentTerrainTypes = new Dictionary<Direction, Terrain?>
+        {
+            { Direction.Top, null },
+            { Direction.Left, null },
+            { Direction.Right, null },
+            { Direction.Bottom, null }
+        };
         }
 
         public void DetermineNeighbors(IsometricManager isoManager)
@@ -125,6 +137,15 @@ namespace CarbonField
             bool isWithinVerticalBounds = Position.Y + Height > topBound && Position.Y < bottomBound;
 
             return isWithinHorizontalBounds && isWithinVerticalBounds;
+        }
+
+        public void Reset()
+        {
+            // Reset the state of the tile to its initial condition
+            Terrain = Terrain.Grass; // or any default value
+                                     // Reset other properties as needed
+            _sourceRectangle = Rectangle.Empty; // Example
+                                                // Reset other relevant fields to their default state
         }
 
         /*public Texture2D GetBlendMap()
