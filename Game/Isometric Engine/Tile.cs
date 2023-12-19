@@ -10,13 +10,14 @@ namespace CarbonField
 {
     public class Tile
     {
-        public static readonly int Width = 96;
-        public static readonly int Height = 48;
+        public static readonly int Width = 64;
+        public static readonly int Height = 32;
         private SpriteSheet spriteSheet;
         private Rectangle _sourceRectangle;
         public Terrain Terrain { get; private set; }
         private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
         private readonly int Elevation;
+        public Vector2 IsometricPosition { get; private set; }
 
         public Vector2 Position { get; private set; }
         public Vector2 Center { get; private set; }
@@ -28,9 +29,6 @@ namespace CarbonField
         private readonly int spriteIndexY;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
-
-        
-
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
@@ -52,7 +50,6 @@ namespace CarbonField
             { Direction.Right, null },
             { Direction.Bottom, null }
         };
-
             CalculateCorners();
         }
 
@@ -113,7 +110,6 @@ namespace CarbonField
             Console.WriteLine($"Terrain SpriteIndex X: {spriteIndexX}");
             Console.WriteLine($"Terrain SpriteIndex Y: {spriteIndexY}");
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
-            isometricManager.UpdateTile(this);
         }
 
         public bool IsWithinBounds(int offsetX, int offsetY, int width, int height)

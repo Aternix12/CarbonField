@@ -17,7 +17,9 @@ namespace CarbonField
         private readonly ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
-        private readonly ChunkManager chunkManager;
+        /*private readonly ChunkManager chunkManager;*/
+        private CtrCamera _camera;
+        Texture2D pixel;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -37,17 +39,26 @@ namespace CarbonField
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
             terrainManager = new TerrainManager();
-            chunkManager = new ChunkManager(width, height, worldWidth, worldHeight, graphicsDevice, tileMap, content);
+            /*chunkManager = new ChunkManager(width, height, worldWidth, worldHeight, graphicsDevice, tileMap, content);*/
             CalculateWorldBounds();
+            pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            pixel.SetData(new[] { Color.White
+            });
         }
 
         private void CalculateWorldBounds()
         {
-            WorldTop = new Vector2(worldWidth / 2, 0);
-            WorldRight = new Vector2(0, worldHeight / 2);
-            WorldBottom = new Vector2(worldWidth / 2, 0);
-            WorldLeft = new Vector2(0, worldHeight / 2);
+            WorldTop = new Vector2(worldWidth / 2, 0); // Top center
+            WorldRight = new Vector2(worldWidth, worldHeight / 2); // Right center
+            WorldBottom = new Vector2(worldWidth / 2, worldHeight); // Bottom center
+            WorldLeft = new Vector2(0, worldHeight / 2); // Left center
         }
+
+        public void SetCamera(CtrCamera camera)
+        {
+            _camera = camera;
+        }
+
 
         public void Initialize()
         {
@@ -111,12 +122,7 @@ namespace CarbonField
             }
 
             // Initialize the render target
-            chunkManager.LoadContent();
-        }
-
-        public void UpdateTile(Tile tile)
-        {
-            chunkManager.UpdateTile(tile);
+            /*chunkManager.LoadContent();*/
         }
 
         public Tile GetTileAtGridPosition(int x, int y)
@@ -128,10 +134,45 @@ namespace CarbonField
             return null;
         }
 
+        private void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, int thickness)
+        {
+            Vector2 edge = end - start;
+            float angle = (float)Math.Atan2(edge.Y, edge.X);
+            float length = edge.Length();
+
+            // Create a 1x1 white pixel texture if not already created
+            if (pixel == null)
+            {
+                pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                pixel.SetData(new[] { Color.White });
+            }
+
+            spriteBatch.Draw(pixel, new Rectangle((int)start.X, (int)start.Y, (int)length, thickness), null, color, angle, new Vector2(0, 0.5f), SpriteEffects.None, 0);
+        }
+
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            chunkManager.Draw(spriteBatch, visibleArea);
+            foreach (Tile tile in GetVisibleTiles(visibleArea))
+            {
+                tile.Draw(spriteBatch);
+            }
+
+            /*foreach (Tile tile in TileMap)
+            {
+                tile.Draw(spriteBatch);
+            }*/
         }
+
+        public void DrawDiag(SpriteBatch spriteBatch)
+        {
+            int lineThickness = 2; // Set the desired line thickness
+
+            DrawLine(spriteBatch, WorldTop, WorldRight, Color.Yellow, lineThickness);
+            DrawLine(spriteBatch, WorldRight, WorldBottom, Color.Yellow, lineThickness);
+            DrawLine(spriteBatch, WorldBottom, WorldLeft, Color.Yellow, lineThickness);
+            DrawLine(spriteBatch, WorldLeft, WorldTop, Color.Yellow, lineThickness);
+        }
+
 
         public Tile[,] TileMap => tileMap;
     }

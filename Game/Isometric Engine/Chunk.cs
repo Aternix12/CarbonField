@@ -11,7 +11,7 @@ namespace CarbonField
         public Texture2D Texture { get; private set; }
         public Rectangle Bounds { get; private set; }
 
-        private GraphicsDevice graphicsDevice;
+        private readonly GraphicsDevice graphicsDevice;
 
         public Chunk(GraphicsDevice graphicsDevice, int x, int y, int width, int height)
         {
@@ -64,8 +64,6 @@ namespace CarbonField
                    (tile.Position.Y + Tile.Height > offsetY - marginY) &&
                    (tile.Position.Y < offsetY + Bounds.Height + marginY);
         }
-
-
 
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch)
         {

@@ -12,6 +12,8 @@ namespace CarbonField
         private readonly LightingManager _lightingManager;
         private readonly WorldUserInterface _worldUI;
         public readonly EntityManager _entityManager;
+        Texture2D pixel;
+        
 
         public IsometricManager IsoManager { get; private set; }
 
@@ -25,18 +27,22 @@ namespace CarbonField
             _lightingManager = new LightingManager(carbonFieldInstance);
             _worldUI = new WorldUserInterface(this);
             _entityManager = new EntityManager();
+            pixel = new Texture2D(graphics.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            pixel.SetData(new[] { Color.White
+            });
         }
 
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(100, 100, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
 
             //Camera
             Cam = new CtrCamera(_graphics.GraphicsDevice.Viewport, IsoManager.worldWidth, IsoManager.worldHeight);
+            IsoManager.SetCamera(Cam);
         }
 
         public void LoadContent()
@@ -121,14 +127,28 @@ namespace CarbonField
             //Isometric Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, /*SamplerState.PointClamp*/null, null, null, null, Cam.GetTransform());
             IsoManager.Draw(spriteBatch, Cam.GetVisibleArea());
+            
             spriteBatch.End();
 
             //Entity Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             _entityManager.Draw(spriteBatch);
-            spriteBatch.End();
+            spriteBatch.End();        
 
             _lightingManager.Draw(gameTime);
+
+            //World Diagnostics
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
+            DrawRectangle(spriteBatch, Cam.GetVisibleArea(), Color.Red, 2);
+            IsoManager.DrawDiag(spriteBatch);
+            spriteBatch.End();
+        }
+        void DrawRectangle(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness)
+        {
+            spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, rect.Width, thickness), color); // Top
+            spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Bottom, rect.Width, thickness), color); // Bottom
+            spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, thickness, rect.Height), color); // Left
+            spriteBatch.Draw(pixel, new Rectangle(rect.Right, rect.Top, thickness, rect.Height), color); // Right
         }
     }
 }

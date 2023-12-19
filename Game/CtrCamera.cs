@@ -16,8 +16,8 @@ namespace CarbonField
         private Vector2 _vel;
         private float _zoom;
         private float _previousZoom;
-        private int worldWidth;
-        private int worldHeight;
+        private readonly int worldWidth;
+        private readonly int worldHeight;
 
         public CtrCamera(Viewport newview, int worldWidth, int worldHeight)
         {
