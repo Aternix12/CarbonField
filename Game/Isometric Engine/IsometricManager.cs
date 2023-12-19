@@ -19,6 +19,7 @@ namespace CarbonField
         private readonly TerrainManager terrainManager;
         /*private readonly ChunkManager chunkManager;*/
         private CtrCamera _camera;
+        private QuadtreeNode quadtreeRoot;
         Texture2D pixel;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -44,6 +45,7 @@ namespace CarbonField
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
+            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
         }
 
         private void CalculateWorldBounds()
@@ -112,6 +114,7 @@ namespace CarbonField
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
                     tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
+                    quadtreeRoot.AddTile(tileMap[x, y]);
 
                 }
             }
@@ -150,17 +153,17 @@ namespace CarbonField
             spriteBatch.Draw(pixel, new Rectangle((int)start.X, (int)start.Y, (int)length, thickness), null, color, angle, new Vector2(0, 0.5f), SpriteEffects.None, 0);
         }
 
+        public IEnumerable<Tile> GetVisibleTiles(Rectangle viewBounds)
+        {
+            return quadtreeRoot.GetTilesInArea(viewBounds);
+        }
+
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
             foreach (Tile tile in GetVisibleTiles(visibleArea))
             {
                 tile.Draw(spriteBatch);
             }
-
-            /*foreach (Tile tile in TileMap)
-            {
-                tile.Draw(spriteBatch);
-            }*/
         }
 
         public void DrawDiag(SpriteBatch spriteBatch)

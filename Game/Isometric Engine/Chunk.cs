@@ -53,18 +53,6 @@ namespace CarbonField
             RenderTarget.Dispose();
         }
 
-
-        private bool IsTileWithinBounds(Tile tile, int offsetX, int offsetY)
-        {
-            int marginX = Tile.Width / 2;  // Half of the tile's width
-            int marginY = Tile.Height / 2; // Half of the tile's height
-
-            return (tile.Position.X + Tile.Width > offsetX - marginX) &&
-                   (tile.Position.X < offsetX + Bounds.Width + marginX) &&
-                   (tile.Position.Y + Tile.Height > offsetY - marginY) &&
-                   (tile.Position.Y < offsetY + Bounds.Height + marginY);
-        }
-
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch)
         {
             // Create a new render target
