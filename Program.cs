@@ -12,7 +12,7 @@ namespace CarbonField
         [STAThread]
         static void Main()
         {
-            GCSettings.LatencyMode = GCLatencyMode.Interactive;
+            GCSettings.LatencyMode = GCLatencyMode.LowLatency;
             _game = new CarbonField();
             _game.Run();
         }

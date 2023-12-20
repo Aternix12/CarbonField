@@ -22,7 +22,7 @@ namespace CarbonField
         private readonly int chunkWidth = 100;
         private readonly int chunkHeight = 100;
         Texture2D pixel;
-        private List<Tile> visibleTilesCache = new List<Tile>();
+        private QuadtreeNode quadtreeRoot;
 
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -47,6 +47,7 @@ namespace CarbonField
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
+            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
         }
 
 
@@ -112,6 +113,7 @@ namespace CarbonField
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
                     tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
+                    quadtreeRoot.AddTile(tileMap[x, y]);
                 }
             }
 
@@ -119,8 +121,6 @@ namespace CarbonField
             {
                 tile.DetermineNeighbors(this);
             }
-
-            InitializeChunks(chunkWidth, chunkHeight);
         }
 
         public void InitializeChunks(int chunkWidth, int chunkHeight)
@@ -200,17 +200,11 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            foreach (var chunk in chunkMap)
+            foreach (var tile in quadtreeRoot.GetTilesInArea(visibleArea))
             {
-                if (visibleArea.Intersects(chunk.Bounds)) // Check if the chunk is in the visible area
+                if (tile != null)
                 {
-                    foreach (var tile in chunk.Tiles)
-                    {
-                        if (tile != null)
-                        {
-                            tile.Draw(spriteBatch);
-                        }
-                    }
+                    tile.Draw(spriteBatch);
                 }
             }
         }
