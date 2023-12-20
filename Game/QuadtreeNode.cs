@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CarbonField
 {
@@ -9,13 +10,13 @@ namespace CarbonField
         public List<Tile> Tiles { get; private set; }
         public QuadtreeNode[] Children { get; private set; }
 
-        private const int MaxTiles = 10;
-        private const int SplitMargin = 5;
+        private const int MaxTiles = 1000;
+        private const int SplitMargin = 200;
 
         public QuadtreeNode(Rectangle bounds)
         {
             Bounds = bounds;
-            Tiles = new List<Tile>();
+            Tiles = [];
             Children = null;
         }
 
@@ -93,12 +94,9 @@ namespace CarbonField
                 }
             }
 
-            foreach (var tile in Tiles)
+            foreach (var tile in Tiles.Where(t => t.IsWithinBounds(area.Left, area.Top, area.Width, area.Height)))
             {
-                if (tile.IsWithinBounds(area.Left, area.Top, area.Width, area.Height))
-                {
-                    yield return tile;
-                }
+                yield return tile;
             }
         }
     }

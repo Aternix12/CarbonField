@@ -12,8 +12,8 @@ namespace CarbonField
     {
         public static readonly int Width = 64;
         public static readonly int Height = 32;
-        private SpriteSheet spriteSheet;
-        private Rectangle _sourceRectangle;
+        public SpriteSheet spriteSheet;
+        public Rectangle _sourceRectangle;
         public Terrain Terrain { get; private set; }
         private Dictionary<Direction, Terrain?> adjacentTerrainTypes;
         private int Elevation;
@@ -38,7 +38,7 @@ namespace CarbonField
         {
             Position = position;
             Terrain = terrain;
-            spriteSheet = spriteSheets[terrain];
+            this.spriteSheet = spriteSheets[terrain];
             string spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
             GridX = gridX;

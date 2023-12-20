@@ -18,11 +18,8 @@ namespace CarbonField
         private readonly ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
-        private TileChunk[,] chunkMap;
-        private readonly int chunkWidth = 100;
-        private readonly int chunkHeight = 100;
         Texture2D pixel;
-        private QuadtreeNode quadtreeRoot;
+        private readonly QuadtreeNode quadtreeRoot;
 
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -123,53 +120,6 @@ namespace CarbonField
             }
         }
 
-        public void InitializeChunks(int chunkWidth, int chunkHeight)
-        {
-            int numChunksX = (int)Math.Ceiling((double)worldWidth / (chunkWidth * Tile.Width));
-            int numChunksY = (int)Math.Ceiling((double)worldHeight / (chunkHeight * Tile.Height));
-
-            chunkMap = new TileChunk[numChunksX, numChunksY];
-
-            for (int x = 0; x < numChunksX; x++)
-            {
-                for (int y = 0; y < numChunksY; y++)
-                {
-                    var chunk = new TileChunk(chunkWidth, chunkHeight);
-                    int startX = x * chunkWidth * Tile.Width;
-                    int startY = y * chunkHeight * Tile.Height;
-                    chunk.CalculateBounds(startX, startY, Tile.Width, Tile.Height);
-
-                    foreach (Tile tile in tileMap)
-                    {
-                        if (IsTileWithinChunkBounds(tile, chunk.Bounds))
-                        {
-                            // Use tile's global coordinates to determine its position within the chunk
-                            int tileX = (int)((tile.Position.X - startX) / Tile.Width);
-                            int tileY = (int)((tile.Position.Y - startY) / Tile.Height);
-                            chunk.SetTile(tileX, tileY, tile);
-                        }
-                    }
-
-                    chunkMap[x, y] = chunk;
-                }
-            }
-        }
-
-
-
-
-        private bool IsTileWithinChunkBounds(Tile tile, Rectangle chunkBounds)
-        {
-            // Calculate the tile's position in the world
-            Vector2 worldPosition = tile.Position; // Make sure this is the global position
-
-            // Check if the tile's global position falls within the chunk's bounds
-            return worldPosition.X >= chunkBounds.Left && worldPosition.X < chunkBounds.Right &&
-                   worldPosition.Y >= chunkBounds.Top && worldPosition.Y < chunkBounds.Bottom;
-        }
-
-
-
         public Tile GetTileAtGridPosition(int x, int y)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
@@ -196,15 +146,22 @@ namespace CarbonField
         }
 
 
-
-
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            foreach (var tile in quadtreeRoot.GetTilesInArea(visibleArea))
+            var tilesInArea = quadtreeRoot.GetTilesInArea(visibleArea);
+
+            // Group the tiles by their spriteSheet
+            var groupedTiles = tilesInArea.GroupBy(tile => tile.spriteSheet);
+
+            foreach (var group in groupedTiles)
             {
-                if (tile != null)
+                // Bind the texture atlas for the current group
+                var texture = group.Key.Texture;
+
+                foreach (var tile in group)
                 {
-                    tile.Draw(spriteBatch);
+                    // Draw each tile using the already bound texture
+                    spriteBatch.Draw(texture, tile.Position, tile._sourceRectangle, Color.White);
                 }
             }
         }
@@ -218,8 +175,5 @@ namespace CarbonField
             DrawLine(spriteBatch, WorldBottom, WorldLeft, Color.Yellow, lineThickness);
             DrawLine(spriteBatch, WorldLeft, WorldTop, Color.Yellow, lineThickness);
         }
-
-
-        public Tile[,] TileMap => tileMap;
     }
 }

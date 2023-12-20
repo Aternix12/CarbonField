@@ -12,7 +12,7 @@ namespace CarbonField
         private readonly LightingManager _lightingManager;
         private readonly WorldUserInterface _worldUI;
         public readonly EntityManager _entityManager;
-        Texture2D pixel;
+        readonly Texture2D pixel;
         
 
         public IsometricManager IsoManager { get; private set; }
