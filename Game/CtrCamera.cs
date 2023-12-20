@@ -22,8 +22,8 @@ namespace CarbonField
         public CtrCamera(Viewport newview, int worldWidth, int worldHeight)
         {
             _viewport = newview;
-            _pos.X = 4000;
-            _pos.Y = 4000;
+            _pos.X = worldWidth/2 - _viewport.Width/2;
+            _pos.Y = worldHeight/2 - _viewport.Height/2;
             _vel.X = 0;
             _vel.Y = 0;
             _zoom = 1f;
