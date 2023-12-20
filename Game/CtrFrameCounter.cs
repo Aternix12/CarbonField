@@ -19,7 +19,7 @@ namespace CarbonField
         public float AverageFramesPerSecond { get; private set; }
         public float CurrentFramesPerSecond { get; private set; }
 
-        public const int MAXIMUM_SAMPLES = 100;
+        public const int MAXIMUM_SAMPLES = 5;
 
         private readonly Queue<float> _sampleBuffer = new Queue<float>();
 
@@ -37,9 +37,9 @@ namespace CarbonField
             elapsedTime += deltaTime;
 
             // Only update FPS counter once a second
-            if (elapsedTime >= 0.5f)
+            if (elapsedTime >= 0.2f)
             {
-                CurrentFramesPerSecond = 0.5f / deltaTime;
+                CurrentFramesPerSecond = 0.2f / deltaTime;
                 sumOfFrames += CurrentFramesPerSecond;
                 sampleCount++;
 
