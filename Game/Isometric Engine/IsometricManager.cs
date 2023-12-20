@@ -18,10 +18,11 @@ namespace CarbonField
         private readonly ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
-        /*private readonly ChunkManager chunkManager;*/
-        private QuadtreeNode quadtreeRoot;
-        private TilePool tilePool;
+        private TileChunk[,] chunkMap;
+        private readonly int chunkWidth = 100;
+        private readonly int chunkHeight = 100;
         Texture2D pixel;
+        private List<Tile> visibleTilesCache = new List<Tile>();
 
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -42,13 +43,10 @@ namespace CarbonField
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
             terrainManager = new TerrainManager();
-            /*chunkManager = new ChunkManager(width, height, worldWidth, worldHeight, graphicsDevice, tileMap, content);*/
             CalculateWorldBounds();
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
-            tilePool = new TilePool(1000);
-            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight), tilePool);
         }
 
 
@@ -114,8 +112,6 @@ namespace CarbonField
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
                     tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
-                    quadtreeRoot.AddTile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
-
                 }
             }
 
@@ -124,9 +120,55 @@ namespace CarbonField
                 tile.DetermineNeighbors(this);
             }
 
-            // Initialize the render target
-            /*chunkManager.LoadContent();*/
+            InitializeChunks(chunkWidth, chunkHeight);
         }
+
+        public void InitializeChunks(int chunkWidth, int chunkHeight)
+        {
+            int numChunksX = (int)Math.Ceiling((double)worldWidth / (chunkWidth * Tile.Width));
+            int numChunksY = (int)Math.Ceiling((double)worldHeight / (chunkHeight * Tile.Height));
+
+            chunkMap = new TileChunk[numChunksX, numChunksY];
+
+            for (int x = 0; x < numChunksX; x++)
+            {
+                for (int y = 0; y < numChunksY; y++)
+                {
+                    var chunk = new TileChunk(chunkWidth, chunkHeight);
+                    int startX = x * chunkWidth * Tile.Width;
+                    int startY = y * chunkHeight * Tile.Height;
+                    chunk.CalculateBounds(startX, startY, Tile.Width, Tile.Height);
+
+                    foreach (Tile tile in tileMap)
+                    {
+                        if (IsTileWithinChunkBounds(tile, chunk.Bounds))
+                        {
+                            // Use tile's global coordinates to determine its position within the chunk
+                            int tileX = (int)((tile.Position.X - startX) / Tile.Width);
+                            int tileY = (int)((tile.Position.Y - startY) / Tile.Height);
+                            chunk.SetTile(tileX, tileY, tile);
+                        }
+                    }
+
+                    chunkMap[x, y] = chunk;
+                }
+            }
+        }
+
+
+
+
+        private bool IsTileWithinChunkBounds(Tile tile, Rectangle chunkBounds)
+        {
+            // Calculate the tile's position in the world
+            Vector2 worldPosition = tile.Position; // Make sure this is the global position
+
+            // Check if the tile's global position falls within the chunk's bounds
+            return worldPosition.X >= chunkBounds.Left && worldPosition.X < chunkBounds.Right &&
+                   worldPosition.Y >= chunkBounds.Top && worldPosition.Y < chunkBounds.Bottom;
+        }
+
+
 
         public Tile GetTileAtGridPosition(int x, int y)
         {
@@ -153,24 +195,23 @@ namespace CarbonField
             spriteBatch.Draw(pixel, new Rectangle((int)start.X, (int)start.Y, (int)length, thickness), null, color, angle, new Vector2(0, 0.5f), SpriteEffects.None, 0);
         }
 
-        public IEnumerable<Tile> GetVisibleTiles(Rectangle viewBounds)
-        {
-            return quadtreeRoot.GetTilesInArea(viewBounds);
-        }
+
+
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            var groupedTiles = GetVisibleTiles(visibleArea)
-                       .GroupBy(tile => tile.Terrain)
-                       .SelectMany(group => group)
-                       .ToList();
-
-            Console.WriteLine($"Number of tiles in area: {groupedTiles.Count}");
-
-            // Draw each tile
-            foreach (Tile tile in groupedTiles)
+            foreach (var chunk in chunkMap)
             {
-                tile.Draw(spriteBatch);
+                if (visibleArea.Intersects(chunk.Bounds)) // Check if the chunk is in the visible area
+                {
+                    foreach (var tile in chunk.Tiles)
+                    {
+                        if (tile != null)
+                        {
+                            tile.Draw(spriteBatch);
+                        }
+                    }
+                }
             }
         }
 
