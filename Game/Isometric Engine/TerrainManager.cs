@@ -47,9 +47,9 @@ namespace CarbonField
 
             // Map noise value to a terrain type (example logic)
             if (noiseValue < -0.3) return Terrain.Grass;
-            else if (noiseValue < 0) return Terrain.Dirt;
+            else if (noiseValue < 0) return Terrain.Grass;
             else if (noiseValue < 0.3) return Terrain.Grass;
-            else return Terrain.Dirt;
+            else return Terrain.Grass;
         }
 
         private float GetFractalNoise(float x, float y)

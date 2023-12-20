@@ -10,8 +10,8 @@ namespace CarbonField
         public List<Tile> Tiles { get; private set; }
         public QuadtreeNode[] Children { get; private set; }
 
-        private const int MaxTiles = 1000;
-        private const int SplitMargin = 200;
+        private const int MaxTiles = 500;
+        private const int SplitMargin = 20;
 
         public QuadtreeNode(Rectangle bounds)
         {
@@ -22,19 +22,17 @@ namespace CarbonField
 
         public void AddTile(Tile tile)
         {
+            // If children exist, use spatial hashing to find the correct child node
             if (Children != null)
             {
                 int index = GetChildIndex(tile.Position);
-                if (index != -1)
-                {
-                    Children[index].AddTile(tile);
-                    return;
-                }
+                Children[index].AddTile(tile);
+                return;
             }
 
             Tiles.Add(tile);
 
-            // Split if necessary
+            // Defer splitting until the threshold is significantly exceeded
             if (Tiles.Count > MaxTiles + SplitMargin)
             {
                 Split();
@@ -63,17 +61,10 @@ namespace CarbonField
 
         private int GetChildIndex(Vector2 position)
         {
-            bool right = position.X > Bounds.Left + Bounds.Width / 2;
-            bool bottom = position.Y > Bounds.Top + Bounds.Height / 2;
-
-            if (right)
-            {
-                return bottom ? 3 : 1;
-            }
-            else
-            {
-                return bottom ? 2 : 0;
-            }
+            int index = 0;
+            if (position.X > Bounds.Center.X) index |= 1;
+            if (position.Y > Bounds.Center.Y) index |= 2;
+            return index;
         }
 
         public IEnumerable<Tile> GetTilesInArea(Rectangle area)
@@ -94,7 +85,7 @@ namespace CarbonField
                 }
             }
 
-            foreach (var tile in Tiles.Where(t => t.IsWithinBounds(area.Left, area.Top, area.Width, area.Height)))
+            foreach (var tile in Tiles.Where(t => t.IsWithinBounds(area)))
             {
                 yield return tile;
             }

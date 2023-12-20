@@ -21,14 +21,14 @@ namespace CarbonField
 
         public const int MAXIMUM_SAMPLES = 5;
 
-        private readonly Queue<float> _sampleBuffer = new Queue<float>();
+        private readonly Queue<float> _sampleBuffer = new();
 
         public string FpsString { get; private set; }
 
         // Add a timer to keep track of elapsed time
         private float elapsedTime = 0.0f;
 
-        private readonly StringBuilder fpsStringBuilder = new StringBuilder();
+        private readonly StringBuilder fpsStringBuilder = new();
         private float sumOfFrames = 0;
         private int sampleCount = 0;
 

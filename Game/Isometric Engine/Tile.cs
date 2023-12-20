@@ -14,6 +14,7 @@ namespace CarbonField
         public static readonly int Height = 32;
         public SpriteSheet spriteSheet;
         public Rectangle _sourceRectangle;
+        public Rectangle BoundingBox { get; private set; }
         public Terrain Terrain { get; private set; }
         private Dictionary<Direction, Terrain?> adjacentTerrainTypes;
         private int Elevation;
@@ -29,10 +30,6 @@ namespace CarbonField
         private int spriteIndexY;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
-        public Tile()
-        {
-            // Parameterless constructor (leaves the tile in an uninitialized state)
-        }
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
@@ -54,6 +51,7 @@ namespace CarbonField
             { Direction.Right, null },
             { Direction.Bottom, null }
         };
+            BoundingBox = new Rectangle((int)position.X, (int)position.Y, Width, Height);
         }
 
         public void Initialize(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
@@ -124,35 +122,10 @@ namespace CarbonField
             _sourceRectangle = spriteSheet.GetSprite(spriteName);
         }
 
-        public bool IsWithinBounds(int offsetX, int offsetY, int width, int height)
+        public bool IsWithinBounds(Rectangle area)
         {
-            // Calculate the bounds of the rectangular area
-            int leftBound = offsetX;
-            int rightBound = offsetX + width;
-            int topBound = offsetY;
-            int bottomBound = offsetY + height;
-
-            // Check if any part of the tile is within the rectangular area
-            bool isWithinHorizontalBounds = Position.X + Width > leftBound && Position.X < rightBound;
-            bool isWithinVerticalBounds = Position.Y + Height > topBound && Position.Y < bottomBound;
-
-            return isWithinHorizontalBounds && isWithinVerticalBounds;
+            return BoundingBox.Intersects(area);
         }
-
-        public void Reset()
-        {
-            // Reset the state of the tile to its initial condition
-            Terrain = Terrain.Grass; // or any default value
-                                     // Reset other properties as needed
-            _sourceRectangle = Rectangle.Empty; // Example
-                                                // Reset other relevant fields to their default state
-        }
-
-        /*public Texture2D GetBlendMap()
-        {
-            // Logic to determine and return the appropriate blend map texture based on adjacent terrains
-        }*/
-
 
         public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
         {
