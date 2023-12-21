@@ -8,6 +8,8 @@ namespace CarbonField
     {
         public Rectangle Bounds { get; private set; }
         public List<Tile> Tiles { get; private set; }
+
+        public Vector2 Center { get; private set; }
         public QuadtreeNode[] Children { get; private set; }
 
         private const int MaxTiles = 500;
@@ -18,6 +20,7 @@ namespace CarbonField
             Bounds = bounds;
             Tiles = [];
             Children = null;
+            Center = new Vector2(bounds.Center.X, bounds.Center.Y);
         }
 
         public void AddTile(Tile tile)
@@ -62,33 +65,44 @@ namespace CarbonField
         private int GetChildIndex(Vector2 position)
         {
             int index = 0;
-            if (position.X > Bounds.Center.X) index |= 1;
-            if (position.Y > Bounds.Center.Y) index |= 2;
+            if (position.X > Center.X) index |= 1;
+            if (position.Y > Center.Y) index |= 2;
             return index;
         }
 
         public IEnumerable<Tile> GetTilesInArea(Rectangle area)
         {
-            if (!Bounds.Intersects(area))
+            if (!Intersects(Bounds, area))
             {
                 yield break;
             }
 
             if (Children != null)
             {
-                foreach (var child in Children)
+                var childTiles = Children.Where(child => Intersects(child.Bounds, area))
+                                         .SelectMany(child => child.GetTilesInArea(area));
+
+                foreach (var tile in childTiles)
                 {
-                    foreach (var tile in child.GetTilesInArea(area))
-                    {
-                        yield return tile;
-                    }
+                    yield return tile;
                 }
             }
-
-            foreach (var tile in Tiles.Where(t => t.IsWithinBounds(area)))
+            else
             {
-                yield return tile;
+                foreach (var tile in Tiles.Where(t => t.IsWithinBounds(area)))
+                {
+                    yield return tile;
+                }
             }
         }
+
+
+        private static bool Intersects(Rectangle a, Rectangle b)
+        {
+            // Check if there is an overlap along the X and Y axes
+            return a.Left < b.Right && a.Right > b.Left &&
+                   a.Top < b.Bottom && a.Bottom > b.Top;
+        }
+
     }
 }

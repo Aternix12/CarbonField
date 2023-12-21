@@ -30,6 +30,7 @@ namespace CarbonField
         private int spriteIndexY;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
+        public int[] NodePath { get; set; }
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
@@ -124,7 +125,9 @@ namespace CarbonField
 
         public bool IsWithinBounds(Rectangle area)
         {
-            return BoundingBox.Intersects(area);
+            // Directly compare the boundaries of the bounding boxes
+            return BoundingBox.Left < area.Right && BoundingBox.Right > area.Left &&
+                   BoundingBox.Top < area.Bottom && BoundingBox.Bottom > area.Top;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
