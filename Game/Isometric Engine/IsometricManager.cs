@@ -20,7 +20,9 @@ namespace CarbonField
         private readonly TerrainManager terrainManager;
         Texture2D pixel;
         private readonly QuadtreeNode quadtreeRoot;
-
+        private Rectangle lastCameraViewArea;
+        private Tile[] visibleTileBuffer;
+        private int visibleTileCount;
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -45,6 +47,7 @@ namespace CarbonField
             pixel.SetData(new[] { Color.White
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
+            visibleTileBuffer = new Tile[30000];
         }
 
 
@@ -120,6 +123,20 @@ namespace CarbonField
             }
         }
 
+        private void UpdateVisibleTiles(Rectangle cameraViewArea)
+        {
+            lastCameraViewArea = cameraViewArea;
+            visibleTileCount = 0;
+
+            foreach (var tile in quadtreeRoot.GetTilesInArea(cameraViewArea))
+            {
+                if (tile.IsWithinBounds(cameraViewArea) && visibleTileCount < visibleTileBuffer.Length)
+                {
+                    visibleTileBuffer[visibleTileCount++] = tile;
+                }
+            }
+        }
+
         public Tile GetTileAtGridPosition(int x, int y)
         {
             if (x >= 0 && x < width && y >= 0 && y < height)
@@ -146,23 +163,17 @@ namespace CarbonField
         }
 
 
-        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
+        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea)
         {
-            var tilesInArea = quadtreeRoot.GetTilesInArea(visibleArea);
-
-            // Group the tiles by their spriteSheet
-            var groupedTiles = tilesInArea.GroupBy(tile => tile.spriteSheet);
-
-            foreach (var group in groupedTiles)
+            if (lastCameraViewArea != cameraViewArea)
             {
-                // Bind the texture atlas for the current group
-                var texture = group.Key.Texture;
+                UpdateVisibleTiles(cameraViewArea);
+            }               
 
-                foreach (var tile in group)
-                {
-                    // Draw each tile using the already bound texture
-                    spriteBatch.Draw(texture, tile.Position, tile._sourceRectangle, Color.White);
-                }
+            for (int i = 0; i < visibleTileCount; i++)
+            {
+                var tile = visibleTileBuffer[i];
+                spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White);
             }
         }
 

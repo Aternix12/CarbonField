@@ -117,7 +117,7 @@ namespace CarbonField
         {
             _lightingManager.BeginDraw();
             _graphics.GraphicsDevice.Clear(Color.Black);
-
+             
             //Background Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
