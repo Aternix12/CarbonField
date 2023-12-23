@@ -21,8 +21,10 @@ namespace CarbonField
         Texture2D pixel;
         private readonly QuadtreeNode quadtreeRoot;
         private Rectangle lastCameraViewArea;
-        private Tile[] visibleTileBuffer;
+        private readonly Tile[] visibleTileBuffer;
         private int visibleTileCount;
+        private const int CameraMoveThreshold = 50;
+
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
 
@@ -95,16 +97,17 @@ namespace CarbonField
             float halfTileWidth = Tile.Width / 2f;
             float halfTileHeight = Tile.Height / 2f;
             float halfTotalWidth = width * Tile.Width / 2f;
+            float horizontalOffset = (worldWidth - (width * Tile.Width / 2)) / 2;
+
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    // Calculate the isometric position
                     Vector2 isoPosition = new Vector2(
-                        halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
-                        x * halfTileHeight + y * halfTileHeight
-                    );
+            horizontalOffset + halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
+            x * halfTileHeight + y * halfTileHeight
+        );
 
                     // Use TerrainManager to determine the terrain type
                     Terrain terrainType = terrainManager.GetTerrainType(x, y);
@@ -125,15 +128,24 @@ namespace CarbonField
 
         private void UpdateVisibleTiles(Rectangle cameraViewArea)
         {
-            lastCameraViewArea = cameraViewArea;
-            visibleTileCount = 0;
+            // Calculate the movement of the camera since the last update
+            int deltaX = Math.Abs(lastCameraViewArea.X - cameraViewArea.X);
+            int deltaY = Math.Abs(lastCameraViewArea.Y - cameraViewArea.Y);
 
-            foreach (var tile in quadtreeRoot.GetTilesInArea(cameraViewArea))
+            // Check if the camera has moved significantly
+            if (deltaX > CameraMoveThreshold || deltaY > CameraMoveThreshold)
             {
-                if (tile.IsWithinBounds(cameraViewArea) && visibleTileCount < visibleTileBuffer.Length)
+                visibleTileCount = 0;
+                foreach (var tile in quadtreeRoot.GetTilesInArea(cameraViewArea))
                 {
-                    visibleTileBuffer[visibleTileCount++] = tile;
+                    if (tile.IsWithinBounds(cameraViewArea) && visibleTileCount < visibleTileBuffer.Length)
+                    {
+                        visibleTileBuffer[visibleTileCount++] = tile;
+                    }
                 }
+
+                // Update the last camera view area after processing
+                lastCameraViewArea = cameraViewArea;
             }
         }
 
@@ -168,7 +180,7 @@ namespace CarbonField
             if (lastCameraViewArea != cameraViewArea)
             {
                 UpdateVisibleTiles(cameraViewArea);
-            }               
+            }
 
             for (int i = 0; i < visibleTileCount; i++)
             {

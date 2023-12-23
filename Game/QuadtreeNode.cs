@@ -25,7 +25,6 @@ namespace CarbonField
 
         public void AddTile(Tile tile)
         {
-            // If children exist, use spatial hashing to find the correct child node
             if (Children != null)
             {
                 int index = GetChildIndex(tile.Position);
@@ -35,7 +34,6 @@ namespace CarbonField
 
             Tiles.Add(tile);
 
-            // Defer splitting until the threshold is significantly exceeded
             if (Tiles.Count > MaxTiles + SplitMargin)
             {
                 Split();
@@ -72,11 +70,6 @@ namespace CarbonField
 
         public IEnumerable<Tile> GetTilesInArea(Rectangle area)
         {
-            if (!Intersects(Bounds, area))
-            {
-                yield break;
-            }
-
             if (Children != null)
             {
                 var childTiles = Children.Where(child => Intersects(child.Bounds, area))
