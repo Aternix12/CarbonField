@@ -82,23 +82,21 @@ namespace CarbonField
             Console.WriteLine(tileInfo);
         }
 
-        public void HandleScroll() //Needs to take into account gametime
+        public void HandleScroll()
         {
             var currentScrollWheelValue = Mouse.GetState().ScrollWheelValue;
             if (currentScrollWheelValue != previousScrollWheelValue)
             {
-                if (currentScrollWheelValue > previousScrollWheelValue)
-                {
-                    _world.Cam.SetZoom(_world.Cam.GetZoom() + 0.1f);
-                }
-                else if (currentScrollWheelValue < previousScrollWheelValue)
-                {
-                    _world.Cam.SetZoom(_world.Cam.GetZoom() - 0.1f);
-                }
+                // Calculate the change in zoom based on the scroll wheel
+                float zoomDelta = (currentScrollWheelValue - previousScrollWheelValue) * 0.03f; // Adjust multiplier as needed
+
+                // Update the zoom velocity in the camera
+                _world.Cam.UpdateZoomVelocity(zoomDelta);
 
                 previousScrollWheelValue = currentScrollWheelValue;
             }
         }
+
     }
 }
 

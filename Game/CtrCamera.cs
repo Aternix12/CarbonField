@@ -16,14 +16,15 @@ namespace CarbonField
         private Vector2 _vel;
         private float _zoom;
         private float _previousZoom;
+        private float _zoomVel;
         private readonly int worldWidth;
         private readonly int worldHeight;
 
         public CtrCamera(Viewport newview, int worldWidth, int worldHeight)
         {
             _viewport = newview;
-            _pos.X = worldWidth/2 - _viewport.Width/2;
-            _pos.Y = worldHeight/2 - _viewport.Height/2;
+            _pos.X = worldWidth / 2 - _viewport.Width / 2;
+            _pos.Y = worldHeight / 2 - _viewport.Height / 2;
             _vel.X = 0;
             _vel.Y = 0;
             _zoom = 1f;
@@ -37,49 +38,41 @@ namespace CarbonField
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Handle keyboard movement
-            _vel *= 0.8f;
-            float speed = 400.0f * elapsed;
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) { _vel.X += speed; }
-            if (Keyboard.GetState().IsKeyDown(Keys.S)) { _vel.Y += speed; }
-            if (Keyboard.GetState().IsKeyDown(Keys.A)) { _vel.X -= speed; }
-            if (Keyboard.GetState().IsKeyDown(Keys.W)) { _vel.Y -= speed; }
-            _pos.X += _vel.X;
-            _pos.Y += _vel.Y;
+            // 1. Calculate WASD Movement
+            _vel *= 0.6f;
+            float speed = 1600.0f * elapsed;
+            Vector2 wasdMovement = new Vector2(
+                (Keyboard.GetState().IsKeyDown(Keys.D) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.A) ? speed : 0),
+                (Keyboard.GetState().IsKeyDown(Keys.S) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.W) ? speed : 0)
+            );
 
-            // Handle zooming
-            float newZoom = _zoom; // Replace with your zoom input logic
-            if (newZoom != _previousZoom)
+            // 2. Calculate Zoom Effect (independently)
+            _zoomVel *= 0.85f; // Apply friction to zoom velocity
+            _zoom += _zoomVel * elapsed; // Update zoom
+            _zoom = MathHelper.Clamp(_zoom, 0.4f, 2f); // Clamp zoom
+
+            Vector2 zoomEffect = Vector2.Zero;
+            if (_zoom != _previousZoom)
             {
                 MouseState mouseState = Mouse.GetState();
-                Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
-
-                // Check if the mouse is within the viewport
                 if (_viewport.Bounds.Contains(mouseState.X, mouseState.Y))
                 {
-                    // Convert the screen space mouse coordinates to world space BEFORE the zoom change
+                    Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
                     Vector2 worldMousePositionBeforeZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
-
-                    // Update the zoom
-                    _zoom = newZoom;
-
-                    // Re-calculate the transformation matrix with the new zoom level
                     transform = GetTransform();
-
-                    // Convert the screen space mouse coordinates to world space AFTER the zoom change
                     Vector2 worldMousePositionAfterZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
-
-                    // Adjust the camera position
-                    Vector2 movement = worldMousePositionBeforeZoom - worldMousePositionAfterZoom;
-                    _pos += movement;
+                    zoomEffect = worldMousePositionBeforeZoom - worldMousePositionAfterZoom;
                 }
-
-                _previousZoom = _zoom;
             }
 
+            // 3. Combine Both Movements
+            _pos += wasdMovement + zoomEffect;
+
+            _previousZoom = _zoom;
             AdjustCameraAfterZoom();
             transform = GetTransform();
         }
+
 
 
         public Rectangle GetVisibleArea()
@@ -120,6 +113,10 @@ namespace CarbonField
             _pos.Y = Math.Min(_pos.Y, worldHeight + 256 - visibleWorldHeight / 2);
         }
 
+        public void UpdateZoomVelocity(float zoomDelta)
+        {
+            _zoomVel += zoomDelta;
+        }
 
         public Vector2 GetPos()
         { return _pos; }
