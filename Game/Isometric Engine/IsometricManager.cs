@@ -47,28 +47,27 @@ namespace CarbonField
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
             terrainManager = new TerrainManager();
-            CalculateWorldBounds();
+            
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             visibleTileBuffer = new Tile[30000];
             horizontalOffset =(height-width) * Tile.Width / 2;
-            verticalOffset = (worldHeight - ((width + height) * Tile.Height / 2)) / 2;
+            CalculateWorldBounds();
 
 
         }
-
-
 
         private void CalculateWorldBounds()
         {
-            WorldTop = new Vector2(horizontalOffset, verticalOffset); // Top point
-            WorldRight = new Vector2(worldWidth, worldHeight / 2); // Right center
-            WorldBottom = new Vector2(horizontalOffset, worldHeight - verticalOffset); // Bottom point
-            WorldLeft = new Vector2(0, worldHeight / 2); // Left center
+            // Adjust the world bounds to fit the isometric rectangle
+            WorldTop = new Vector2(worldWidth / 2 + horizontalOffset/2, 0); // Adjusted Top point
+            WorldRight = new Vector2(worldWidth, worldHeight / 2 - horizontalOffset/4); // Right center
+            WorldBottom = new Vector2(worldWidth / 2 - horizontalOffset/2, worldHeight); // Adjusted Bottom point
+            WorldLeft = new Vector2(0, worldHeight / 2 + horizontalOffset / 4); // Left center
+            //Verticle offsets are relation between tile width and height
         }
-
 
 
         public void Initialize()
@@ -113,7 +112,7 @@ namespace CarbonField
                 {
                     Vector2 isoPosition = new(
             horizontalOffset + halfTotalWidth +  (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
-            verticalOffset + x * halfTileHeight + y * halfTileHeight
+            x * halfTileHeight + y * halfTileHeight
         );
 
                     // Use TerrainManager to determine the terrain type
