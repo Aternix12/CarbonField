@@ -133,6 +133,15 @@ namespace CarbonField
             _zoom = MathHelper.Clamp(value, 0.4f, 2f);
         }
 
+        public void ResetZoom()
+        {
+            _zoom = 1f;
+            _previousZoom = 1f;
+            _zoomVel = 0f; // Reset zoom velocity as well
+            transform = GetTransform(); // Update the transformation matrix to reflect the new zoom level
+        }
+
+
         public Matrix GetTransform()
         {
             return Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
