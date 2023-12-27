@@ -23,8 +23,7 @@ namespace CarbonField
         private Rectangle lastCameraViewArea;
         private readonly Tile[] visibleTileBuffer;
         private int visibleTileCount;
-        float horizontalOffset;
-        float verticalOffset;
+        public float HorizontalOffset { get; private set; }
         private const int CameraMoveThreshold = 50;
 
 
@@ -53,7 +52,7 @@ namespace CarbonField
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             visibleTileBuffer = new Tile[30000];
-            horizontalOffset =(height-width) * Tile.Width / 2;
+            HorizontalOffset =(height-width) * Tile.Width / 2;
             CalculateWorldBounds();
 
 
@@ -62,10 +61,10 @@ namespace CarbonField
         private void CalculateWorldBounds()
         {
             // Adjust the world bounds to fit the isometric rectangle
-            WorldTop = new Vector2(worldWidth / 2 + horizontalOffset/2, 0); // Adjusted Top point
-            WorldRight = new Vector2(worldWidth, worldHeight / 2 - horizontalOffset/4); // Right center
-            WorldBottom = new Vector2(worldWidth / 2 - horizontalOffset/2, worldHeight); // Adjusted Bottom point
-            WorldLeft = new Vector2(0, worldHeight / 2 + horizontalOffset / 4); // Left center
+            WorldTop = new Vector2(worldWidth / 2 + HorizontalOffset/2, 0); // Adjusted Top point
+            WorldRight = new Vector2(worldWidth, worldHeight / 2 - HorizontalOffset/4); // Right center
+            WorldBottom = new Vector2(worldWidth / 2 - HorizontalOffset/2, worldHeight); // Adjusted Bottom point
+            WorldLeft = new Vector2(0, worldHeight / 2 + HorizontalOffset / 4); // Left center
             //Verticle offsets are relation between tile width and height
         }
 
@@ -111,7 +110,7 @@ namespace CarbonField
                 for (int y = 0; y < height; y++)
                 {
                     Vector2 isoPosition = new(
-            horizontalOffset + halfTotalWidth +  (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
+            HorizontalOffset + halfTotalWidth +  (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
             x * halfTileHeight + y * halfTileHeight
         );
 

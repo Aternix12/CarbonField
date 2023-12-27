@@ -65,7 +65,7 @@ namespace CarbonField
             float halfTotalWidth = _world.IsoManager.width * Tile.Width / 2f;
 
             // Adjust the X position of the screen based on the new tile drawing logic
-            float correctedX = screenPosition.X - halfTotalWidth;
+            float correctedX = screenPosition.X - halfTotalWidth - _world.IsoManager.HorizontalOffset;
             float correctedY = screenPosition.Y;
 
             // Calculate the isometric grid coordinates
