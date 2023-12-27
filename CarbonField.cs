@@ -60,7 +60,7 @@ namespace CarbonField
             Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
             Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
             Graphics.IsFullScreen = _gameSettings.IsFullScreen;
-            Graphics.SynchronizeWithVerticalRetrace = false;
+            Graphics.SynchronizeWithVerticalRetrace = true;
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.ApplyChanges();
 

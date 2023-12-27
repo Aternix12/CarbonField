@@ -23,7 +23,10 @@ namespace CarbonField
         private Rectangle lastCameraViewArea;
         private readonly Tile[] visibleTileBuffer;
         private int visibleTileCount;
+        float horizontalOffset;
+        float verticalOffset;
         private const int CameraMoveThreshold = 50;
+
 
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -50,17 +53,22 @@ namespace CarbonField
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             visibleTileBuffer = new Tile[30000];
+            horizontalOffset =(height-width) * Tile.Width / 2;
+            verticalOffset = (worldHeight - ((width + height) * Tile.Height / 2)) / 2;
+
+
         }
 
 
 
         private void CalculateWorldBounds()
         {
-            WorldTop = new Vector2(worldWidth / 2, 0); // Top center
+            WorldTop = new Vector2(horizontalOffset, verticalOffset); // Top point
             WorldRight = new Vector2(worldWidth, worldHeight / 2); // Right center
-            WorldBottom = new Vector2(worldWidth / 2, worldHeight); // Bottom center
+            WorldBottom = new Vector2(horizontalOffset, worldHeight - verticalOffset); // Bottom point
             WorldLeft = new Vector2(0, worldHeight / 2); // Left center
         }
+
 
 
         public void Initialize()
@@ -97,16 +105,15 @@ namespace CarbonField
             float halfTileWidth = Tile.Width / 2f;
             float halfTileHeight = Tile.Height / 2f;
             float halfTotalWidth = width * Tile.Width / 2f;
-            float horizontalOffset = (worldWidth - (width * Tile.Width / 2)) / 2;
 
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    Vector2 isoPosition = new Vector2(
-            horizontalOffset + halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
-            x * halfTileHeight + y * halfTileHeight
+                    Vector2 isoPosition = new(
+            horizontalOffset + halfTotalWidth +  (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
+            verticalOffset + x * halfTileHeight + y * halfTileHeight
         );
 
                     // Use TerrainManager to determine the terrain type
@@ -197,6 +204,11 @@ namespace CarbonField
             DrawLine(spriteBatch, WorldRight, WorldBottom, Color.Yellow, lineThickness);
             DrawLine(spriteBatch, WorldBottom, WorldLeft, Color.Yellow, lineThickness);
             DrawLine(spriteBatch, WorldLeft, WorldTop, Color.Yellow, lineThickness);
+
+            DrawLine(spriteBatch, Vector2.Zero, new Vector2(worldWidth, 0), Color.Orange, lineThickness);
+            DrawLine(spriteBatch, new Vector2(worldWidth, 0), new Vector2(worldWidth, worldHeight), Color.Orange, lineThickness);
+            DrawLine(spriteBatch, new Vector2(worldWidth, worldHeight), new Vector2(0, worldHeight), Color.Orange, lineThickness);
+            DrawLine(spriteBatch, new Vector2(0, worldHeight), Vector2.Zero, Color.Orange, lineThickness);
         }
     }
 }
