@@ -38,15 +38,15 @@ namespace CarbonField
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            // 1. Calculate WASD Movement
-            _vel *= 0.6f;
-            float speed = 1600.0f * elapsed;
-            Vector2 wasdMovement = new Vector2(
+            _vel *= 0.7f;
+            float speed = 20000.0f * elapsed;
+            Vector2 wasdMovementDelta = new(
                 (Keyboard.GetState().IsKeyDown(Keys.D) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.A) ? speed : 0),
                 (Keyboard.GetState().IsKeyDown(Keys.S) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.W) ? speed : 0)
             );
+            _vel += wasdMovementDelta;
+            Vector2 wasdMovement = _vel * elapsed;
 
-            // 2. Calculate Zoom Effect (independently)
             _zoomVel *= 0.85f; // Apply friction to zoom velocity
             _zoom += _zoomVel * elapsed; // Update zoom
             _zoom = MathHelper.Clamp(_zoom, 0.4f, 2f); // Clamp zoom
@@ -57,7 +57,7 @@ namespace CarbonField
                 MouseState mouseState = Mouse.GetState();
                 if (_viewport.Bounds.Contains(mouseState.X, mouseState.Y))
                 {
-                    Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
+                    Vector2 mousePosition = new(mouseState.X, mouseState.Y);
                     Vector2 worldMousePositionBeforeZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));
                     transform = GetTransform();
                     Vector2 worldMousePositionAfterZoom = Vector2.Transform(mousePosition, Matrix.Invert(transform));

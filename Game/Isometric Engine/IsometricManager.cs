@@ -140,10 +140,18 @@ namespace CarbonField
             // Check if the camera has moved significantly
             if (deltaX > CameraMoveThreshold || deltaY > CameraMoveThreshold)
             {
+                // Expand the camera view area by 100 in each direction
+                Rectangle expandedViewArea = new Rectangle(
+                    cameraViewArea.X - 100,      // Left
+                    cameraViewArea.Y - 100,      // Top
+                    cameraViewArea.Width + 200,  // Width
+                    cameraViewArea.Height + 200  // Height
+                );
+
                 visibleTileCount = 0;
-                foreach (var tile in quadtreeRoot.GetTilesInArea(cameraViewArea))
+                foreach (var tile in quadtreeRoot.GetTilesInArea(expandedViewArea))  // Use expandedViewArea
                 {
-                    if (tile.IsWithinBounds(cameraViewArea) && visibleTileCount < visibleTileBuffer.Length)
+                    if (tile.IsWithinBounds(expandedViewArea) && visibleTileCount < visibleTileBuffer.Length)  // Use expandedViewArea
                     {
                         visibleTileBuffer[visibleTileCount++] = tile;
                     }
@@ -153,6 +161,7 @@ namespace CarbonField
                 lastCameraViewArea = cameraViewArea;
             }
         }
+
 
         public Tile GetTileAtGridPosition(int x, int y)
         {
