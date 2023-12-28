@@ -14,22 +14,12 @@
     <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_diag_right.png</File>
     <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_lr.png</File>
     <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/props/sandbag/sandbag_ud.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/dirt_terrain.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/grass_terrain.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Grass1/Grass1_0.5x_atlas.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Grass1/Grass1_1x_atlas.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Grass1/Grass1_2x_atlas.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Grass1/Grass1_4x_atlas.png</File>
-    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/grasstest_terrain.png</File>
+    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Dirt1/Dirt1_atlas.png</File>
+    <File>C:/Users/Aternix/OneDrive/CarbonField/Content/sprites/terrain/Grass1/Grass1_atlas.png</File>
     <File>C:/Users/Aternix/OneDrive/CarbonField/Content/src_texturedisolight.png</File>
     <File>C:/Users/Aternix/OneDrive/CarbonField/Content/src_texturedlight.png</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

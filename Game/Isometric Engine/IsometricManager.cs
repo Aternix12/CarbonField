@@ -78,11 +78,11 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load grass terrain spritesheet
-            Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/Grass1/Grass1_4x_atlas");
+            Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/Grass1/Grass1_atlas");
             SpriteSheet grassSpriteSheet = new(grassSheetTexture);
 
             // Load dirt terrain spritesheet
-            Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/dirt_terrain");
+            Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/Dirt1/Dirt1_atlas");
             SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
             terrainSpriteSheets = new()
@@ -97,7 +97,7 @@ namespace CarbonField
                 for (int x = 0; x < 10; x++)
                 {
                     grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4);
-                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4);
                 }
             }
 
