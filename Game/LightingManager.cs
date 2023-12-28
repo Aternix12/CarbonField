@@ -119,7 +119,7 @@ namespace CarbonField
         public void Update(GameTime gameTime, Matrix transform)
         {
             //This is the brightness of the game
-            _penumbra.AmbientColor = new Color(255, 255, 255, 0.2f);
+            _penumbra.AmbientColor = new Color(255, 255, 255, 1f);
             _penumbra.Transform = transform;
         }
 

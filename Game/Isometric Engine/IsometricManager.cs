@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Penumbra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +78,7 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load grass terrain spritesheet
-            Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/grass_terrain");
+            Texture2D grassSheetTexture = content.Load<Texture2D>("sprites/terrain/Grass1/Grass1_4x_atlas");
             SpriteSheet grassSpriteSheet = new(grassSheetTexture);
 
             // Load dirt terrain spritesheet
@@ -95,7 +96,7 @@ namespace CarbonField
             {
                 for (int x = 0; x < 10; x++)
                 {
-                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
+                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4);
                     dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width, y * Tile.Height, Tile.Width, Tile.Height);
                 }
             }
@@ -196,10 +197,13 @@ namespace CarbonField
                 UpdateVisibleTiles(cameraViewArea);
             }
 
+            // Scale to fit the size of 96x48
+            Vector2 scale = new Vector2(0.25f, 0.25f);
+
             for (int i = 0; i < visibleTileCount; i++)
             {
                 var tile = visibleTileBuffer[i];
-                spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White);
+                spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
         }
 

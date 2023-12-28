@@ -10,8 +10,8 @@ namespace CarbonField
 {
     public class Tile
     {
-        public static readonly int Width = 64;
-        public static readonly int Height = 32;
+        public static readonly int Width = 96;
+        public static readonly int Height = 48;
         public SpriteSheet spriteSheet;
         public Rectangle _sourceRectangle;
         public Rectangle BoundingBox { get; private set; }

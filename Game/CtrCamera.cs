@@ -49,7 +49,7 @@ namespace CarbonField
 
             _zoomVel *= 0.85f; // Apply friction to zoom velocity
             _zoom += _zoomVel * elapsed; // Update zoom
-            _zoom = MathHelper.Clamp(_zoom, 0.4f, 2f); // Clamp zoom
+            _zoom = MathHelper.Clamp(_zoom, 0.1f, 4f); // Clamp zoom
 
             Vector2 zoomEffect = Vector2.Zero;
             if (_zoom != _previousZoom)
@@ -130,7 +130,7 @@ namespace CarbonField
         public void SetZoom(float value)
         {
             // You might want to limit the zoom level to a certain range.
-            _zoom = MathHelper.Clamp(value, 0.4f, 2f);
+            _zoom = MathHelper.Clamp(value, 0.1f, 2f);
         }
 
         public void ResetZoom()

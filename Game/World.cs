@@ -124,7 +124,7 @@ namespace CarbonField
             spriteBatch.End();
 
             //Isometric Draw
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, /*SamplerState.PointClamp*/null, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Cam.GetTransform());
             IsoManager.Draw(spriteBatch, Cam.GetVisibleArea());
             spriteBatch.End();
 

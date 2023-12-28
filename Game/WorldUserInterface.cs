@@ -34,7 +34,7 @@ namespace CarbonField
             if (previousMouseState.LeftButton == ButtonState.Pressed &&
                 currentMouseState.LeftButton == ButtonState.Released)
             {
-                Vector2 clickPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
+                Vector2 clickPosition = new(currentMouseState.X, currentMouseState.Y);
                 HandleTileClick(clickPosition);
             }
 
