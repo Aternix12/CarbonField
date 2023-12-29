@@ -195,6 +195,7 @@ namespace CarbonField
             if (lastCameraViewArea != cameraViewArea)
             {
                 UpdateVisibleTiles(cameraViewArea);
+                //Array.Sort(visibleTileBuffer, 0, visibleTileCount, Comparer<Tile>.Create((x, y) => x.Terrain.CompareTo(y.Terrain)));
             }
 
             // Scale to fit the size of 96x48
@@ -203,7 +204,8 @@ namespace CarbonField
             for (int i = 0; i < visibleTileCount; i++)
             {
                 var tile = visibleTileBuffer[i];
-                spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                tile.Draw(spriteBatch);
+                //spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
         }
 

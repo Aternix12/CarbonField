@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace CarbonField
 {
@@ -137,7 +138,8 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(spriteSheet.Texture, Position, _sourceRectangle, Color.White);
+            //spriteBatch.Draw(spriteSheet.Texture, Position, _sourceRectangle, Color.White);
+            spriteBatch.Draw(spriteSheet.Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
         }
     }
 }

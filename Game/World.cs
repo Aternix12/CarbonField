@@ -35,7 +35,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(100, 233, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(450, 500, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -124,7 +124,7 @@ namespace CarbonField
             spriteBatch.End();
 
             //Isometric Draw
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
             IsoManager.Draw(spriteBatch, Cam.GetVisibleArea());
             spriteBatch.End();
 
@@ -136,11 +136,11 @@ namespace CarbonField
             _lightingManager.Draw(gameTime);
 
             //World Diagnostics
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
             DrawRectangle(spriteBatch, Cam.GetVisibleArea(), Color.Red, 2);
             IsoManager.DrawDiag(spriteBatch);
             spriteBatch.End();
-        }
+        }   
         void DrawRectangle(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness)
         {
             spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, rect.Width, thickness), color); // Top
