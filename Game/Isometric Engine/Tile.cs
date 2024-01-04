@@ -191,19 +191,9 @@ namespace CarbonField
 
         public void CreateBlendedTexture(GraphicsDevice graphicsDevice)
         {
-            RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, Width*4, Height*4);
-            graphicsDevice.SetRenderTarget(renderTarget);
-            graphicsDevice.Clear(Color.Transparent);
+            List<Texture2D> overlayTextures = new List<Texture2D>();
+            List<Texture2D> blendmapTextures = new List<Texture2D>();
 
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-
-            // Base layer - no shader needed
-            spriteBatch.Begin();
-            spriteBatch.Draw(spriteSheets[Terrain].Texture, new Rectangle(0, 0, Width * 4, Height*4), _sourceRectangle, Color.White);
-            spriteBatch.End();
-
-            // Overlay layer - using shader
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
             foreach (var direction in adjacentTerrainTypes.Keys)
             {
                 if (adjacentTerrainTypes[direction].HasValue)
@@ -212,32 +202,53 @@ namespace CarbonField
                     Rectangle sourceRect = overlaySource[direction];
                     Rectangle blendMapRect = blendmapSource[direction];
 
-                    // Create textures from specific parts of the sprite sheets
+                    // Create and store textures
                     Texture2D overlayTexture = CreateTextureFromSourceRect(graphicsDevice, spriteSheets[adjacentTerrain].Texture, sourceRect);
                     Texture2D blendmapTexture = CreateTextureFromSourceRect(graphicsDevice, blendmapSpriteSheet.Texture, blendMapRect);
 
-                    // Set shader parameters
-                    blendEffect.Parameters["overlayTexture"].SetValue(overlayTexture);
-                    blendEffect.Parameters["blendMap"].SetValue(blendmapTexture);
-
-                    // Draw with the shader applied
-                    // This will draw the original terrain texture, and the shader will apply the blending with the overlayTexture
-                    //spriteBatch.Draw(spriteSheets[Terrain].Texture, new Rectangle(0, 0, Width * 4, Height * 4), _sourceRectangle, Color.White);
+                    overlayTextures.Add(overlayTexture);
+                    blendmapTextures.Add(blendmapTexture);
                 }
             }
-            spriteBatch.End();
 
+            RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, Width * 4, Height * 4);
+            graphicsDevice.SetRenderTarget(renderTarget);
+            graphicsDevice.Clear(Color.Transparent);
+
+            using (SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice))
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null);
+                spriteBatch.Draw(spriteSheets[Terrain].Texture, new Vector2(0,0), _sourceRectangle, Color.White);
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
+                
+                for (int i = 0; i < overlayTextures.Count; i++)
+                {
+                    // Assuming you have a way to match overlay textures with their corresponding blendmap textures
+                    blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
+                    blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
+
+                    // Adjust the drawing parameters as necessary
+                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.White);
+                }
+                spriteBatch.End();
+            }
+
+            // Reset render target and store the output
             graphicsDevice.SetRenderTarget(null);
             _outputTexture = renderTarget;
 
-            spriteBatch.Dispose();
+            // Dispose of used resources
+            foreach (var texture in overlayTextures) texture.Dispose();
+            foreach (var texture in blendmapTextures) texture.Dispose();
+            //renderTarget.Dispose();
         }
 
         public Texture2D CreateTextureFromSourceRect(GraphicsDevice graphicsDevice, Texture2D originalTexture, Rectangle sourceRect)
         {
             // Create a new RenderTarget
+            
             RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, sourceRect.Width, sourceRect.Height);
-
             // Set the new RenderTarget
             graphicsDevice.SetRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Transparent);
@@ -249,7 +260,7 @@ namespace CarbonField
             spriteBatch.End();
 
             // Reset the render target to the screen
-            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.SetRenderTargets(null);
 
             // Create a new Texture2D and copy the render target's data into it
             Texture2D croppedTexture = new Texture2D(graphicsDevice, sourceRect.Width, sourceRect.Height);
@@ -258,8 +269,8 @@ namespace CarbonField
             croppedTexture.SetData(data);
 
             // Dispose the render target and sprite batch
-            renderTarget.Dispose();
-            spriteBatch.Dispose();
+            //renderTarget.Dispose();
+            //spriteBatch.Dispose();
 
             return croppedTexture;
         }
@@ -295,7 +306,7 @@ namespace CarbonField
                 spriteBatch.Draw(_outputTexture, Position, null, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
             } else
             {
-                //spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.LightGray, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
             }
         }
 
