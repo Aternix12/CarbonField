@@ -89,6 +89,7 @@ namespace CarbonField
         public void DetermineNeighbors(IsometricManager isoManager)
         {
             hasOverlay = false;
+            _outputTexture = null;
             GetNeighborTerrain(isoManager, Direction.Top, 0, -1);
             GetNeighborTerrain(isoManager, Direction.Left, -1, 0);
             GetNeighborTerrain(isoManager, Direction.Right, 1, 0);
@@ -105,6 +106,7 @@ namespace CarbonField
                 hasOverlay = true;
                 string blendSpriteName = GetBlendSpriteName(direction);
                 blendmapSource[direction] = blendmapSpriteSheet.GetSprite(blendSpriteName);
+                CreateBlendedTexture(isoManager.GraphicsDevice);
             }
         }
 
@@ -197,7 +199,7 @@ namespace CarbonField
 
             // Base layer - no shader needed
             spriteBatch.Begin();
-            spriteBatch.Draw(spriteSheets[Terrain].Texture, new Rectangle(0, 0, Width, Height), _sourceRectangle, Color.White);
+            spriteBatch.Draw(spriteSheets[Terrain].Texture, new Rectangle(0, 0, Width * 4, Height*4), _sourceRectangle, Color.White);
             spriteBatch.End();
 
             // Overlay layer - using shader
@@ -209,14 +211,18 @@ namespace CarbonField
                     Terrain adjacentTerrain = adjacentTerrainTypes[direction].Value;
                     Rectangle sourceRect = overlaySource[direction];
                     Rectangle blendMapRect = blendmapSource[direction];
+
+                    // Create textures from specific parts of the sprite sheets
                     Texture2D overlayTexture = CreateTextureFromSourceRect(graphicsDevice, spriteSheets[adjacentTerrain].Texture, sourceRect);
                     Texture2D blendmapTexture = CreateTextureFromSourceRect(graphicsDevice, blendmapSpriteSheet.Texture, blendMapRect);
-                    // Set shader parameters
 
+                    // Set shader parameters
                     blendEffect.Parameters["overlayTexture"].SetValue(overlayTexture);
                     blendEffect.Parameters["blendMap"].SetValue(blendmapTexture);
 
-                    spriteBatch.Draw(spriteSheets[adjacentTerrain].Texture, new Rectangle(0, 0, Width, Height), sourceRect, Color.White);
+                    // Draw with the shader applied
+                    // This will draw the original terrain texture, and the shader will apply the blending with the overlayTexture
+                    //spriteBatch.Draw(spriteSheets[Terrain].Texture, new Rectangle(0, 0, Width * 4, Height * 4), _sourceRectangle, Color.White);
                 }
             }
             spriteBatch.End();
@@ -258,13 +264,10 @@ namespace CarbonField
             return croppedTexture;
         }
 
-
-
-
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw the base terrain texture
-            spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.LightGray, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+            
 
             /*if (hasOverlay)
             {
@@ -290,6 +293,9 @@ namespace CarbonField
             if (_outputTexture != null)
             {
                 spriteBatch.Draw(_outputTexture, Position, null, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+            } else
+            {
+                //spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.LightGray, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
             }
         }
 

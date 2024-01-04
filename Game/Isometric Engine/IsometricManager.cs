@@ -16,7 +16,7 @@ namespace CarbonField
         public readonly int worldWidth;
         public readonly int worldHeight;
         private readonly Tile[,] tileMap;
-        private readonly GraphicsDevice graphicsDevice;
+        public readonly GraphicsDevice GraphicsDevice;
         private readonly ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
@@ -43,7 +43,7 @@ namespace CarbonField
             this.width = width;
             this.height = height;
             tileMap = new Tile[width, height];
-            this.graphicsDevice = graphicsDevice;
+            this.GraphicsDevice = graphicsDevice;
             this.content = content;
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
@@ -204,7 +204,7 @@ namespace CarbonField
             // Create a 1x1 white pixel texture if not already created
             if (pixel == null)
             {
-                pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
+                pixel = new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
                 pixel.SetData(new[] { Color.White });
             }
 
