@@ -1,19 +1,22 @@
 ﻿#if OPENGL
-	#define SV_POSITION POSITION
-	#define VS_SHADERMODEL vs_3_0
-	#define PS_SHADERMODEL ps_3_0
+#define SV_POSITION POSITION
+#define VS_SHADERMODEL vs_3_0
+#define PS_SHADERMODEL ps_3_0
 #else
-	#define VS_SHADERMODEL vs_4_0_level_9_1
-	#define PS_SHADERMODEL ps_4_0_level_9_1
+#define VS_SHADERMODEL vs_4_0_level_9_1
+#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-Texture2D grassTexture : register(s0);
-Texture2D dirtTexture : register(s1);
-sampler2D grassSampler = sampler_state { Texture = <grassTexture>; };
-sampler2D dirtSampler = sampler_state { Texture = <dirtTexture>; };
-Texture2D blendMap : register(s2);
-sampler2D blendMapSampler = sampler_state { Texture = <blendMap>; };
-
+Texture2D overlayTexture : register(s0);
+sampler2D overlaySampler = sampler_state
+{
+    Texture = <overlayTexture>;
+};
+Texture2D blendMap : register(s1);
+sampler2D blendMapSampler = sampler_state
+{
+    Texture = <blendMap>;
+};
 
 // Vertex shader output structure
 struct VertexShaderOutput
@@ -23,17 +26,13 @@ struct VertexShaderOutput
     float2 TextureCoordinates : TEXCOORD0;
 };
 
-
 // Pixel shader
-float4 BlendPS(VertexShaderOutput input) : COLOR
+float4 OverlayBlendPS(VertexShaderOutput input) : COLOR
 {
-    float4 grassColor = tex2D(grassSampler, input.TextureCoordinates);
-    float4 dirtColor = tex2D(dirtSampler, input.TextureCoordinates);
-    
-    // Use the blend map to determine the blend factor
+    float4 overlayColor = tex2D(overlaySampler, input.TextureCoordinates);
     float blendFactor = tex2D(blendMapSampler, input.TextureCoordinates).r;
 
-    return lerp(dirtColor, grassColor, blendFactor) * input.Color;
+    return overlayColor * blendFactor * input.Color;
 }
 
 // Technique definition
@@ -42,6 +41,6 @@ technique BlendDrawing
     pass P0
     {
         // MonoGame's content pipeline will handle the conversion for OpenGL
-        PixelShader = compile PS_SHADERMODEL BlendPS();
+        PixelShader = compile PS_SHADERMODEL OverlayBlendPS();
     }
 };

@@ -5,6 +5,7 @@ using Penumbra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace CarbonField
 {
@@ -89,6 +90,8 @@ namespace CarbonField
             Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain");
             SpriteSheet blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
 
+            Effect blendEffect = content.Load<Effect>("shaders/TerrainBlend");
+
             // Assuming a 2x2 grid layout for blend images in the blendmap
             int blendImageWidth = 384;
             int blendImageHeight = 192;
@@ -140,7 +143,7 @@ namespace CarbonField
                     // Use the determined terrainType instead of random selection
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
-                    tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, spriteIndexX, spriteIndexY, x, y);
+                    tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, blendmapSpriteSheet, blendEffect, spriteIndexX, spriteIndexY, x, y);
                     quadtreeRoot.AddTile(tileMap[x, y]);
                 }
             }
