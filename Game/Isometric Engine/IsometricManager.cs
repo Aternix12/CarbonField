@@ -53,7 +53,7 @@ namespace CarbonField
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             visibleTileBuffer = new Tile[30000];
-            HorizontalOffset =(height-width) * Tile.Width / 2;
+            HorizontalOffset =(height-width) * Tile.Width / 2f;
             CalculateWorldBounds();
 
 
@@ -85,11 +85,30 @@ namespace CarbonField
             Texture2D dirtSheetTexture = content.Load<Texture2D>("sprites/terrain/Dirt1/Dirt1_atlas");
             SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
+            // Load blendmap texture
+            Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain");
+            SpriteSheet blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
+
+            // Assuming a 2x2 grid layout for blend images in the blendmap
+            int blendImageWidth = 384;
+            int blendImageHeight = 192;
+
+            // Add each blend image as a sprite to the sprite sheet
+            for (int i = 0; i < 4; i++) // Rows
+            {
+                    int x = i * blendImageWidth;
+                    int y = 0;
+                    string blendSpriteName = $"blend_{i}";
+                    blendmapSpriteSheet.AddSprite(blendSpriteName, x, y, blendImageWidth, blendImageHeight);
+            }
+
             terrainSpriteSheets = new()
             {
                 { Terrain.Grass, grassSpriteSheet },
                 { Terrain.Dirt, dirtSpriteSheet }
             };
+
+
 
             // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
             for (int y = 0; y < 10; y++)
