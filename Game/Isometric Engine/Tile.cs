@@ -89,24 +89,46 @@ namespace CarbonField
         public void DetermineNeighbors(IsometricManager isoManager)
         {
             hasOverlay = false;
-            _outputTexture = null;
+            if(_outputTexture != null)
+            {
+                _outputTexture.Dispose();
+                _outputTexture = null;
+            }
+
+            // Reset overlay sources for all directions
+            foreach (var direction in Enum.GetValues(typeof(Direction)).Cast<Direction>())
+            {
+                overlaySource[direction] = new Rectangle();
+                blendmapSource[direction] = new Rectangle();
+            }
+
             GetNeighborTerrain(isoManager, Direction.Top, 0, -1);
             GetNeighborTerrain(isoManager, Direction.Left, -1, 0);
             GetNeighborTerrain(isoManager, Direction.Right, 1, 0);
             GetNeighborTerrain(isoManager, Direction.Bottom, 0, 1);
+            if (hasOverlay)
+            {
+                CreateBlendedTexture(isoManager.GraphicsDevice);
+            }
         }
 
         private void GetNeighborTerrain(IsometricManager isoManager, Direction direction, int offsetX, int offsetY)
         {
             var neighborTile = isoManager.GetTileAtGridPosition(GridX + offsetX, GridY + offsetY);
-            if (neighborTile != null && neighborTile.Terrain != this.Terrain)
+            if (neighborTile != null)
             {
                 adjacentTerrainTypes[direction] = neighborTile.Terrain;
-                SetOverlay(direction, neighborTile.Terrain);
-                hasOverlay = true;
-                string blendSpriteName = GetBlendSpriteName(direction);
-                blendmapSource[direction] = blendmapSpriteSheet.GetSprite(blendSpriteName);
-                CreateBlendedTexture(isoManager.GraphicsDevice);
+
+                // Determine if the neighbor's terrain has higher precedence
+                if (GetTerrainPrecedence(neighborTile.Terrain) > GetTerrainPrecedence(this.Terrain))
+                {
+                    SetOverlay(direction, neighborTile.Terrain);
+                    hasOverlay = true;
+                    //Apply appropriate blendsource to that respective direction
+                    //This will eventually be terrain specific i believe
+                    string blendSpriteName = GetBlendSpriteName(direction);
+                    blendmapSource[direction] = blendmapSpriteSheet.GetSprite(blendSpriteName);
+                }
             }
         }
 
@@ -171,10 +193,23 @@ namespace CarbonField
             _sourceRectangle = spriteSheets[Terrain].GetSprite(spriteName);
 
             DetermineNeighbors(isometricManager);
-            foreach (var direction in adjacentTerrainTypes.Keys)
+            UpdateAdjacentTiles(isometricManager);
+        }
+        private void UpdateAdjacentTiles(IsometricManager isometricManager)
+        {
+            UpdateNeighbor(isometricManager, Direction.Top, 0, -1);
+            UpdateNeighbor(isometricManager, Direction.Left, -1, 0);
+            UpdateNeighbor(isometricManager, Direction.Right, 1, 0);
+            UpdateNeighbor(isometricManager, Direction.Bottom, 0, 1);
+        }
+
+        private void UpdateNeighbor(IsometricManager isoManager, Direction direction, int offsetX, int offsetY)
+        {
+            Tile neighborTile = isoManager.GetTileAtGridPosition(GridX + offsetX, GridY + offsetY);
+            if (neighborTile != null)
             {
-                DetermineNeighbors(isometricManager);
-            }   
+                neighborTile.DetermineNeighbors(isoManager);
+            }
         }
 
         public bool IsWithinBounds(Rectangle area)
@@ -189,17 +224,31 @@ namespace CarbonField
             spriteBatch.Draw(spriteSheets[Terrain].Texture, adjustedPosition, _sourceRectangle, Color.White);
         }
 
+        public int GetTerrainPrecedence(Terrain terrain)
+        {
+            return terrain switch
+            {
+                Terrain.Grass => 1,
+                Terrain.Dirt => 2,
+                // Add other terrain types here
+                _ => int.MaxValue // Unknown or least precedence
+            };
+        }
+
+
         public void CreateBlendedTexture(GraphicsDevice graphicsDevice)
         {
             List<Texture2D> overlayTextures = new List<Texture2D>();
             List<Texture2D> blendmapTextures = new List<Texture2D>();
 
-            foreach (var direction in adjacentTerrainTypes.Keys)
+            foreach (var kvp in overlaySource)
             {
-                if (adjacentTerrainTypes[direction].HasValue)
+                var direction = kvp.Key;
+                var sourceRect = kvp.Value;
+
+                if (sourceRect != Rectangle.Empty && adjacentTerrainTypes.ContainsKey(direction) && adjacentTerrainTypes[direction].HasValue)
                 {
                     Terrain adjacentTerrain = adjacentTerrainTypes[direction].Value;
-                    Rectangle sourceRect = overlaySource[direction];
                     Rectangle blendMapRect = blendmapSource[direction];
 
                     // Create and store textures
@@ -227,9 +276,10 @@ namespace CarbonField
                     // Assuming you have a way to match overlay textures with their corresponding blendmap textures
                     blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
                     blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
+                    Console.WriteLine($"Overlay Texture Number: {i}");
 
                     // Adjust the drawing parameters as necessary
-                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.White);
+                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.Red);
                 }
                 spriteBatch.End();
             }
