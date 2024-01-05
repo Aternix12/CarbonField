@@ -269,19 +269,21 @@ namespace CarbonField
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null);
                 spriteBatch.Draw(spriteSheets[Terrain].Texture, new Vector2(0,0), _sourceRectangle, Color.White);
                 spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
+                
                 
                 for (int i = 0; i < overlayTextures.Count; i++)
                 {
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
                     // Assuming you have a way to match overlay textures with their corresponding blendmap textures
                     blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
                     blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
                     Console.WriteLine($"Overlay Texture Number: {i}");
 
                     // Adjust the drawing parameters as necessary
-                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.Red);
+                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.White);
+                    spriteBatch.End();
                 }
-                spriteBatch.End();
+                
             }
 
             // Reset render target and store the output
