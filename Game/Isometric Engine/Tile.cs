@@ -61,25 +61,37 @@ namespace CarbonField
             adjacentTerrainTypes = new Dictionary<Direction, Terrain?>
                 {
                     { Direction.Top, null },
-                    { Direction.Left, null },
+                    { Direction.TopRight, null },
                     { Direction.Right, null },
-                    { Direction.Bottom, null }
+                    { Direction.BottomRight, null },
+                    { Direction.Bottom, null },
+                    { Direction.BottomLeft, null },
+                    { Direction.Left, null },
+                    { Direction.TopLeft, null }
                 };
 
             overlaySource = new Dictionary<Direction, Rectangle>
                 {
                     { Direction.Top, new Rectangle() },
-                    { Direction.Left, new Rectangle() },
+                    { Direction.TopRight, new Rectangle() },
                     { Direction.Right, new Rectangle() },
-                    { Direction.Bottom, new Rectangle() }
+                    { Direction.BottomRight, new Rectangle() },
+                    { Direction.Bottom, new Rectangle() },
+                    { Direction.BottomLeft, new Rectangle() },
+                    { Direction.Left, new Rectangle() },
+                    { Direction.TopLeft, new Rectangle()}
                 };
 
             blendmapSource = new Dictionary<Direction, Rectangle>
                 {
                     { Direction.Top, new Rectangle() },
-                    { Direction.Left, new Rectangle() },
+                    { Direction.TopRight, new Rectangle() },
                     { Direction.Right, new Rectangle() },
-                    { Direction.Bottom, new Rectangle() }
+                    { Direction.BottomRight, new Rectangle() },
+                    { Direction.Bottom, new Rectangle() },
+                    { Direction.BottomLeft, new Rectangle() },
+                    { Direction.Left, new Rectangle() },
+                    { Direction.TopLeft, new Rectangle()}
                 };
 
             BoundingBox = new Rectangle((int)position.X, (int)position.Y, Width, Height);
@@ -103,9 +115,14 @@ namespace CarbonField
             }
 
             GetNeighborTerrain(isoManager, Direction.Top, 0, -1);
-            GetNeighborTerrain(isoManager, Direction.Left, -1, 0);
+            GetNeighborTerrain(isoManager, Direction.TopRight, 1, -1);
             GetNeighborTerrain(isoManager, Direction.Right, 1, 0);
+            GetNeighborTerrain(isoManager, Direction.BottomRight, 1, 1);
             GetNeighborTerrain(isoManager, Direction.Bottom, 0, 1);
+            GetNeighborTerrain(isoManager, Direction.BottomLeft, -1, 1);
+            GetNeighborTerrain(isoManager, Direction.Left, -1, 0);
+            GetNeighborTerrain(isoManager, Direction.TopLeft, -1, -1);
+            
             if (hasOverlay)
             {
                 CreateBlendedTexture(isoManager.GraphicsDevice);
@@ -138,9 +155,13 @@ namespace CarbonField
             int spriteIndex = direction switch
             {
                 Direction.Top => 0,
-                Direction.Right => 1,
-                Direction.Bottom => 2,
-                Direction.Left => 3,
+                Direction.TopRight => 1,
+                Direction.Right => 2,
+                Direction.BottomRight => 3,
+                Direction.Bottom => 4,
+                Direction.BottomLeft => 5,
+                Direction.Left => 6,
+                Direction.TopLeft => 7,
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), $"Invalid direction: {direction}")
             };
 

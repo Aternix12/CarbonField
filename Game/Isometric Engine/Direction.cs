@@ -9,8 +9,12 @@ namespace CarbonField
     public enum Direction
     {
         Top,
-        Left,
+        TopRight,
         Right,
-        Bottom
+        BottomRight,
+        Bottom,
+        BottomLeft,
+        Left,
+        TopLeft
     }
 }
