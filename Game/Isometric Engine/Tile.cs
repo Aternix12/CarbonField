@@ -220,6 +220,11 @@ namespace CarbonField
         {
             //This will need to isolate only the calling tiles direction
             UpdateNeighbor(isometricManager, 0, -1);
+            UpdateNeighbor(isometricManager, 1, -1);
+            UpdateNeighbor(isometricManager, -1, -1);
+            UpdateNeighbor(isometricManager, -1, 1);
+            UpdateNeighbor(isometricManager, 1, 1);
+
             UpdateNeighbor(isometricManager, -1, 0);
             UpdateNeighbor(isometricManager, 1, 0);
             UpdateNeighbor(isometricManager, 0, 1);

@@ -87,7 +87,7 @@ namespace CarbonField
             SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
             // Load blendmap texture
-            Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain");
+            Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain_main");
             SpriteSheet blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
 
             Effect blendEffect = content.Load<Effect>("shaders/TerrainBlend");
@@ -97,7 +97,7 @@ namespace CarbonField
             int blendImageHeight = 192;
 
             // Add each blend image as a sprite to the sprite sheet
-            for (int i = 0; i < 4; i++) // Rows
+            for (int i = 0; i < 8; i++) // Rows
             {
                     int x = i * blendImageWidth;
                     int y = 0;
