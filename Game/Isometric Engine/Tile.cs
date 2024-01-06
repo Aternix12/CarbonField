@@ -16,17 +16,17 @@ namespace CarbonField
         public static readonly int Height = 48;
         public Dictionary<Terrain, SpriteSheet> spriteSheets;
         public SpriteSheet blendmapSpriteSheet;
-        
+
         public Rectangle _sourceRectangle;
         public Rectangle BoundingBox { get; private set; }
         public Terrain Terrain { get; private set; }
-        private Dictionary<Direction, Terrain?> adjacentTerrainTypes;
+        private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
         private bool hasOverlay;
-        private Dictionary<Direction, Rectangle> overlaySource;
-        private Dictionary<Direction, Rectangle> blendmapSource;
-        private Effect blendEffect;
+        private readonly Dictionary<Direction, Rectangle> overlaySource;
+        private readonly Dictionary<Direction, Rectangle> blendmapSource;
+        private readonly Effect blendEffect;
 
-        private int Elevation;
+        private readonly int Elevation;
         public Vector2 IsometricPosition { get; private set; }
 
         public Vector2 Position { get; private set; }
@@ -35,8 +35,8 @@ namespace CarbonField
         public Vector2 LeftCorner { get; private set; }
         public Vector2 RightCorner { get; private set; }
         public Vector2 BottomCorner { get; private set; }
-        private int spriteIndexX;
-        private int spriteIndexY;
+        private readonly int spriteIndexX;
+        private readonly int spriteIndexY;
         private RenderTarget2D _outputTexture;
 
         public int GridX { get; private set; }
@@ -59,28 +59,28 @@ namespace CarbonField
             this.Elevation = 0;
 
             adjacentTerrainTypes = new Dictionary<Direction, Terrain?>
-        {
-            { Direction.Top, null },
-            { Direction.Left, null },
-            { Direction.Right, null },
-            { Direction.Bottom, null }
-        };
+                {
+                    { Direction.Top, null },
+                    { Direction.Left, null },
+                    { Direction.Right, null },
+                    { Direction.Bottom, null }
+                };
 
             overlaySource = new Dictionary<Direction, Rectangle>
-    {
-        { Direction.Top, new Rectangle() },
-        { Direction.Left, new Rectangle() },
-        { Direction.Right, new Rectangle() },
-        { Direction.Bottom, new Rectangle() }
-    };
+                {
+                    { Direction.Top, new Rectangle() },
+                    { Direction.Left, new Rectangle() },
+                    { Direction.Right, new Rectangle() },
+                    { Direction.Bottom, new Rectangle() }
+                };
 
             blendmapSource = new Dictionary<Direction, Rectangle>
-    {
-        { Direction.Top, new Rectangle() },
-        { Direction.Left, new Rectangle() },
-        { Direction.Right, new Rectangle() },
-        { Direction.Bottom, new Rectangle() }
-    };
+                {
+                    { Direction.Top, new Rectangle() },
+                    { Direction.Left, new Rectangle() },
+                    { Direction.Right, new Rectangle() },
+                    { Direction.Bottom, new Rectangle() }
+                };
 
             BoundingBox = new Rectangle((int)position.X, (int)position.Y, Width, Height);
             hasOverlay = false;
@@ -89,7 +89,7 @@ namespace CarbonField
         public void DetermineNeighbors(IsometricManager isoManager)
         {
             hasOverlay = false;
-            if(_outputTexture != null)
+            if (_outputTexture != null)
             {
                 _outputTexture.Dispose();
                 _outputTexture = null;
@@ -197,13 +197,14 @@ namespace CarbonField
         }
         private void UpdateAdjacentTiles(IsometricManager isometricManager)
         {
-            UpdateNeighbor(isometricManager, Direction.Top, 0, -1);
-            UpdateNeighbor(isometricManager, Direction.Left, -1, 0);
-            UpdateNeighbor(isometricManager, Direction.Right, 1, 0);
-            UpdateNeighbor(isometricManager, Direction.Bottom, 0, 1);
+            //This will need to isolate only the calling tiles direction
+            UpdateNeighbor(isometricManager, 0, -1);
+            UpdateNeighbor(isometricManager, -1, 0);
+            UpdateNeighbor(isometricManager, 1, 0);
+            UpdateNeighbor(isometricManager, 0, 1);
         }
 
-        private void UpdateNeighbor(IsometricManager isoManager, Direction direction, int offsetX, int offsetY)
+        private void UpdateNeighbor(IsometricManager isoManager, int offsetX, int offsetY)
         {
             Tile neighborTile = isoManager.GetTileAtGridPosition(GridX + offsetX, GridY + offsetY);
             if (neighborTile != null)
@@ -267,10 +268,10 @@ namespace CarbonField
             using (SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice))
             {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null);
-                spriteBatch.Draw(spriteSheets[Terrain].Texture, new Vector2(0,0), _sourceRectangle, Color.White);
+                spriteBatch.Draw(spriteSheets[Terrain].Texture, new Vector2(0, 0), _sourceRectangle, Color.White);
                 spriteBatch.End();
-                
-                
+
+
                 for (int i = 0; i < overlayTextures.Count; i++)
                 {
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
@@ -283,7 +284,7 @@ namespace CarbonField
                     spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.White);
                     spriteBatch.End();
                 }
-                
+
             }
 
             // Reset render target and store the output
@@ -299,7 +300,7 @@ namespace CarbonField
         public Texture2D CreateTextureFromSourceRect(GraphicsDevice graphicsDevice, Texture2D originalTexture, Rectangle sourceRect)
         {
             // Create a new RenderTarget
-            
+
             RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, sourceRect.Width, sourceRect.Height);
             // Set the new RenderTarget
             graphicsDevice.SetRenderTarget(renderTarget);
@@ -330,7 +331,7 @@ namespace CarbonField
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw the base terrain texture
-            
+
 
             /*if (hasOverlay)
             {
@@ -356,7 +357,8 @@ namespace CarbonField
             if (_outputTexture != null)
             {
                 spriteBatch.Draw(_outputTexture, Position, null, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
-            } else
+            }
+            else
             {
                 spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
             }
