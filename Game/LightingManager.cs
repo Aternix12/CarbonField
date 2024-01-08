@@ -45,14 +45,14 @@ namespace CarbonField
             // Load any Penumbra-specific content (like textures for lights) here
             // and add lights and hulls to the PenumbraComponent.
             // Assuming that Content is your ContentManager instance.
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 35; i++)
             {
                 Texture2D _tex = content.Load<Texture2D>("src_texturedlight");
                 Light _light = new TexturedLight(_tex)
                 {
                     Position = GenerateRandomPositionWithinDiamond(),
                     Scale = new Vector2(800, 400),
-                    Color = RandomColor(),
+                    Color = Color.White,
                     Intensity = 3,
                     ShadowType = ShadowType.Illuminated,
 
@@ -85,8 +85,8 @@ namespace CarbonField
             float dy = Math.Abs(position.Y - center.Y);
 
             // The diamond's width and height at the center
-            float diamondWidth = IsoManager.worldWidth / 2;
-            float diamondHeight = IsoManager.worldHeight / 2;
+            float diamondWidth = IsoManager.worldWidth / 2f;
+            float diamondHeight = IsoManager.worldHeight / 2f;
 
             // Check if the point is within the diamond
             // The dividing by 2 is because the diamondWidth and diamondHeight represent full widths and heights
@@ -119,7 +119,7 @@ namespace CarbonField
         public void Update(GameTime gameTime, Matrix transform)
         {
             //This is the brightness of the game
-            _penumbra.AmbientColor = new Color(255, 255, 255, 1f);
+            _penumbra.AmbientColor = new Color(255, 255, 255, 0.6f);
             _penumbra.Transform = transform;
         }
 

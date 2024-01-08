@@ -39,12 +39,12 @@ namespace CarbonField
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             _vel *= 0.9f;
-            float speed = 80000.0f * elapsed;
+            const float speed = 4.0f;
             Vector2 wasdMovementDelta = new(
                 (Keyboard.GetState().IsKeyDown(Keys.D) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.A) ? speed : 0),
                 (Keyboard.GetState().IsKeyDown(Keys.S) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.W) ? speed : 0)
             );
-            _vel += wasdMovementDelta;
+            _vel += wasdMovementDelta * speed;
             Vector2 wasdMovement = _vel * elapsed;
 
             _zoomVel *= 0.95f; // Apply friction to zoom velocity

@@ -47,7 +47,7 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 35; i++)
             {
                 Vector2 pos = GenerateRandomPositionWithinDiamond();
                 WallBlock ent = new(pos, IsoManager);
