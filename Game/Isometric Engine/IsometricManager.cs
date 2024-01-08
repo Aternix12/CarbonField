@@ -20,6 +20,7 @@ namespace CarbonField
         private readonly ContentManager content;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
+        SpriteSheet blendmapSpriteSheet;
         Texture2D pixel;
         private readonly QuadtreeNode quadtreeRoot;
         private Rectangle lastCameraViewArea;
@@ -27,7 +28,7 @@ namespace CarbonField
         private int visibleTileCount;
         public float HorizontalOffset { get; private set; }
         private const int CameraMoveThreshold = 50;
-
+        private Effect blendEffect;
 
 
         public Dictionary<Terrain, SpriteSheet> TerrainSpriteSheets => terrainSpriteSheets;
@@ -48,13 +49,13 @@ namespace CarbonField
             worldWidth = (width + height) * Tile.Width / 2;
             worldHeight = (width + height) * Tile.Height / 2;
             terrainManager = new TerrainManager();
-            
+
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             visibleTileBuffer = new Tile[30000];
-            HorizontalOffset =(height-width) * Tile.Width / 2f;
+            HorizontalOffset = (height - width) * Tile.Width / 2f;
             CalculateWorldBounds();
 
 
@@ -63,9 +64,9 @@ namespace CarbonField
         private void CalculateWorldBounds()
         {
             // Adjust the world bounds to fit the isometric rectangle
-            WorldTop = new Vector2(worldWidth / 2 + HorizontalOffset/2, 0); // Adjusted Top point
-            WorldRight = new Vector2(worldWidth, worldHeight / 2 - HorizontalOffset/4); // Right center
-            WorldBottom = new Vector2(worldWidth / 2 - HorizontalOffset/2, worldHeight); // Adjusted Bottom point
+            WorldTop = new Vector2(worldWidth / 2 + HorizontalOffset / 2, 0); // Adjusted Top point
+            WorldRight = new Vector2(worldWidth, worldHeight / 2 - HorizontalOffset / 4); // Right center
+            WorldBottom = new Vector2(worldWidth / 2 - HorizontalOffset / 2, worldHeight); // Adjusted Bottom point
             WorldLeft = new Vector2(0, worldHeight / 2 + HorizontalOffset / 4); // Left center
             //Verticle offsets are relation between tile width and height
         }
@@ -88,9 +89,9 @@ namespace CarbonField
 
             // Load blendmap texture
             Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain_main");
-            SpriteSheet blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
+            blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
 
-            Effect blendEffect = content.Load<Effect>("shaders/TerrainBlend");
+            blendEffect = content.Load<Effect>("shaders/TerrainBlend");
 
             // Assuming a 2x2 grid layout for blend images in the blendmap
             int blendImageWidth = 384;
@@ -99,10 +100,10 @@ namespace CarbonField
             // Add each blend image as a sprite to the sprite sheet
             for (int i = 0; i < 8; i++) // Rows
             {
-                    int x = i * blendImageWidth;
-                    int y = 0;
-                    string blendSpriteName = $"blend_{i}";
-                    blendmapSpriteSheet.AddSprite(blendSpriteName, x, y, blendImageWidth, blendImageHeight);
+                int x = i * blendImageWidth;
+                int y = 0;
+                string blendSpriteName = $"blend_{i}";
+                blendmapSpriteSheet.AddSprite(blendSpriteName, x, y, blendImageWidth, blendImageHeight, GraphicsDevice);
             }
 
             terrainSpriteSheets = new()
@@ -118,8 +119,8 @@ namespace CarbonField
             {
                 for (int x = 0; x < 10; x++)
                 {
-                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4);
-                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4);
+                    grassSpriteSheet.AddSprite($"grass_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4, GraphicsDevice);
+                    dirtSpriteSheet.AddSprite($"dirt_{x}_{y}", x * Tile.Width * 4, y * Tile.Height * 4, Tile.Width * 4, Tile.Height * 4, GraphicsDevice);
                 }
             }
 
@@ -133,7 +134,7 @@ namespace CarbonField
                 for (int y = 0; y < height; y++)
                 {
                     Vector2 isoPosition = new(
-            HorizontalOffset + halfTotalWidth +  (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
+            HorizontalOffset + halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
             x * halfTileHeight + y * halfTileHeight
         );
 
@@ -143,7 +144,7 @@ namespace CarbonField
                     // Use the determined terrainType instead of random selection
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
-                    tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, blendmapSpriteSheet, blendEffect, spriteIndexX, spriteIndexY, x, y);
+                    tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, blendmapSpriteSheet, spriteIndexX, spriteIndexY, x, y);
                     quadtreeRoot.AddTile(tileMap[x, y]);
                 }
             }
@@ -212,23 +213,34 @@ namespace CarbonField
         }
 
 
-        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea)
+        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform)
         {
             if (lastCameraViewArea != cameraViewArea)
             {
                 UpdateVisibleTiles(cameraViewArea);
-                //Array.Sort(visibleTileBuffer, 0, visibleTileCount, Comparer<Tile>.Create((x, y) => x.Terrain.CompareTo(y.Terrain)));
             }
 
             // Scale to fit the size of 96x48
             Vector2 scale = new Vector2(0.25f, 0.25f);
 
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camTransform);
             for (int i = 0; i < visibleTileCount; i++)
             {
                 var tile = visibleTileBuffer[i];
                 tile.Draw(spriteBatch);
-                //spriteBatch.Draw(tile.spriteSheet.Texture, tile.Position, tile._sourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             }
+
+            spriteBatch.End();
+
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, camTransform);
+            for (int i = 0; i < visibleTileCount; i++)
+            {
+
+                var tile = visibleTileBuffer[i];
+                tile.DrawOverlay(spriteBatch, blendEffect, camTransform);
+            }
+            //spriteBatch.End();
+
         }
 
         public void DrawDiag(SpriteBatch spriteBatch)

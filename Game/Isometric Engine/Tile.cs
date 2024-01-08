@@ -22,9 +22,8 @@ namespace CarbonField
         public Terrain Terrain { get; private set; }
         private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
         private bool hasOverlay;
-        private readonly Dictionary<Direction, Rectangle> overlaySource;
-        private readonly Dictionary<Direction, Rectangle> blendmapSource;
-        private readonly Effect blendEffect;
+        private readonly Dictionary<Direction, String> overlaySource;
+        private readonly Dictionary<Direction, String> blendmapSource;
 
         private readonly int Elevation;
         public Vector2 IsometricPosition { get; private set; }
@@ -42,14 +41,15 @@ namespace CarbonField
         public int GridX { get; private set; }
         public int GridY { get; private set; }
         public int[] NodePath { get; set; }
+        readonly List<Texture2D> overlayTextures = new List<Texture2D>();
+        readonly List<Texture2D> blendmapTextures = new List<Texture2D>();
 
-        public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, SpriteSheet blendmapSpriteSheet, Effect blendEffect, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
+        public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, SpriteSheet blendmapSpriteSheet, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
             Position = position;
             Terrain = terrain;
             this.spriteSheets = spriteSheets; //Temporary all spritesheet reference in each tile, will need to be centralized to IsoManager
             this.blendmapSpriteSheet = blendmapSpriteSheet; //This too!
-            this.blendEffect = blendEffect; //This too!!!
             string spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
             _sourceRectangle = spriteSheets[Terrain].GetSprite(spriteName);
             GridX = gridX;
@@ -70,28 +70,28 @@ namespace CarbonField
                     { Direction.TopLeft, null }
                 };
 
-            overlaySource = new Dictionary<Direction, Rectangle>
-                {
-                    { Direction.Top, new Rectangle() },
-                    { Direction.TopRight, new Rectangle() },
-                    { Direction.Right, new Rectangle() },
-                    { Direction.BottomRight, new Rectangle() },
-                    { Direction.Bottom, new Rectangle() },
-                    { Direction.BottomLeft, new Rectangle() },
-                    { Direction.Left, new Rectangle() },
-                    { Direction.TopLeft, new Rectangle()}
+            overlaySource = new Dictionary<Direction, string>
+            {
+                    { Direction.Top, null },
+                    { Direction.TopRight, null },
+                    { Direction.Right, null },
+                    { Direction.BottomRight, null },
+                    { Direction.Bottom, null },
+                    { Direction.BottomLeft, null },
+                    { Direction.Left, null },
+                    { Direction.TopLeft, null }
                 };
 
-            blendmapSource = new Dictionary<Direction, Rectangle>
-                {
-                    { Direction.Top, new Rectangle() },
-                    { Direction.TopRight, new Rectangle() },
-                    { Direction.Right, new Rectangle() },
-                    { Direction.BottomRight, new Rectangle() },
-                    { Direction.Bottom, new Rectangle() },
-                    { Direction.BottomLeft, new Rectangle() },
-                    { Direction.Left, new Rectangle() },
-                    { Direction.TopLeft, new Rectangle()}
+            blendmapSource = new Dictionary<Direction, string>
+            {
+                    { Direction.Top, null },
+                    { Direction.TopRight, null },
+                    { Direction.Right, null },
+                    { Direction.BottomRight, null },
+                    { Direction.Bottom, null },
+                    { Direction.BottomLeft, null },
+                    { Direction.Left, null },
+                    { Direction.TopLeft, null }
                 };
 
             BoundingBox = new Rectangle((int)position.X, (int)position.Y, Width, Height);
@@ -101,17 +101,18 @@ namespace CarbonField
         public void DetermineNeighbors(IsometricManager isoManager)
         {
             hasOverlay = false;
+            overlayTextures.Clear();
+            blendmapTextures.Clear();
             if (_outputTexture != null)
             {
                 _outputTexture.Dispose();
                 _outputTexture = null;
             }
 
-            // Reset overlay sources for all directions
             foreach (var direction in Enum.GetValues(typeof(Direction)).Cast<Direction>())
             {
-                overlaySource[direction] = new Rectangle();
-                blendmapSource[direction] = new Rectangle();
+                overlaySource[direction] = null;
+                blendmapSource[direction] = null;
             }
 
             GetNeighborTerrain(isoManager, Direction.Top, 0, -1);
@@ -122,7 +123,7 @@ namespace CarbonField
             GetNeighborTerrain(isoManager, Direction.BottomLeft, -1, 1);
             GetNeighborTerrain(isoManager, Direction.Left, -1, 0);
             GetNeighborTerrain(isoManager, Direction.TopLeft, -1, -1);
-            
+
             if (hasOverlay)
             {
                 CreateBlendedTexture(isoManager.GraphicsDevice);
@@ -137,14 +138,18 @@ namespace CarbonField
                 adjacentTerrainTypes[direction] = neighborTile.Terrain;
 
                 // Determine if the neighbor's terrain has higher precedence
-                if (GetTerrainPrecedence(neighborTile.Terrain) > GetTerrainPrecedence(this.Terrain))
+                if (GetTerrainPrecedence(neighborTile.Terrain) > GetTerrainPrecedence(Terrain))
                 {
+                    if(neighborTile.Terrain == Terrain.Grass)
+                    {
+                        Console.WriteLine("What the fuck");
+                    }
                     SetOverlay(direction, neighborTile.Terrain);
                     hasOverlay = true;
                     //Apply appropriate blendsource to that respective direction
                     //This will eventually be terrain specific i believe
                     string blendSpriteName = GetBlendSpriteName(direction);
-                    blendmapSource[direction] = blendmapSpriteSheet.GetSprite(blendSpriteName);
+                    blendmapSource[direction] = blendSpriteName;
                 }
             }
         }
@@ -172,21 +177,8 @@ namespace CarbonField
         public void SetOverlay(Direction direction, Terrain overlayTerrain)
         {
             string overlaySpriteName = $"{overlayTerrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
-            Console.WriteLine($"Overlay SpriteName: {overlaySpriteName}");
 
-            if (!spriteSheets.ContainsKey(overlayTerrain))
-            {
-                Console.WriteLine($"Warning: SpriteSheet not found for terrain {overlayTerrain}");
-                return;
-            }
-
-            if (!overlaySource.ContainsKey(direction))
-            {
-                Console.WriteLine($"Warning: overlaySource not initialized for direction {direction}");
-                return;
-            }
-
-            overlaySource[direction] = spriteSheets[overlayTerrain].GetSprite(overlaySpriteName);
+            overlaySource[direction] = overlaySpriteName;
         }
 
         public string GetNeighborInfo()
@@ -224,7 +216,6 @@ namespace CarbonField
             UpdateNeighbor(isometricManager, -1, -1);
             UpdateNeighbor(isometricManager, -1, 1);
             UpdateNeighbor(isometricManager, 1, 1);
-
             UpdateNeighbor(isometricManager, -1, 0);
             UpdateNeighbor(isometricManager, 1, 0);
             UpdateNeighbor(isometricManager, 0, 1);
@@ -265,130 +256,50 @@ namespace CarbonField
 
         public void CreateBlendedTexture(GraphicsDevice graphicsDevice)
         {
-            List<Texture2D> overlayTextures = new List<Texture2D>();
-            List<Texture2D> blendmapTextures = new List<Texture2D>();
-
             foreach (var kvp in overlaySource)
             {
+                
                 var direction = kvp.Key;
-                var sourceRect = kvp.Value;
-
-                if (sourceRect != Rectangle.Empty && adjacentTerrainTypes.ContainsKey(direction) && adjacentTerrainTypes[direction].HasValue)
+                if (overlaySource[direction] != null)
                 {
-                    Terrain adjacentTerrain = adjacentTerrainTypes[direction].Value;
-                    Rectangle blendMapRect = blendmapSource[direction];
+                    if (adjacentTerrainTypes.TryGetValue(direction, out Terrain? value) && value.HasValue)
+                    {
 
-                    // Create and store textures
-                    Texture2D overlayTexture = CreateTextureFromSourceRect(graphicsDevice, spriteSheets[adjacentTerrain].Texture, sourceRect);
-                    Texture2D blendmapTexture = CreateTextureFromSourceRect(graphicsDevice, blendmapSpriteSheet.Texture, blendMapRect);
+                        Terrain adjacentTerrain = value.Value;
+                        // Retrieve stored textures instead of creating new ones
+                        Texture2D overlayTexture = spriteSheets[adjacentTerrain].GetSpriteTexture(overlaySource[direction]);
+                        Texture2D blendmapTexture = blendmapSpriteSheet.GetSpriteTexture(blendmapSource[direction]);
 
-                    overlayTextures.Add(overlayTexture);
-                    blendmapTextures.Add(blendmapTexture);
+                        overlayTextures.Add(overlayTexture);
+                        blendmapTextures.Add(blendmapTexture);
+                    }
                 }
             }
-
-            RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, Width * 4, Height * 4);
-            graphicsDevice.SetRenderTarget(renderTarget);
-            graphicsDevice.Clear(Color.Transparent);
-
-            using (SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice))
-            {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null);
-                spriteBatch.Draw(spriteSheets[Terrain].Texture, new Vector2(0, 0), _sourceRectangle, Color.White);
-                spriteBatch.End();
-
-
-                for (int i = 0; i < overlayTextures.Count; i++)
-                {
-                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect);
-                    // Assuming you have a way to match overlay textures with their corresponding blendmap textures
-                    blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
-                    blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
-                    Console.WriteLine($"Overlay Texture Number: {i}");
-
-                    // Adjust the drawing parameters as necessary
-                    spriteBatch.Draw(overlayTextures[i], new Rectangle(0, 0, Width * 4, Height * 4), Color.White);
-                    spriteBatch.End();
-                }
-
-            }
-
-            // Reset render target and store the output
-            graphicsDevice.SetRenderTarget(null);
-            _outputTexture = renderTarget;
-
-            // Dispose of used resources
-            foreach (var texture in overlayTextures) texture.Dispose();
-            foreach (var texture in blendmapTextures) texture.Dispose();
-            //renderTarget.Dispose();
-        }
-
-        public Texture2D CreateTextureFromSourceRect(GraphicsDevice graphicsDevice, Texture2D originalTexture, Rectangle sourceRect)
-        {
-            // Create a new RenderTarget
-
-            RenderTarget2D renderTarget = new RenderTarget2D(graphicsDevice, sourceRect.Width, sourceRect.Height);
-            // Set the new RenderTarget
-            graphicsDevice.SetRenderTarget(renderTarget);
-            graphicsDevice.Clear(Color.Transparent);
-
-            // Draw the specific part of the texture
-            SpriteBatch spriteBatch = new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin();
-            spriteBatch.Draw(originalTexture, new Rectangle(0, 0, sourceRect.Width, sourceRect.Height), sourceRect, Color.White);
-            spriteBatch.End();
-
-            // Reset the render target to the screen
-            graphicsDevice.SetRenderTargets(null);
-
-            // Create a new Texture2D and copy the render target's data into it
-            Texture2D croppedTexture = new Texture2D(graphicsDevice, sourceRect.Width, sourceRect.Height);
-            Color[] data = new Color[sourceRect.Width * sourceRect.Height];
-            renderTarget.GetData(data);
-            croppedTexture.SetData(data);
-
-            // Dispose the render target and sprite batch
-            //renderTarget.Dispose();
-            //spriteBatch.Dispose();
-
-            return croppedTexture;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw the base terrain texture
-
-
-            /*if (hasOverlay)
-            {
-                foreach (var direction in adjacentTerrainTypes.Keys)
-                {
-                    if (adjacentTerrainTypes[direction].HasValue)
-                    {
-                        Terrain adjacentTerrain = adjacentTerrainTypes[direction].Value;
-                        Rectangle sourceRect = overlaySource[direction];
-                        spriteBatch.Draw(spriteSheets[adjacentTerrain].Texture, Position, sourceRect, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
-                    }
-                }
-
-                // Draw the blendmaps
-                foreach (var direction in blendmapSource.Keys)
-                {
-                    Rectangle blendMapRect = blendmapSource[direction];
-                    spriteBatch.Draw(blendmapSpriteSheet.Texture, Position, blendMapRect, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
-                }
-            }*/
-
-            //Draw the rendertarget if it exists
-            if (_outputTexture != null)
-            {
-                spriteBatch.Draw(_outputTexture, Position, null, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
-            }
-            else
-            {
-                spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
-            }
+            spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
         }
 
+        public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)
+        {
+            Vector2 scale = new Vector2(0.25f, 0.25f);
+
+            // Overlay textures drawing
+            for (int i = 0; i < overlayTextures.Count; i++)
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, camTransform);
+                blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
+                blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
+                // Apply the effect changes
+                blendEffect.CurrentTechnique.Passes[0].Apply();
+
+                spriteBatch.Draw(overlayTextures[i], Position, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                //spriteBatch.Draw(blendmapTextures[i], Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+                spriteBatch.End();
+            }
+
+        }
     }
 }

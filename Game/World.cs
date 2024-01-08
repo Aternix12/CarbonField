@@ -13,7 +13,9 @@ namespace CarbonField
         private readonly WorldUserInterface _worldUI;
         public readonly EntityManager _entityManager;
         readonly Texture2D pixel;
-        
+        Matrix CamTransform;
+
+
 
         public IsometricManager IsoManager { get; private set; }
 
@@ -35,7 +37,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(100, 100, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(500, 500, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -47,7 +49,7 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 35; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Vector2 pos = GenerateRandomPositionWithinDiamond();
                 WallBlock ent = new(pos, IsoManager);
@@ -117,26 +119,26 @@ namespace CarbonField
         {
             _lightingManager.BeginDraw();
             _graphics.GraphicsDevice.Clear(Color.Black);
+
+            CamTransform = Cam.GetTransform();
              
             //Background Draw
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, CamTransform);
             spriteBatch.Draw(_bgrTexture, new Vector2(0, 0), Color.White);
             spriteBatch.End();
 
             //Isometric Draw
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Cam.GetTransform());
-            IsoManager.Draw(spriteBatch, Cam.GetVisibleArea());
-            spriteBatch.End();
+            IsoManager.Draw(spriteBatch, Cam.GetVisibleArea(), CamTransform);
 
             //Entity Draw
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, CamTransform);
             _entityManager.Draw(spriteBatch);
             spriteBatch.End();        
 
             _lightingManager.Draw(gameTime);
 
             //World Diagnostics
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Cam.GetTransform());
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, CamTransform);
             DrawRectangle(spriteBatch, Cam.GetVisibleArea(), Color.Red, 2);
             IsoManager.DrawDiag(spriteBatch);
             spriteBatch.End();

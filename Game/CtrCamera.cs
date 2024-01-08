@@ -39,7 +39,7 @@ namespace CarbonField
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             _vel *= 0.9f;
-            const float speed = 4.0f;
+            const float speed = 8.0f;
             Vector2 wasdMovementDelta = new(
                 (Keyboard.GetState().IsKeyDown(Keys.D) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.A) ? speed : 0),
                 (Keyboard.GetState().IsKeyDown(Keys.S) ? speed : 0) - (Keyboard.GetState().IsKeyDown(Keys.W) ? speed : 0)
