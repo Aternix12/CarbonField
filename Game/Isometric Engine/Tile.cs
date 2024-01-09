@@ -14,10 +14,10 @@ namespace CarbonField
     {
         public static readonly int Width = 96;
         public static readonly int Height = 48;
-        public Dictionary<Terrain, SpriteSheet> spriteSheets;
-        public SpriteSheet blendmapSpriteSheet;
+        public Dictionary<Terrain, SpriteSheet> SpriteSheets { get; private set; }
+        public SpriteSheet BlendmapSpriteSheet { get; private set; }
 
-        public Rectangle _sourceRectangle;
+        public Rectangle SourceRectangle { get; private set; }
         public Rectangle BoundingBox { get; private set; }
         public Terrain Terrain { get; private set; }
         private readonly Dictionary<Direction, Terrain?> adjacentTerrainTypes;
@@ -40,18 +40,17 @@ namespace CarbonField
 
         public int GridX { get; private set; }
         public int GridY { get; private set; }
-        public int[] NodePath { get; set; }
-        readonly List<Texture2D> overlayTextures = new List<Texture2D>();
-        readonly List<Texture2D> blendmapTextures = new List<Texture2D>();
+        readonly List<Texture2D> overlayTextures = [];
+        readonly List<Texture2D> blendmapTextures = [];
 
         public Tile(Vector2 position, Terrain terrain, Dictionary<Terrain, SpriteSheet> spriteSheets, SpriteSheet blendmapSpriteSheet, int spriteIndexX, int spriteIndexY, int gridX, int gridY)
         {
             Position = position;
             Terrain = terrain;
-            this.spriteSheets = spriteSheets; //Temporary all spritesheet reference in each tile, will need to be centralized to IsoManager
-            this.blendmapSpriteSheet = blendmapSpriteSheet; //This too!
+            this.SpriteSheets = spriteSheets; //Temporary all spritesheet reference in each tile, will need to be centralized to IsoManager
+            this.BlendmapSpriteSheet = blendmapSpriteSheet; //This too!
             string spriteName = $"{terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
-            _sourceRectangle = spriteSheets[Terrain].GetSprite(spriteName);
+            SourceRectangle = spriteSheets[Terrain].GetSprite(spriteName);
             GridX = gridX;
             GridY = gridY;
             this.spriteIndexX = spriteIndexX;
@@ -203,7 +202,7 @@ namespace CarbonField
             string spriteName = $"{Terrain.ToString().ToLower()}_{spriteIndexX}_{spriteIndexY}";
             Console.WriteLine($"Terrain SpriteIndex X: {spriteIndexX}");
             Console.WriteLine($"Terrain SpriteIndex Y: {spriteIndexY}");
-            _sourceRectangle = spriteSheets[Terrain].GetSprite(spriteName);
+            SourceRectangle = SpriteSheets[Terrain].GetSprite(spriteName);
 
             DetermineNeighbors(isometricManager);
             UpdateAdjacentTiles(isometricManager);
@@ -237,10 +236,7 @@ namespace CarbonField
                    BoundingBox.Top < area.Bottom && BoundingBox.Bottom > area.Top;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
-        {
-            spriteBatch.Draw(spriteSheets[Terrain].Texture, adjustedPosition, _sourceRectangle, Color.White);
-        }
+        
 
         public int GetTerrainPrecedence(Terrain terrain)
         {
@@ -259,16 +255,15 @@ namespace CarbonField
             foreach (var kvp in overlaySource)
             {
                 
-                var direction = kvp.Key;
-                if (overlaySource[direction] != null)
+                foreach (var direction in overlaySource.Keys.Where(k => overlaySource[k] != null))
                 {
                     if (adjacentTerrainTypes.TryGetValue(direction, out Terrain? value) && value.HasValue)
                     {
 
                         Terrain adjacentTerrain = value.Value;
                         // Retrieve stored textures instead of creating new ones
-                        Texture2D overlayTexture = spriteSheets[adjacentTerrain].GetSpriteTexture(overlaySource[direction]);
-                        Texture2D blendmapTexture = blendmapSpriteSheet.GetSpriteTexture(blendmapSource[direction]);
+                        Texture2D overlayTexture = SpriteSheets[adjacentTerrain].GetSpriteTexture(overlaySource[direction]);
+                        Texture2D blendmapTexture = BlendmapSpriteSheet.GetSpriteTexture(blendmapSource[direction]);
 
                         overlayTextures.Add(overlayTexture);
                         blendmapTextures.Add(blendmapTexture);
@@ -279,24 +274,24 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(spriteSheets[Terrain].Texture, Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(SpriteSheets[Terrain].Texture, Position, SourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
+        {
+            spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White);
         }
 
         public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)
         {
             Vector2 scale = new Vector2(0.25f, 0.25f);
-
-            // Overlay textures drawing
             for (int i = 0; i < overlayTextures.Count; i++)
             {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, camTransform);
                 blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
                 blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
-                // Apply the effect changes
                 blendEffect.CurrentTechnique.Passes[0].Apply();
-
                 spriteBatch.Draw(overlayTextures[i], Position, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                //spriteBatch.Draw(blendmapTextures[i], Position, _sourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
 
