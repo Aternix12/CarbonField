@@ -2,15 +2,15 @@
   "version": 3,
   "targets": {
     "net8.0": {
-      "LiteNetLib/1.1.0": {
+      "LiteNetLib/1.2.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/LiteNetLib.dll": {
+          "lib/net8.0/LiteNetLib.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net6.0/LiteNetLib.dll": {
+          "lib/net8.0/LiteNetLib.dll": {
             "related": ".xml"
           }
         }
@@ -18,10 +18,10 @@
     }
   },
   "libraries": {
-    "LiteNetLib/1.1.0": {
-      "sha512": "GavpDPs65Y4vvAeECbApWXynTOn7f7IVIHmRKpPmzLWSf3vllcxHN4XPN+Tu3YFqIwOYUdgI8fhkCMhn4FLQCw==",
+    "LiteNetLib/1.2.0": {
+      "sha512": "N4pJ6Drzdt7M7Ok//J1YB1t2jBNQikKud3OEgllUwK2qcu6elLyvb+vgOy4WJy9xbyobYg7oav1g5vuoaDHLuw==",
       "type": "package",
-      "path": "litenetlib/1.1.0",
+      "path": "litenetlib/1.2.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -33,20 +33,24 @@
         "lib/net5.0/LiteNetLib.xml",
         "lib/net6.0/LiteNetLib.dll",
         "lib/net6.0/LiteNetLib.xml",
+        "lib/net7.0/LiteNetLib.dll",
+        "lib/net7.0/LiteNetLib.xml",
+        "lib/net8.0/LiteNetLib.dll",
+        "lib/net8.0/LiteNetLib.xml",
         "lib/netcoreapp3.1/LiteNetLib.dll",
         "lib/netcoreapp3.1/LiteNetLib.xml",
         "lib/netstandard2.0/LiteNetLib.dll",
         "lib/netstandard2.0/LiteNetLib.xml",
         "lib/netstandard2.1/LiteNetLib.dll",
         "lib/netstandard2.1/LiteNetLib.xml",
-        "litenetlib.1.1.0.nupkg.sha512",
+        "litenetlib.1.2.0.nupkg.sha512",
         "litenetlib.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "LiteNetLib >= 1.1.0"
+      "LiteNetLib >= 1.2.0"
     ]
   },
   "packageFolders": {
@@ -95,7 +99,7 @@
         "dependencies": {
           "LiteNetLib": {
             "target": "Package",
-            "version": "[1.1.0, )"
+            "version": "[1.2.0, )"
           }
         },
         "imports": [
@@ -114,7 +118,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
