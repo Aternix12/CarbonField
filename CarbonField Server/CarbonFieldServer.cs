@@ -39,7 +39,7 @@ namespace CarbonField_Server
 
             listener.PeerConnectedEvent += peer =>
             {
-                Console.WriteLine("We got connection: {0}", peer.EndPoint); // Show peer ip
+                Console.WriteLine("We got connection: {0}", peer.Address); // Show peer ip
                 NetDataWriter writer = new();                               // Create writer class
                 writer.Put("Hey client!");                                  // Put some string
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);          // Send with reliability
