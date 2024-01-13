@@ -35,6 +35,7 @@ float4 OverlayBlendPS(VertexShaderOutput input) : COLOR
     return overlayColor * blendFactor * input.Color;
 }
 
+
 // Technique definition
 technique BlendDrawing
 {

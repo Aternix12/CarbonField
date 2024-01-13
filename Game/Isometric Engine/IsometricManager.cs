@@ -88,7 +88,7 @@ namespace CarbonField
             SpriteSheet dirtSpriteSheet = new(dirtSheetTexture);
 
             // Load blendmap texture
-            Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain_main");
+            Texture2D blendmapTexture = content.Load<Texture2D>("shaders/blendmaps/terrain_main2");
             blendmapSpriteSheet = new SpriteSheet(blendmapTexture);
 
             blendEffect = content.Load<Effect>("shaders/TerrainBlend");

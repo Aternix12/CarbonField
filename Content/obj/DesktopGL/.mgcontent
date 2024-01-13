@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/Fonts/Arial.spritefont</File>
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/blendmaps/terrain_main.png</File>
+    <File>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/blendmaps/terrain_main2.png</File>
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/blendmaps/terrain.png</File>
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/TerrainBlend.fx</File>
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/shaders/Test.fx</File>
@@ -21,6 +22,7 @@
     <File>C:/Users/xX12T/OneDrive/CarbonField/Content/src_texturedlight.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
