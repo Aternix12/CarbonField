@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Penumbra;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
 
 namespace CarbonField
 {

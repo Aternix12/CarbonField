@@ -1,12 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using LiteNetLib;
-using LiteNetLib.Utils;
-using System.Threading;
 using System.Runtime.InteropServices;
-using System.Reflection;
 
 namespace CarbonField
 {
@@ -102,9 +97,6 @@ namespace CarbonField
             {
                 _time.Increment();
             }
-
-            //Change Penumbra Alpha
-            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
 
             //Updating FPS
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;

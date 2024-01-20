@@ -1,13 +1,8 @@
-﻿// LightingManager.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Penumbra;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Penumbra;
+using System;
 
 namespace CarbonField
 {
@@ -19,9 +14,6 @@ namespace CarbonField
 
         public readonly Light _sun = new TexturedLight();
 
-        //Random Colours
-        private readonly Random rnd = new();
-        private readonly Color[] Colors = new Color[] { Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Purple, Color.Brown, Color.White };
         private IsometricManager IsoManager;
 
         public LightingManager(CarbonField game)
@@ -118,6 +110,9 @@ namespace CarbonField
 
         public void Update(GameTime gameTime, Matrix transform)
         {
+            //Change Penumbra Alpha
+            //_daylight = ((float)Math.Sin((Math.PI/4f*_time.Seconds())-(Math.PI/2f))+1f)/2f; //Keep this for future reference.
+
             //This is the brightness of the game
             _penumbra.AmbientColor = new Color(255, 255, 255, 0.6f);
             _penumbra.Transform = transform;
@@ -131,11 +126,6 @@ namespace CarbonField
         public void Draw(GameTime gameTime)
         {
             _penumbra.Draw(gameTime);
-        }
-
-        private Color RandomColor()
-        {
-            return Colors[rnd.Next(Colors.Length)];
         }
     }
 }
