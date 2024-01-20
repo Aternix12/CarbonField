@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace CarbonField
 {
-    public class CarbonField : Microsoft.Xna.Framework.Game
+    public class CarbonField : Game
     {
         //Version
         public static readonly string Version = "0.2.0";
