@@ -1,37 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <RollForward>Major</RollForward>
-    <PublishReadyToRun>false</PublishReadyToRun>
-    <TieredCompilation>false</TieredCompilation>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Icon.ico" />
-    <None Remove="Icon.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Icon.ico" />
-    <EmbeddedResource Include="Icon.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="LiteNetLib" Version="1.2.0" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Penumbra.WindowsDX" Version="3.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CarbonField Server\obj\Debug\" />
-    <Folder Include="Content\obj\DesktopGL\net7.0\Content\" />
-  </ItemGroup>
-  <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
-    <Message Text="Restoring dotnet tools" Importance="High" />
-    <Exec Command="dotnet tool restore" />
-  </Target>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows8.0</TargetFramework>
+		<TargetPlatformVersion>10.0</TargetPlatformVersion>
+		<RollForward>Major</RollForward>
+		<PublishReadyToRun>false</PublishReadyToRun>
+		<TieredCompilation>false</TieredCompilation>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>Icon.ico</ApplicationIcon>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+		<SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
+		<UseWPF>True</UseWPF>
+		<StartupObject>CarbonField.Program</StartupObject>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="CarbonField Bindings\**" />
+	  <Compile Remove="CarbonField Server\**" />
+	  <EmbeddedResource Remove="CarbonField Bindings\**" />
+	  <EmbeddedResource Remove="CarbonField Server\**" />
+	  <None Remove="CarbonField Bindings\**" />
+	  <None Remove="CarbonField Server\**" />
+	  <Page Remove="CarbonField Bindings\**" />
+	  <Page Remove="CarbonField Server\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Icon.ico" />
+		<None Remove="Icon.bmp" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Icon.ico" />
+		<EmbeddedResource Include="Icon.bmp" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="LiteNetLib" Version="1.2.0" />
+		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+		<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
+		<PackageReference Include="MonoGame.Penumbra.WindowsDX" Version="3.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Content\obj\DesktopGL\net7.0\Content\" />
+	</ItemGroup>
+	<Target Name="RestoreDotnetTools" BeforeTargets="Restore">
+		<Message Text="Restoring dotnet tools" Importance="High" />
+		<Exec Command="dotnet tool restore" />
+	</Target>
 </Project>
