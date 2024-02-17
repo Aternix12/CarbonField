@@ -1,32 +1,27 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CarbonField
 {
-    public class ChunkManager
+    public class ChunkManager(int width, int height, int worldWidth, int worldHeight, GraphicsDevice graphicsDevice, Tile[,] tileMap, ContentManager content)
     {
-        private readonly GraphicsDevice graphicsDevice;
+        private readonly GraphicsDevice graphicsDevice = graphicsDevice;
         const int MaxRenderTargetSize = 640;
-        private readonly int width, height, worldWidth, worldHeight;
-        private readonly Tile[,] tileMap;
+        private readonly int width = width, height = height, worldWidth = worldWidth, worldHeight = worldHeight;
+        private readonly Tile[,] tileMap = tileMap;
         private SpriteFont tileCoordinateFont;
-        private readonly ContentManager content;
+        private readonly ContentManager content = content;
         private Chunk[,] chunks;
+        private Chunk[] visibleChunks;
 
-        public ChunkManager(int width, int height, int worldWidth, int worldHeight, GraphicsDevice graphicsDevice, Tile[,] tileMap, ContentManager content)
-        {
-            this.width = width;
-            this.height = height;
-            this.worldWidth = worldWidth;
-            this.worldHeight = worldHeight;
-            this.graphicsDevice = graphicsDevice;
-            this.tileMap = tileMap;
-            this.content = content;
-        }
+        //Camera Culling
+        private const int CameraMoveThreshold = 50;
+        private Rectangle lastVisibleArea;
 
         public void LoadContent()
         {
@@ -37,6 +32,8 @@ namespace CarbonField
 
         private void InitializeChunks()
         {
+            visibleChunks = new Chunk[16];
+
             int numTargetsX = (int)Math.Ceiling((double)worldWidth / MaxRenderTargetSize);
             int numTargetsY = (int)Math.Ceiling((double)worldHeight / MaxRenderTargetSize);
 
@@ -57,7 +54,6 @@ namespace CarbonField
                     if (GetTilesInBounds(chunkBounds).Any())
                     {
                         chunks[x, y] = new Chunk(graphicsDevice, offsetX, offsetY, chunkWidth, chunkHeight);
-                        chunks[x, y].PopulateChunk(new SpriteBatch(graphicsDevice), offsetX, offsetY, this);
                     }
                 }
             }
@@ -199,43 +195,63 @@ namespace CarbonField
             return (chunkX, chunkY);
         }
 
-        //Will evnetually need to draw tiles by terrain when creating and updating chunks
-        /*        private void DrawTilesByTerrain(SpriteBatch spriteBatch, Terrain terrain)
-                {
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            Tile tile = TileMap[x, y];
-                            if (tile.Terrain == terrain)
-                            {
-                                tile.Draw(spriteBatch);
-                            }
-                        }
-                    }
-                }*/
-
-        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
+        private void UpdateVisibleChunks(Rectangle cameraViewArea)
         {
-            // Calculate the range of chunk indices that are within the visible area
-            int startChunkX = Math.Max(0, visibleArea.Left / MaxRenderTargetSize);
-            int endChunkX = Math.Min(chunks.GetLength(0) - 1, visibleArea.Right / MaxRenderTargetSize);
-            int startChunkY = Math.Max(0, visibleArea.Top / MaxRenderTargetSize);
-            int endChunkY = Math.Min(chunks.GetLength(1) - 1, visibleArea.Bottom / MaxRenderTargetSize);
-
-            // Iterate only through chunks that have been initialized
-            for (int x = startChunkX; x <= endChunkX; x++)
+            // Determine new visible chunks
+            List<Chunk> newVisibleChunks = new List<Chunk>();
+            for (int x = 0; x < chunks.GetLength(0); x++)
             {
-                for (int y = startChunkY; y <= endChunkY; y++)
+                for (int y = 0; y < chunks.GetLength(1); y++)
                 {
-                    // Check if the chunk has been initialized before drawing
-                    if (chunks[x, y] != null)
+                    if (chunks[x, y] != null && cameraViewArea.Intersects(chunks[x, y].Bounds))
                     {
-                        chunks[x, y].Draw(spriteBatch, visibleArea);
+                        newVisibleChunks.Add(chunks[x, y]);
                     }
                 }
             }
+
+            // Dispose render targets for chunks that are no longer visible
+            foreach (Chunk chunk in visibleChunks)
+            {
+                if (chunk != null && !newVisibleChunks.Contains(chunk))
+                {
+                    chunk.DisposeRenderTarget();
+                }
+            }
+
+            // Update the visibleChunks array and create render targets for new visible chunks
+            for (int i = 0; i < visibleChunks.Length; i++)
+            {
+                visibleChunks[i] = (i < newVisibleChunks.Count) ? newVisibleChunks[i] : null;
+                if (visibleChunks[i] != null)
+                {
+                    visibleChunks[i].CreateRenderTarget(new SpriteBatch(graphicsDevice), this);
+                }
+            }
         }
+
+
+
+
+        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform)
+        {
+            // Check for significant camera movement to update visible chunks
+            if (!lastVisibleArea.Equals(cameraViewArea))
+            {
+                UpdateVisibleChunks(cameraViewArea);
+                lastVisibleArea = cameraViewArea;
+            }
+
+            // Draw visible chunks
+            foreach (Chunk chunk in visibleChunks)
+            {
+                if (chunk != null)
+                {
+                    chunk.Draw(spriteBatch, cameraViewArea);
+                }
+            }
+        }
+
 
     }
 }

@@ -37,7 +37,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(500, 500, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(100, 100, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -128,7 +128,9 @@ namespace CarbonField
             spriteBatch.End();
 
             //Isometric Draw
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, CamTransform);
             IsoManager.Draw(spriteBatch, Cam.GetVisibleArea(), CamTransform);
+            spriteBatch.End();
 
             //Entity Draw
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, CamTransform);

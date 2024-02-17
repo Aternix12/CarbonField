@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "n4BH0ZsNzpeT1jPm7F4vTHPGes/v3gWBp+dfjOxQvKbzOSXs0T8V8jr7X87ooLe83x/bNnP9X9AG7Cv0FjLmvA==",
+  "dgSpecHash": "1Ebai6sp8D5UqpNLB9BaWDl6zHPgEVow4FSy/4TWIbJnJD+WUpw53nWCtfkvWHsKzNki4BDYr8FgetDLBHvTSQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\xX12T\\OneDrive\\CarbonField\\CarbonField Server\\CarbonField Server.csproj",
+  "projectFilePath": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\CarbonField Server\\CarbonField Server.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\xX12T\\.nuget\\packages\\litenetlib\\1.2.0\\litenetlib.1.2.0.nupkg.sha512"
+    "C:\\Users\\xx12t\\.nuget\\packages\\litenetlib\\1.2.0\\litenetlib.1.2.0.nupkg.sha512"
   ],
   "logs": []
 }

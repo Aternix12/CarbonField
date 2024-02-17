@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.MediaFoundation;
 using System;
 using System.Linq;
 
@@ -8,50 +9,57 @@ namespace CarbonField
     public class Chunk
     {
         public RenderTarget2D RenderTarget { get; private set; }
-        public Texture2D Texture { get; private set; }
         public Rectangle Bounds { get; private set; }
 
         private readonly GraphicsDevice graphicsDevice;
+        private int x;
+        private int y;
 
         public Chunk(GraphicsDevice graphicsDevice, int x, int y, int width, int height)
         {
             this.graphicsDevice = graphicsDevice;
             Bounds = new Rectangle(x, y, width, height);
-            RenderTarget = new RenderTarget2D(graphicsDevice, width, height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
-            Texture = new Texture2D(graphicsDevice, width, height);
+            this.x = x;
+            this.y = y;
+            RenderTarget = new RenderTarget2D(graphicsDevice, width, height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
         }
 
-        public void PopulateChunk(SpriteBatch spriteBatch, int offsetX, int offsetY, ChunkManager chunkManager)
+        public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager)
         {
-            Console.WriteLine($"Populating Chunk at Offset ({offsetX}, {offsetY}) with Size ({Bounds.Width}, {Bounds.Height})");
-
-            graphicsDevice.SetRenderTarget(RenderTarget);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin();
-
-            // Group tiles by terrain type
-            var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(offsetX, offsetY, Bounds.Width, Bounds.Height))
-                                              .GroupBy(tile => tile.Terrain)
-                                              .ToDictionary(group => group.Key, group => group.ToList());
-
-            // Draw each group of tiles
-            foreach (var terrainGroup in tilesByTerrain)
+            if (RenderTarget == null)
             {
-                foreach (Tile tile in terrainGroup.Value)
+                RenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+
+                graphicsDevice.SetRenderTarget(RenderTarget);
+                graphicsDevice.Clear(Color.Transparent);
+
+                spriteBatch.Begin();
+                // Group tiles by terrain type
+                var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height))
+                .GroupBy(tile => tile.Terrain)
+                                                  .ToDictionary(group => group.Key, group => group.ToList());
+
+                // Draw each group of tiles
+                foreach (var terrainGroup in tilesByTerrain)
                 {
-                    Vector2 adjustedPosition = new Vector2(tile.Position.X - offsetX, tile.Position.Y - offsetY);
-                    tile.Draw(spriteBatch, adjustedPosition);
+                    foreach (Tile tile in terrainGroup.Value)
+                    {
+                        Vector2 adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
+                        tile.Draw(spriteBatch, adjustedPosition);
+                    }
                 }
+                spriteBatch.End();
+
+                graphicsDevice.SetRenderTarget(null);
             }
-
-            spriteBatch.End();
-            Color[] renderTargetData = new Color[RenderTarget.Width * RenderTarget.Height];
-            RenderTarget.GetData(renderTargetData);
-            Texture.SetData(renderTargetData);
-
-            graphicsDevice.SetRenderTarget(null);
-            RenderTarget.Dispose();
         }
+
+        public void DisposeRenderTarget()
+        {
+            RenderTarget?.Dispose();
+            RenderTarget = null;
+        }
+
 
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch)
         {
@@ -64,7 +72,7 @@ namespace CarbonField
 
             // Draw the existing texture first
             spriteBatch.Begin();
-            spriteBatch.Draw(Texture, Vector2.Zero, Color.White);
+            spriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
 
             // Then draw the updated tile
             Vector2 adjustedPosition = new Vector2(tile.Position.X - Bounds.X, tile.Position.Y - Bounds.Y);
@@ -74,7 +82,6 @@ namespace CarbonField
             // Update the texture with the new render target content
             Color[] renderTargetData = new Color[Bounds.Width * Bounds.Height];
             newRenderTarget.GetData(renderTargetData);
-            Texture.SetData(renderTargetData);
 
             // Clean up
             graphicsDevice.SetRenderTarget(null);
@@ -91,10 +98,10 @@ namespace CarbonField
             // Adjust the intersection area to the chunk's local coordinates
             Rectangle sourceRectangle = new Rectangle(intersection.X - Bounds.X, intersection.Y - Bounds.Y, intersection.Width, intersection.Height);
 
-            if (Texture != null)
+            if (RenderTarget != null)
             {
                 // Draw only the intersection part of the texture
-                spriteBatch.Draw(Texture, intersection, sourceRectangle, Color.White);
+                spriteBatch.Draw(RenderTarget, intersection, sourceRectangle, Color.White);
             }
         }
     }

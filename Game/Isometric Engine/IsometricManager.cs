@@ -15,16 +15,14 @@ namespace CarbonField
         private readonly Tile[,] tileMap;
         public readonly GraphicsDevice GraphicsDevice;
         private readonly ContentManager content;
+        private readonly ChunkManager chunkManager;
         private Dictionary<Terrain, SpriteSheet> terrainSpriteSheets;
         private readonly TerrainManager terrainManager;
         SpriteSheet blendmapSpriteSheet;
         Texture2D pixel;
         private readonly QuadtreeNode quadtreeRoot;
-        private Rectangle lastCameraViewArea;
-        private readonly Tile[] visibleTileBuffer;
-        private int visibleTileCount;
+
         public float HorizontalOffset { get; private set; }
-        private const int CameraMoveThreshold = 50;
         private Effect blendEffect;
 
 
@@ -51,7 +49,7 @@ namespace CarbonField
             pixel.SetData(new[] { Color.White
             });
             quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
-            visibleTileBuffer = new Tile[30000];
+            chunkManager = new ChunkManager(width, height, worldWidth, worldHeight, graphicsDevice, tileMap, content);
             HorizontalOffset = (height - width) * Tile.Width / 2f;
             CalculateWorldBounds();
 
@@ -71,7 +69,7 @@ namespace CarbonField
 
         public void Initialize()
         {
-            //Bruh
+
         }
 
         public void LoadContent()
@@ -109,8 +107,6 @@ namespace CarbonField
                 { Terrain.Dirt, dirtSpriteSheet }
             };
 
-
-
             // Populate the SpriteSheet with tiles (assuming 10x10 grid of 64x32 tiles)
             for (int y = 0; y < 10; y++)
             {
@@ -131,9 +127,9 @@ namespace CarbonField
                 for (int y = 0; y < height; y++)
                 {
                     Vector2 isoPosition = new(
-            HorizontalOffset + halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
-            x * halfTileHeight + y * halfTileHeight
-        );
+                        HorizontalOffset + halfTotalWidth + (x * halfTileWidth) - (y * halfTileWidth) - halfTileWidth,
+                        x * halfTileHeight + y * halfTileHeight
+                    );
 
                     // Use TerrainManager to determine the terrain type
                     Terrain terrainType = terrainManager.GetTerrainType(x, y);
@@ -150,38 +146,11 @@ namespace CarbonField
             {
                 tile.DetermineNeighbors(this);
             }
+
+            chunkManager.LoadContent();
         }
 
-        private void UpdateVisibleTiles(Rectangle cameraViewArea)
-        {
-            // Calculate the movement of the camera since the last update
-            int deltaX = Math.Abs(lastCameraViewArea.X - cameraViewArea.X);
-            int deltaY = Math.Abs(lastCameraViewArea.Y - cameraViewArea.Y);
-
-            // Check if the camera has moved significantly
-            if (deltaX > CameraMoveThreshold || deltaY > CameraMoveThreshold)
-            {
-                // Expand the camera view area by 100 in each direction
-                Rectangle expandedViewArea = new Rectangle(
-                    cameraViewArea.X - 100,      // Left
-                    cameraViewArea.Y - 100,      // Top
-                    cameraViewArea.Width + 200,  // Width
-                    cameraViewArea.Height + 200  // Height
-                );
-
-                visibleTileCount = 0;
-                foreach (var tile in quadtreeRoot.GetTilesInArea(expandedViewArea))  // Use expandedViewArea
-                {
-                    if (tile.IsWithinBounds(expandedViewArea) && visibleTileCount < visibleTileBuffer.Length)  // Use expandedViewArea
-                    {
-                        visibleTileBuffer[visibleTileCount++] = tile;
-                    }
-                }
-
-                // Update the last camera view area after processing
-                lastCameraViewArea = cameraViewArea;
-            }
-        }
+        
 
 
         public Tile GetTileAtGridPosition(int x, int y)
@@ -210,34 +179,9 @@ namespace CarbonField
         }
 
 
-        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform)
+        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea, Matrix camTransform)
         {
-            if (lastCameraViewArea != cameraViewArea)
-            {
-                UpdateVisibleTiles(cameraViewArea);
-            }
-
-            // Scale to fit the size of 96x48
-            Vector2 scale = new Vector2(0.25f, 0.25f);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camTransform);
-            for (int i = 0; i < visibleTileCount; i++)
-            {
-                var tile = visibleTileBuffer[i];
-                tile.Draw(spriteBatch);
-            }
-
-            spriteBatch.End();
-
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, camTransform);
-            for (int i = 0; i < visibleTileCount; i++)
-            {
-
-                var tile = visibleTileBuffer[i];
-                tile.DrawOverlay(spriteBatch, blendEffect, camTransform);
-            }
-            //spriteBatch.End();
-
+            chunkManager.Draw(spriteBatch, visibleArea, camTransform);
         }
 
         public void DrawDiag(SpriteBatch spriteBatch)

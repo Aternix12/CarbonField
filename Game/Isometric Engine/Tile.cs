@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct2D1.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -279,7 +280,8 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
         {
-            spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White);
+            Vector2 scale = new Vector2(0.25f, 0.25f);
+            spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)
