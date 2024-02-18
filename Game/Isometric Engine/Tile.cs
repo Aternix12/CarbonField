@@ -278,10 +278,22 @@ namespace CarbonField
             spriteBatch.Draw(SpriteSheets[Terrain].Texture, Position, SourceRectangle, Color.White, 0f, Vector2.Zero, new Vector2(0.25f, 0.25f), SpriteEffects.None, 0f);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition)
+        public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition, Effect blendEffect)
         {
-            Vector2 scale = new Vector2(0.25f, 0.25f);
+            Vector2 scale = new (0.25f, 0.25f);
+            spriteBatch.Begin();
             spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            spriteBatch.End();
+
+            for (int i = 0; i < overlayTextures.Count; i++)
+            {
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, null);
+                blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
+                blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
+                blendEffect.CurrentTechnique.Passes[0].Apply();
+                spriteBatch.Draw(overlayTextures[i], adjustedPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                spriteBatch.End();
+            }
         }
 
         public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)

@@ -20,7 +20,6 @@ namespace CarbonField
         private readonly TerrainManager terrainManager;
         SpriteSheet blendmapSpriteSheet;
         Texture2D pixel;
-        private readonly QuadtreeNode quadtreeRoot;
 
         public float HorizontalOffset { get; private set; }
         private Effect blendEffect;
@@ -48,7 +47,6 @@ namespace CarbonField
             pixel = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
             pixel.SetData(new[] { Color.White
             });
-            quadtreeRoot = new QuadtreeNode(new Rectangle(0, 0, worldWidth, worldHeight));
             chunkManager = new ChunkManager(width, height, worldWidth, worldHeight, graphicsDevice, tileMap, content);
             HorizontalOffset = (height - width) * Tile.Width / 2f;
             CalculateWorldBounds();
@@ -138,7 +136,6 @@ namespace CarbonField
                     int spriteIndexX = x % 10;
                     int spriteIndexY = y % 10;
                     tileMap[x, y] = new Tile(isoPosition, terrainType, terrainSpriteSheets, blendmapSpriteSheet, spriteIndexX, spriteIndexY, x, y);
-                    quadtreeRoot.AddTile(tileMap[x, y]);
                 }
             }
 
@@ -181,7 +178,7 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea, Matrix camTransform)
         {
-            chunkManager.Draw(spriteBatch, visibleArea, camTransform);
+            chunkManager.Draw(spriteBatch, visibleArea, camTransform, blendEffect);
         }
 
         public void DrawDiag(SpriteBatch spriteBatch)

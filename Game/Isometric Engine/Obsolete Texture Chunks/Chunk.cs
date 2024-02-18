@@ -24,7 +24,7 @@ namespace CarbonField
             RenderTarget = new RenderTarget2D(graphicsDevice, width, height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
         }
 
-        public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager)
+        public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
         {
             if (RenderTarget == null)
             {
@@ -33,7 +33,7 @@ namespace CarbonField
                 graphicsDevice.SetRenderTarget(RenderTarget);
                 graphicsDevice.Clear(Color.Transparent);
 
-                spriteBatch.Begin();
+                
                 // Group tiles by terrain type
                 var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height))
                 .GroupBy(tile => tile.Terrain)
@@ -45,10 +45,9 @@ namespace CarbonField
                     foreach (Tile tile in terrainGroup.Value)
                     {
                         Vector2 adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
-                        tile.Draw(spriteBatch, adjustedPosition);
+                        tile.Draw(spriteBatch, adjustedPosition, blendEffect);
                     }
                 }
-                spriteBatch.End();
 
                 graphicsDevice.SetRenderTarget(null);
             }
@@ -61,7 +60,7 @@ namespace CarbonField
         }
 
 
-        public void RedrawTile(Tile tile, SpriteBatch spriteBatch)
+        public void RedrawTile(Tile tile, SpriteBatch spriteBatch, Effect blendEffect)
         {
             // Create a new render target
             RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
@@ -76,7 +75,7 @@ namespace CarbonField
 
             // Then draw the updated tile
             Vector2 adjustedPosition = new Vector2(tile.Position.X - Bounds.X, tile.Position.Y - Bounds.Y);
-            tile.Draw(spriteBatch, adjustedPosition);
+            tile.Draw(spriteBatch, adjustedPosition, blendEffect);
             spriteBatch.End();
 
             // Update the texture with the new render target content

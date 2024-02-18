@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\isometric engine\\obsolete texture chunks\\chunkmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\isometric engine\\obsolete texture chunks\\chunkmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\isometric engine\\tile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\isometric engine\\tile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,16 +15,16 @@
       "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\isometric engine\\obsolete texture chunks\\chunk.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\gamesettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\gamesettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\carbonfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:carbonfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\world.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\world.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\isometric engine\\obsolete texture chunks\\chunkmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|solutionrelative:game\\isometric engine\\obsolete texture chunks\\chunkmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{374A1227-50F5-4405-A52B-B283AA094DA9}|CarbonField.csproj|c:\\users\\xx12t\\documents\\github\\carbonfield\\game\\isometric engine\\isometricmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -34,88 +38,100 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:2:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Tile.cs",
-              "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Tile.cs",
-              "RelativeDocumentMoniker": "Game\\Isometric Engine\\Tile.cs",
-              "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Tile.cs",
-              "RelativeToolTip": "Game\\Isometric Engine\\Tile.cs",
-              "ViewState": "AQIAAAcBAAAAAAAAAAAlwCcBAABKAAAA",
+              "DocumentIndex": 3,
+              "Title": "GameSettings.cs",
+              "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\GameSettings.cs",
+              "RelativeDocumentMoniker": "Game\\GameSettings.cs",
+              "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\GameSettings.cs",
+              "RelativeToolTip": "Game\\GameSettings.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-17T11:22:17.982Z",
+              "WhenOpened": "2024-02-18T09:16:28.713Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "CarbonField.cs",
               "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\CarbonField.cs",
               "RelativeDocumentMoniker": "CarbonField.cs",
               "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\CarbonField.cs",
               "RelativeToolTip": "CarbonField.cs",
-              "ViewState": "AQIAACcAAAAAAAAAAAAAAD0AAABBAAAA",
+              "ViewState": "AQIAACoAAAAAAAAAAAAhwDgAAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-17T11:16:45.261Z",
+              "WhenOpened": "2024-02-18T09:15:57.342Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "World.cs",
               "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\World.cs",
               "RelativeDocumentMoniker": "Game\\World.cs",
               "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\World.cs",
               "RelativeToolTip": "Game\\World.cs",
-              "ViewState": "AQIAAAUAAAAAAAAAAAAlwCUAAAAJAAAA",
+              "ViewState": "AQIAABwAAAAAAAAAAAAtwCgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-02-17T10:34:32.016Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "IsometricManager.cs",
               "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\IsometricManager.cs",
               "RelativeDocumentMoniker": "Game\\Isometric Engine\\IsometricManager.cs",
               "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\IsometricManager.cs",
               "RelativeToolTip": "Game\\Isometric Engine\\IsometricManager.cs",
-              "ViewState": "AQIAABoAAAAAAAAAAAAlwEAAAABPAAAA",
+              "ViewState": "AQIAAJ8AAAAAAAAAAAAlwK0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-17T09:33:00.626Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-02-17T09:33:00.626Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "ChunkManager.cs",
               "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Obsolete Texture Chunks\\ChunkManager.cs",
               "RelativeDocumentMoniker": "Game\\Isometric Engine\\Obsolete Texture Chunks\\ChunkManager.cs",
               "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Obsolete Texture Chunks\\ChunkManager.cs",
               "RelativeToolTip": "Game\\Isometric Engine\\Obsolete Texture Chunks\\ChunkManager.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAAJAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAACAAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-02-17T09:51:04.606Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Chunk.cs",
               "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Obsolete Texture Chunks\\Chunk.cs",
               "RelativeDocumentMoniker": "Game\\Isometric Engine\\Obsolete Texture Chunks\\Chunk.cs",
               "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Obsolete Texture Chunks\\Chunk.cs",
               "RelativeToolTip": "Game\\Isometric Engine\\Obsolete Texture Chunks\\Chunk.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAlwC8AAAA3AAAA",
+              "ViewState": "AQIAABMAAAAAAAAAAAAYwDIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-02-17T09:51:03.834Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Tile.cs",
+              "DocumentMoniker": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Tile.cs",
+              "RelativeDocumentMoniker": "Game\\Isometric Engine\\Tile.cs",
+              "ToolTip": "C:\\Users\\xx12t\\Documents\\GitHub\\CarbonField\\Game\\Isometric Engine\\Tile.cs",
+              "RelativeToolTip": "Game\\Isometric Engine\\Tile.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4BAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-02-17T11:22:17.982Z",
               "EditorCaption": ""
             }
           ]

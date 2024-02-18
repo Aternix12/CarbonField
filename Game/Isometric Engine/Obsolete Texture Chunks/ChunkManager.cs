@@ -32,7 +32,7 @@ namespace CarbonField
 
         private void InitializeChunks()
         {
-            visibleChunks = new Chunk[16];
+            visibleChunks = new Chunk[64];
 
             int numTargetsX = (int)Math.Ceiling((double)worldWidth / MaxRenderTargetSize);
             int numTargetsY = (int)Math.Ceiling((double)worldHeight / MaxRenderTargetSize);
@@ -161,14 +161,14 @@ namespace CarbonField
             graphicsDevice.SetRenderTarget(null);
         }*/
 
-        public void UpdateTile(Tile updatedTile)
+        public void UpdateTile(Tile updatedTile, Effect blendEffect)
         {
             var affectedChunks = GetAffectedChunks(updatedTile);
 
             foreach (var (chunkX, chunkY) in affectedChunks)
             {
                 var spriteBatch = new SpriteBatch(graphicsDevice);
-                chunks[chunkX, chunkY].RedrawTile(updatedTile, spriteBatch);
+                chunks[chunkX, chunkY].RedrawTile(updatedTile, spriteBatch, blendEffect);
             }
         }
 
@@ -195,7 +195,7 @@ namespace CarbonField
             return (chunkX, chunkY);
         }
 
-        private void UpdateVisibleChunks(Rectangle cameraViewArea)
+        private void UpdateVisibleChunks(Rectangle cameraViewArea, Effect blendEffect)
         {
             // Determine new visible chunks
             List<Chunk> newVisibleChunks = new List<Chunk>();
@@ -225,20 +225,17 @@ namespace CarbonField
                 visibleChunks[i] = (i < newVisibleChunks.Count) ? newVisibleChunks[i] : null;
                 if (visibleChunks[i] != null)
                 {
-                    visibleChunks[i].CreateRenderTarget(new SpriteBatch(graphicsDevice), this);
+                    visibleChunks[i].CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
                 }
             }
         }
 
-
-
-
-        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform)
+        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform, Effect blendEffect)
         {
             // Check for significant camera movement to update visible chunks
             if (!lastVisibleArea.Equals(cameraViewArea))
             {
-                UpdateVisibleChunks(cameraViewArea);
+                UpdateVisibleChunks(cameraViewArea, blendEffect);
                 lastVisibleArea = cameraViewArea;
             }
 
@@ -251,7 +248,5 @@ namespace CarbonField
                 }
             }
         }
-
-
     }
 }
