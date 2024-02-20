@@ -176,9 +176,9 @@ namespace CarbonField
         }
 
 
-        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea, Matrix camTransform)
+        public void Draw(SpriteBatch spriteBatch, Rectangle visibleArea)
         {
-            chunkManager.Draw(spriteBatch, visibleArea, camTransform, blendEffect);
+            chunkManager.Draw(spriteBatch, visibleArea, blendEffect);
         }
 
         public void DrawDiag(SpriteBatch spriteBatch)

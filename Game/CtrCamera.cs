@@ -49,7 +49,7 @@ namespace CarbonField
 
             _zoomVel *= 0.95f; // Apply friction to zoom velocity
             _zoom += _zoomVel * elapsed; // Update zoom
-            _zoom = MathHelper.Clamp(_zoom, 0.1f, 4f); // Clamp zoom
+            _zoom = MathHelper.Clamp(_zoom, 0.4f, 4f); // Clamp zoom
 
             Vector2 zoomEffect = Vector2.Zero;
             if (_zoom != _previousZoom)

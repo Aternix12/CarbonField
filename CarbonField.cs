@@ -52,6 +52,9 @@ namespace CarbonField
 
         protected override void Initialize()
         {
+            ConsoleLogger.Log("Initialising", ConsoleColor.Blue);
+            ConsoleLogger.Log("--------------------------", ConsoleColor.Blue);
+
             Graphics.PreferredBackBufferWidth = _gameSettings.PreferredBackBufferWidth;
             Graphics.PreferredBackBufferHeight = _gameSettings.PreferredBackBufferHeight;
             Graphics.IsFullScreen = _gameSettings.IsFullScreen;
@@ -77,17 +80,20 @@ namespace CarbonField
 
             base.Initialize();
 
-            Console.WriteLine("Initialisation Finished");
+            ConsoleLogger.Log("Finished Initialisation", ConsoleColor.Blue);
         }
 
         protected override void LoadContent()
         {
+            ConsoleLogger.Log("Loading Content", ConsoleColor.Blue);
+            ConsoleLogger.Log("--------------------------", ConsoleColor.Blue);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //Loading Fonts
             _arial = Content.Load<SpriteFont>("Fonts/Arial");
 
             CurrentWorld.LoadContent();
+            ConsoleLogger.Log("Finished Loading Content", ConsoleColor.Blue);
         }
 
         protected override void Update(GameTime gameTime)

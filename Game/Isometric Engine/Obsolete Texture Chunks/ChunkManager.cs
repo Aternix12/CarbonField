@@ -228,15 +228,17 @@ namespace CarbonField
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform, Effect blendEffect)
+        public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Effect blendEffect)
         {
-            // Check for significant camera movement to update visible chunks
+            // Calculate the movement of the camera since the last update
+            int deltaX = Math.Abs(lastVisibleArea.X - cameraViewArea.X);
+            int deltaY = Math.Abs(lastVisibleArea.Y - cameraViewArea.Y);
 
-            //TODO - This will need to eventually account for the camera movement threshold
-            if (!lastVisibleArea.Equals(cameraViewArea))
+            // Check if the camera has moved significantly
+            if (deltaX > CameraMoveThreshold || deltaY > CameraMoveThreshold)
             {
-                    UpdateVisibleChunks(cameraViewArea, blendEffect);
-                    lastVisibleArea = cameraViewArea;
+                UpdateVisibleChunks(cameraViewArea, blendEffect);
+                lastVisibleArea = cameraViewArea;
             }
 
             // Draw visible chunks
