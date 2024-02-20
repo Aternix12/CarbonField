@@ -105,8 +105,6 @@ namespace CarbonField
             );
         }
 
-
-
         private bool IsTileWithinBounds(Tile tile, Rectangle bounds)
         {
             // Here you need to check if the tile's isometric coordinates intersect with the chunk's bounds
@@ -198,7 +196,7 @@ namespace CarbonField
         private void UpdateVisibleChunks(Rectangle cameraViewArea, Effect blendEffect)
         {
             // Determine new visible chunks
-            List<Chunk> newVisibleChunks = new List<Chunk>();
+            List<Chunk> newVisibleChunks = [];
             for (int x = 0; x < chunks.GetLength(0); x++)
             {
                 for (int y = 0; y < chunks.GetLength(1); y++)
@@ -233,10 +231,12 @@ namespace CarbonField
         public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Matrix camTransform, Effect blendEffect)
         {
             // Check for significant camera movement to update visible chunks
+
+            //TODO - This will need to eventually account for the camera movement threshold
             if (!lastVisibleArea.Equals(cameraViewArea))
             {
-                UpdateVisibleChunks(cameraViewArea, blendEffect);
-                lastVisibleArea = cameraViewArea;
+                    UpdateVisibleChunks(cameraViewArea, blendEffect);
+                    lastVisibleArea = cameraViewArea;
             }
 
             // Draw visible chunks

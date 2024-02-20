@@ -26,6 +26,8 @@ namespace CarbonField
 
         public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
         {
+            ConsoleLogger.Log($"Populating Chunk: {x}, {y}", ConsoleColor.Green);
+
             if (RenderTarget == null)
             {
                 RenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
