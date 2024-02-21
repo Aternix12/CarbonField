@@ -22,6 +22,8 @@ namespace CarbonField
         private Chunk[] visibleChunks = new Chunk[64];
         private int previousVisibleChunkCount = 0;
         private int newVisibleChunkCount = 0;
+        private readonly RenderTarget2D[] renderTargets = new RenderTarget2D[64];
+        private List<int> availableRenderTargetIndexes = Enumerable.Range(0, 64).ToList();
 
         //Camera Culling
         private const int CameraMoveThreshold = 50;
@@ -169,7 +171,7 @@ namespace CarbonField
             foreach (var (chunkX, chunkY) in affectedChunks)
             {
                 var spriteBatch = new SpriteBatch(graphicsDevice);
-                chunks[chunkX, chunkY].RedrawTile(updatedTile, spriteBatch, blendEffect);
+                chunks[chunkX, chunkY].RedrawTile(updatedTile, spriteBatch, blendEffect, this);
             }
         }
 
@@ -213,7 +215,7 @@ namespace CarbonField
             {
                 for (int y = 0; y < chunks.GetLength(1); y++)
                 {
-                    if (chunks[x, y] != null && cameraViewArea.Intersects(chunks[x, y].Bounds))
+                    if (chunks[x, y] != null && expandedViewArea.Intersects(chunks[x, y].Bounds))
                     {
                         if (newVisibleChunkCount < newVisibleChunks.Length)
                         {
@@ -229,7 +231,12 @@ namespace CarbonField
                 Chunk chunk = previousVisibleChunks[i];
                 if (chunk != null && !Array.Exists(newVisibleChunks, c => c == chunk))
                 {
-                    chunk.DisposeRenderTarget();
+                    if (chunk.RenderTargetIndex != -1)
+                    {
+                        chunk.DisposeRenderTarget(this);
+                        availableRenderTargetIndexes.Add(chunk.RenderTargetIndex);
+                        chunk.RenderTargetIndex = -1; // Reset AFTER adding the original index back
+                    }
                 }
             }
 
@@ -239,9 +246,20 @@ namespace CarbonField
                 Chunk chunk = newVisibleChunks[i];
                 if (chunk != null && !Array.Exists(previousVisibleChunks, c => c == chunk))
                 {
-                    chunk.CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
+                    if (availableRenderTargetIndexes.Count > 0)
+                    {
+                        int index = availableRenderTargetIndexes[0];
+                        availableRenderTargetIndexes.RemoveAt(0);
+                        chunk.RenderTargetIndex = index;
+                        chunk.CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
+                    }
+                    else
+                    {
+                        ConsoleLogger.Log("No available render targets.", ConsoleColor.Red);
+                    }
                 }
             }
+
 
             // Update the visibleChunks array and previousVisibleChunks for the next update
             Array.Clear(visibleChunks, 0, visibleChunks.Length);
@@ -250,6 +268,15 @@ namespace CarbonField
             // Prepare previousVisibleChunks for the next cycle
             Array.Copy(newVisibleChunks, previousVisibleChunks, newVisibleChunkCount);
             previousVisibleChunkCount = newVisibleChunkCount;
+        }
+
+        public RenderTarget2D GetRenderTargetByIndex(int index)
+        {
+            if (index < 0 || index >= renderTargets.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
+            return renderTargets[index];
         }
 
 
@@ -271,7 +298,7 @@ namespace CarbonField
             {
                 if (chunk != null)
                 {
-                    chunk.Draw(spriteBatch, cameraViewArea);
+                    chunk.Draw(spriteBatch, cameraViewArea, this);
                 }
             }
         }
