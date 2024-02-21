@@ -14,6 +14,7 @@ namespace CarbonField
         private readonly GraphicsDevice graphicsDevice;
         private int x;
         private int y;
+        private Vector2 adjustedPosition;
 
         public Chunk(GraphicsDevice graphicsDevice, int x, int y, int width, int height)
         {
@@ -21,7 +22,6 @@ namespace CarbonField
             Bounds = new Rectangle(x, y, width, height);
             this.x = x;
             this.y = y;
-            RenderTarget = new RenderTarget2D(graphicsDevice, width, height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
         }
 
         public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
@@ -46,7 +46,7 @@ namespace CarbonField
                 {
                     foreach (Tile tile in terrainGroup.Value)
                     {
-                        Vector2 adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
+                        adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
                         tile.Draw(spriteBatch, adjustedPosition, blendEffect);
                     }
                 }
@@ -65,7 +65,7 @@ namespace CarbonField
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch, Effect blendEffect)
         {
             // Create a new render target
-            RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            RenderTarget2D newRenderTarget = new(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 
             // Set the new render target
             graphicsDevice.SetRenderTarget(newRenderTarget);

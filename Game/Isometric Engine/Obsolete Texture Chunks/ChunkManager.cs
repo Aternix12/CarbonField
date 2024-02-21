@@ -17,11 +17,16 @@ namespace CarbonField
         private SpriteFont tileCoordinateFont;
         private readonly ContentManager content = content;
         private Chunk[,] chunks;
-        private Chunk[] visibleChunks;
+        private Chunk[] previousVisibleChunks = new Chunk[64];
+        private Chunk[] newVisibleChunks = new Chunk[64];
+        private Chunk[] visibleChunks = new Chunk[64];
+        private int previousVisibleChunkCount = 0;
+        private int newVisibleChunkCount = 0;
 
         //Camera Culling
         private const int CameraMoveThreshold = 50;
         private Rectangle lastVisibleArea;
+        private Rectangle expandedViewArea;
 
         public void LoadContent()
         {
@@ -32,8 +37,6 @@ namespace CarbonField
 
         private void InitializeChunks()
         {
-            visibleChunks = new Chunk[64];
-
             int numTargetsX = (int)Math.Ceiling((double)worldWidth / MaxRenderTargetSize);
             int numTargetsY = (int)Math.Ceiling((double)worldHeight / MaxRenderTargetSize);
 
@@ -195,38 +198,60 @@ namespace CarbonField
 
         private void UpdateVisibleChunks(Rectangle cameraViewArea, Effect blendEffect)
         {
+            expandedViewArea = new Rectangle(
+            cameraViewArea.X - MaxRenderTargetSize,
+               cameraViewArea.Y - MaxRenderTargetSize,
+                        cameraViewArea.Width + MaxRenderTargetSize * 2,
+                               cameraViewArea.Height + MaxRenderTargetSize * 2
+                                       );
+
+            // Reset counts for the new cycle
+            newVisibleChunkCount = 0;
+
             // Determine new visible chunks
-            List<Chunk> newVisibleChunks = [];
             for (int x = 0; x < chunks.GetLength(0); x++)
             {
                 for (int y = 0; y < chunks.GetLength(1); y++)
                 {
                     if (chunks[x, y] != null && cameraViewArea.Intersects(chunks[x, y].Bounds))
                     {
-                        newVisibleChunks.Add(chunks[x, y]);
+                        if (newVisibleChunkCount < newVisibleChunks.Length)
+                        {
+                            newVisibleChunks[newVisibleChunkCount++] = chunks[x, y];
+                        }
                     }
                 }
             }
 
-            // Dispose render targets for chunks that are no longer visible
-            foreach (Chunk chunk in visibleChunks)
+            // Dispose render targets for chunks that were visible before but are not visible now
+            for (int i = 0; i < previousVisibleChunkCount; i++)
             {
-                if (chunk != null && !newVisibleChunks.Contains(chunk))
+                Chunk chunk = previousVisibleChunks[i];
+                if (chunk != null && !Array.Exists(newVisibleChunks, c => c == chunk))
                 {
                     chunk.DisposeRenderTarget();
                 }
             }
 
-            // Update the visibleChunks array and create render targets for new visible chunks
-            for (int i = 0; i < visibleChunks.Length; i++)
+            // Create render targets for new visible chunks that weren't visible before
+            for (int i = 0; i < newVisibleChunkCount; i++)
             {
-                visibleChunks[i] = (i < newVisibleChunks.Count) ? newVisibleChunks[i] : null;
-                if (visibleChunks[i] != null)
+                Chunk chunk = newVisibleChunks[i];
+                if (chunk != null && !Array.Exists(previousVisibleChunks, c => c == chunk))
                 {
-                    visibleChunks[i].CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
+                    chunk.CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
                 }
             }
+
+            // Update the visibleChunks array and previousVisibleChunks for the next update
+            Array.Clear(visibleChunks, 0, visibleChunks.Length);
+            Array.Copy(newVisibleChunks, visibleChunks, newVisibleChunkCount);
+
+            // Prepare previousVisibleChunks for the next cycle
+            Array.Copy(newVisibleChunks, previousVisibleChunks, newVisibleChunkCount);
+            previousVisibleChunkCount = newVisibleChunkCount;
         }
+
 
         public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Effect blendEffect)
         {

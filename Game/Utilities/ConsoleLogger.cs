@@ -14,7 +14,7 @@ namespace CarbonField
 
             // Set user-defined text color
             Console.ForegroundColor = textColor;
-            Console.WriteLine($"{caller}: {message}");
+            Console.WriteLine($"[{caller}]: {message}");
 
             // Reset the text color to its default value
             Console.ResetColor();
