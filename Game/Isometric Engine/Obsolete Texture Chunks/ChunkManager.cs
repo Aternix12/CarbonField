@@ -279,6 +279,20 @@ namespace CarbonField
             return renderTargets[index];
         }
 
+        public void SetRenderTargetAtIndex(int index, RenderTarget2D renderTarget)
+        {
+            if (index >= 0 && index < renderTargets.Length)
+            {
+                // Optionally, dispose the old render target if it's not null
+                renderTargets[index]?.Dispose();
+                renderTargets[index] = renderTarget;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of valid range.");
+            }
+        }
+
 
         public void Draw(SpriteBatch spriteBatch, Rectangle cameraViewArea, Effect blendEffect)
         {
