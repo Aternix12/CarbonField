@@ -39,19 +39,15 @@ namespace CarbonField
             graphicsDevice.SetRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Red);
 
-            var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height))
-            .GroupBy(tile => tile.Terrain)
-                                              .ToDictionary(group => group.Key, group => group.ToList());
-
-            foreach (var terrainGroup in tilesByTerrain)
+            var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height));
+            spriteBatch.Begin();
+            foreach (var tile in tilesByTerrain)
             {
-                foreach (Tile tile in terrainGroup.Value)
-                {
+
                     adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
                     tile.Draw(spriteBatch, adjustedPosition, blendEffect);
-                }
             }
-
+            spriteBatch.End();
             graphicsDevice.SetRenderTarget(null);
         }
 

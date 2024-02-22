@@ -37,7 +37,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(300, 300, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
