@@ -211,7 +211,7 @@ namespace CarbonField
             );
 
             List<Chunk> previouslyVisibleChunksList = previousVisibleChunks.Where(c => c != null).ToList();
-            List<Chunk> newlyVisibleChunksList = new List<Chunk>();
+            List<Chunk> newlyVisibleChunksList = [];
 
             // Reset the counter
             newVisibleChunkCount = 0;
@@ -223,7 +223,6 @@ namespace CarbonField
 
             int startYIndex = Math.Max(0, expandedViewArea.Top / MaxRenderTargetSize);
             int endYIndex = Math.Min(chunks.GetLength(1), (expandedViewArea.Bottom / MaxRenderTargetSize) + 1);
-
 
 
             // Identify new visible chunks

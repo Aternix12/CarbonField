@@ -37,7 +37,7 @@ namespace CarbonField
 
             RenderTarget2D renderTarget = chunkManager.GetRenderTargetByIndex(RenderTargetIndex);
             graphicsDevice.SetRenderTarget(renderTarget);
-            graphicsDevice.Clear(Color.Transparent);
+            graphicsDevice.Clear(Color.Red);
 
             var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height))
             .GroupBy(tile => tile.Terrain)
