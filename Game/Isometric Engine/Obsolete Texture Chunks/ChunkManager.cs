@@ -5,6 +5,7 @@ using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace CarbonField
 {
@@ -203,78 +204,72 @@ namespace CarbonField
         private void UpdateVisibleChunks(Rectangle cameraViewArea, Effect blendEffect)
         {
             expandedViewArea = new Rectangle(
-            cameraViewArea.X - MaxRenderTargetSize,
-               cameraViewArea.Y - MaxRenderTargetSize,
-                        cameraViewArea.Width + MaxRenderTargetSize * 2,
-                               cameraViewArea.Height + MaxRenderTargetSize * 2
-                                       );
+                cameraViewArea.X - 100,
+                cameraViewArea.Y - 100,
+                cameraViewArea.Width + 200,
+                cameraViewArea.Height + 200
+            );
 
-            // Reset counts for the new cycle
+            List<Chunk> previouslyVisibleChunksList = previousVisibleChunks.Where(c => c != null).ToList();
+            List<Chunk> newlyVisibleChunksList = new List<Chunk>();
+
+            // Reset the counter
             newVisibleChunkCount = 0;
 
-            // Determine new visible chunks
-            for (int x = 0; x < chunks.GetLength(0); x++)
+
+            // Assuming each chunk has a fixed size (MaxRenderTargetSize), and the starting point of the chunks grid is (0,0).
+            int startXIndex = Math.Max(0, expandedViewArea.Left / MaxRenderTargetSize);
+            int endXIndex = Math.Min(chunks.GetLength(0), (expandedViewArea.Right / MaxRenderTargetSize) + 1); // +1 to include the edge chunk
+
+            int startYIndex = Math.Max(0, expandedViewArea.Top / MaxRenderTargetSize);
+            int endYIndex = Math.Min(chunks.GetLength(1), (expandedViewArea.Bottom / MaxRenderTargetSize) + 1);
+
+
+
+            // Identify new visible chunks
+            for (int x = startXIndex; x < endXIndex; x++)
             {
-                for (int y = 0; y < chunks.GetLength(1); y++)
+                for (int y = startYIndex; y < endYIndex; y++)
                 {
-                    if (chunks[x, y] != null && cameraViewArea.Intersects(chunks[x, y].Bounds))
+                    if (chunks[x, y] != null)
                     {
-                        if (newVisibleChunkCount < newVisibleChunks.Length)
+                        newlyVisibleChunksList.Add(chunks[x, y]);
+                        if (!previouslyVisibleChunksList.Contains(chunks[x, y]))
                         {
-                            newVisibleChunks[newVisibleChunkCount++] = chunks[x, y];
+                            // This is a newly visible chunk, assign a render target index if available
+                            if (availableRenderTargetIndexes.Count > 0)
+                            {
+                                int index = availableRenderTargetIndexes[0];
+                                availableRenderTargetIndexes.RemoveAt(0);
+                                chunks[x, y].RenderTargetIndex = index;
+                                // Assuming CreateRenderTarget initializes the render target
+                                chunks[x, y].CreateRenderTarget(spriteBatch, this, blendEffect);
+                            }
                         }
+                        newVisibleChunks[newVisibleChunkCount++] = chunks[x, y];
                     }
                 }
             }
 
-            // Dispose render targets for chunks that were visible before but are not visible now
-            for (int i = 0; i < previousVisibleChunkCount; i++)
+            // Identify chunks that are no longer visible
+            foreach (Chunk oldChunk in previouslyVisibleChunksList)
             {
-                Chunk chunk = previousVisibleChunks[i];
-                if (chunk != null && !Array.Exists(newVisibleChunks, c => c == chunk))
+                if (!newlyVisibleChunksList.Contains(oldChunk) && oldChunk.RenderTargetIndex != -1)
                 {
-                    if (chunk.RenderTargetIndex != -1)
-                    {
-                        availableRenderTargetIndexes.Add(chunk.RenderTargetIndex);
-                        chunk.RenderTargetIndex = -1; // Reset AFTER adding the original index back
-                    }
+                    availableRenderTargetIndexes.Add(oldChunk.RenderTargetIndex);
+                    oldChunk.RenderTargetIndex = -1; // Mark as no longer having a render target
                 }
             }
 
-            // Create render targets for new visible chunks that weren't visible before
-            for (int i = 0; i < newVisibleChunkCount; i++)
-            {
-                Chunk chunk = newVisibleChunks[i];
-                if (chunk != null && !Array.Exists(previousVisibleChunks, c => c == chunk))
-                {
-                    // Check if there are any available render target indexes
-                    if (availableRenderTargetIndexes.Count > 0)
-                    {
-                        int index = availableRenderTargetIndexes[0];
-                        availableRenderTargetIndexes.RemoveAt(0);
-                        chunk.RenderTargetIndex = index;
-                        chunk.CreateRenderTarget(spriteBatch, this, blendEffect);
-                    }
-                    else
-                    {
-                        // Handle the case where no render target indexes are available
-                        // For example, log an error or decide on another course of action
-                        ConsoleLogger.Log("No available render target indexes.", ConsoleColor.Red);
-                        // Potentially, you could add logic here to increase the renderTargets array size
-                        // and then assign a new index, but that would depend on your specific needs and constraints.
-                    }
-                }
-            }
-
-
-            // Update the visibleChunks array and previousVisibleChunks for the next update
+            // Update the visibleChunks array for the next update
             Array.Clear(visibleChunks, 0, visibleChunks.Length);
             Array.Copy(newVisibleChunks, visibleChunks, newVisibleChunkCount);
 
             // Prepare previousVisibleChunks for the next cycle
+            Array.Clear(previousVisibleChunks, 0, previousVisibleChunks.Length);
             Array.Copy(newVisibleChunks, previousVisibleChunks, newVisibleChunkCount);
-            previousVisibleChunkCount = newVisibleChunkCount;
         }
+
 
         public RenderTarget2D GetRenderTargetByIndex(int index)
         {

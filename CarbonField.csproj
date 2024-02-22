@@ -19,6 +19,12 @@
 		<UseWPF>True</UseWPF>
 		<StartupObject>CarbonField.Program</StartupObject>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>True</Optimize>
+	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="CarbonField Bindings\**" />
 	  <Compile Remove="CarbonField Server\**" />
