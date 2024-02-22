@@ -26,24 +26,23 @@ namespace CarbonField
 
         public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
         {
+            
             ConsoleLogger.Log($"Populating Chunk: {x}, {y}", ConsoleColor.Green);
             if (chunkManager.GetRenderTargetByIndex(RenderTargetIndex) == null)
             {
                 RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
                 chunkManager.SetRenderTargetAtIndex(RenderTargetIndex, newRenderTarget);
+                ConsoleLogger.Log($"Creating new rendertarget! {x}, {y}", ConsoleColor.Yellow);
             }
 
             RenderTarget2D renderTarget = chunkManager.GetRenderTargetByIndex(RenderTargetIndex);
             graphicsDevice.SetRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Transparent);
 
-
-            // Group tiles by terrain type
             var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height))
             .GroupBy(tile => tile.Terrain)
                                               .ToDictionary(group => group.Key, group => group.ToList());
 
-            // Draw each group of tiles
             foreach (var terrainGroup in tilesByTerrain)
             {
                 foreach (Tile tile in terrainGroup.Value)
@@ -54,14 +53,6 @@ namespace CarbonField
             }
 
             graphicsDevice.SetRenderTarget(null);
-
-
-        }
-
-        public void DisposeRenderTarget(ChunkManager chunkManager)
-        {
-            RenderTarget2D renderTarget = chunkManager.GetRenderTargetByIndex(RenderTargetIndex);
-            renderTarget?.Dispose();
         }
 
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch, Effect blendEffect, ChunkManager chunkManager)

@@ -24,6 +24,7 @@ namespace CarbonField
         private int newVisibleChunkCount = 0;
         private readonly RenderTarget2D[] renderTargets = new RenderTarget2D[64];
         private List<int> availableRenderTargetIndexes = Enumerable.Range(0, 64).ToList();
+        private SpriteBatch spriteBatch;
 
         //Camera Culling
         private const int CameraMoveThreshold = 50;
@@ -32,6 +33,7 @@ namespace CarbonField
 
         public void LoadContent()
         {
+            spriteBatch = new SpriteBatch(graphicsDevice);
             tileCoordinateFont = content.Load<SpriteFont>("Fonts/Arial");
             //CreateCoordinatesRenderTarget();
             InitializeChunks();
@@ -215,7 +217,7 @@ namespace CarbonField
             {
                 for (int y = 0; y < chunks.GetLength(1); y++)
                 {
-                    if (chunks[x, y] != null && expandedViewArea.Intersects(chunks[x, y].Bounds))
+                    if (chunks[x, y] != null && cameraViewArea.Intersects(chunks[x, y].Bounds))
                     {
                         if (newVisibleChunkCount < newVisibleChunks.Length)
                         {
@@ -233,7 +235,6 @@ namespace CarbonField
                 {
                     if (chunk.RenderTargetIndex != -1)
                     {
-                        chunk.DisposeRenderTarget(this);
                         availableRenderTargetIndexes.Add(chunk.RenderTargetIndex);
                         chunk.RenderTargetIndex = -1; // Reset AFTER adding the original index back
                     }
@@ -246,16 +247,21 @@ namespace CarbonField
                 Chunk chunk = newVisibleChunks[i];
                 if (chunk != null && !Array.Exists(previousVisibleChunks, c => c == chunk))
                 {
+                    // Check if there are any available render target indexes
                     if (availableRenderTargetIndexes.Count > 0)
                     {
                         int index = availableRenderTargetIndexes[0];
                         availableRenderTargetIndexes.RemoveAt(0);
                         chunk.RenderTargetIndex = index;
-                        chunk.CreateRenderTarget(new SpriteBatch(graphicsDevice), this, blendEffect);
+                        chunk.CreateRenderTarget(spriteBatch, this, blendEffect);
                     }
                     else
                     {
-                        ConsoleLogger.Log("No available render targets.", ConsoleColor.Red);
+                        // Handle the case where no render target indexes are available
+                        // For example, log an error or decide on another course of action
+                        ConsoleLogger.Log("No available render target indexes.", ConsoleColor.Red);
+                        // Potentially, you could add logic here to increase the renderTargets array size
+                        // and then assign a new index, but that would depend on your specific needs and constraints.
                     }
                 }
             }
@@ -283,13 +289,11 @@ namespace CarbonField
         {
             if (index >= 0 && index < renderTargets.Length)
             {
-                // Optionally, dispose the old render target if it's not null
-                renderTargets[index]?.Dispose();
                 renderTargets[index] = renderTarget;
             }
             else
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of valid range.");
+                ConsoleLogger.Log($"Index {index} is out of bounds for renderTargets array.", ConsoleColor.Red);
             }
         }
 
