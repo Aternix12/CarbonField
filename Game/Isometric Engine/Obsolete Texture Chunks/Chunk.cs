@@ -41,14 +41,20 @@ namespace CarbonField
             graphicsDevice.SetRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Red);
 
-            
+            spriteBatch.Begin();
             foreach (var tile in tilesByTerrain)
             {
-
                 adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
-                tile.Draw(spriteBatch, adjustedPosition, blendEffect);
+                tile.Draw(spriteBatch, adjustedPosition, blendEffect);  
             }
-            
+            spriteBatch.End();
+
+            foreach (var tile in tilesByTerrain)
+            {
+                adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
+                tile.DrawOverlay(spriteBatch, adjustedPosition, blendEffect);
+            }
+
             graphicsDevice.SetRenderTarget(null);
         }
 

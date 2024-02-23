@@ -15,6 +15,7 @@ namespace CarbonField
     {
         public static readonly int Width = 96;
         public static readonly int Height = 48;
+        private Vector2 scale = new(0.25f, 0.25f);
         public Dictionary<Terrain, SpriteSheet> SpriteSheets { get; private set; }
         public SpriteSheet BlendmapSpriteSheet { get; private set; }
 
@@ -280,10 +281,12 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition, Effect blendEffect)
         {
-            Vector2 scale = new(0.25f, 0.25f);
-            spriteBatch.Begin();
             spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            spriteBatch.End();
+        }
+
+        public void DrawOverlay(SpriteBatch spriteBatch, Vector2 adjustedPosition, Effect blendEffect)
+        {
+            //TODO: This draw call is happening up to 800 times per chunk, needs optimisation
             for (int i = 0; i < overlayTextures.Count; i++)
             {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, null);
@@ -293,21 +296,6 @@ namespace CarbonField
                 spriteBatch.Draw(overlayTextures[i], adjustedPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
             }
-        }
-
-        public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)
-        {
-            Vector2 scale = new Vector2(0.25f, 0.25f);
-            for (int i = 0; i < overlayTextures.Count; i++)
-            {
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, camTransform);
-                blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
-                blendEffect.Parameters["blendMap"].SetValue(blendmapTextures[i]);
-                blendEffect.CurrentTechnique.Passes[0].Apply();
-                spriteBatch.Draw(overlayTextures[i], Position, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                spriteBatch.End();
-            }
-
         }
     }
 }
