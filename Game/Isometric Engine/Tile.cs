@@ -140,7 +140,7 @@ namespace CarbonField
                 // Determine if the neighbor's terrain has higher precedence
                 if (GetTerrainPrecedence(neighborTile.Terrain) > GetTerrainPrecedence(Terrain))
                 {
-                    if(neighborTile.Terrain == Terrain.Grass)
+                    if (neighborTile.Terrain == Terrain.Grass)
                     {
                         Console.WriteLine("What the fuck");
                     }
@@ -237,7 +237,7 @@ namespace CarbonField
                    BoundingBox.Top < area.Bottom && BoundingBox.Bottom > area.Top;
         }
 
-        
+
 
         public int GetTerrainPrecedence(Terrain terrain)
         {
@@ -255,7 +255,7 @@ namespace CarbonField
         {
             foreach (var kvp in overlaySource)
             {
-                
+
                 foreach (var direction in overlaySource.Keys.Where(k => overlaySource[k] != null))
                 {
                     if (adjacentTerrainTypes.TryGetValue(direction, out Terrain? value) && value.HasValue)
@@ -280,12 +280,11 @@ namespace CarbonField
 
         public void Draw(SpriteBatch spriteBatch, Vector2 adjustedPosition, Effect blendEffect)
         {
-            Vector2 scale = new (0.25f, 0.25f);
-            
+            Vector2 scale = new(0.25f, 0.25f);
+            spriteBatch.Begin();
             spriteBatch.Draw(SpriteSheets[Terrain].Texture, adjustedPosition, SourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            
-
-           /* for (int i = 0; i < overlayTextures.Count; i++)
+            spriteBatch.End();
+            for (int i = 0; i < overlayTextures.Count; i++)
             {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, blendEffect, null);
                 blendEffect.Parameters["overlayTexture"].SetValue(overlayTextures[i]);
@@ -293,7 +292,7 @@ namespace CarbonField
                 blendEffect.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(overlayTextures[i], adjustedPosition, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
-            }*/
+            }
         }
 
         public void DrawOverlay(SpriteBatch spriteBatch, Effect blendEffect, Matrix camTransform)

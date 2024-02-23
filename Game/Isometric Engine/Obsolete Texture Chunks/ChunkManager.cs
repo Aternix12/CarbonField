@@ -61,7 +61,7 @@ namespace CarbonField
                     // Check if there are any tiles within the chunk bounds
                     if (GetTilesInBounds(chunkBounds).Any())
                     {
-                        chunks[x, y] = new Chunk(graphicsDevice, offsetX, offsetY, chunkWidth, chunkHeight);
+                        chunks[x, y] = new Chunk(graphicsDevice, offsetX, offsetY, chunkWidth, chunkHeight, this);
                     }
                 }
             }

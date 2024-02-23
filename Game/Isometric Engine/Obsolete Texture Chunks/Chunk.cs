@@ -15,13 +15,15 @@ namespace CarbonField
         private int y;
         private Vector2 adjustedPosition;
         public int RenderTargetIndex { get; set; } = -1;
+        private Tile[] tilesByTerrain;
 
-        public Chunk(GraphicsDevice graphicsDevice, int x, int y, int width, int height)
+        public Chunk(GraphicsDevice graphicsDevice, int x, int y, int width, int height, ChunkManager chunkManager)
         {
             this.graphicsDevice = graphicsDevice;
             Bounds = new Rectangle(x, y, width, height);
             this.x = x;
             this.y = y;
+            tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height)).ToArray();
         }
 
         public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
@@ -39,15 +41,14 @@ namespace CarbonField
             graphicsDevice.SetRenderTarget(renderTarget);
             graphicsDevice.Clear(Color.Red);
 
-            var tilesByTerrain = chunkManager.GetTilesInBounds(new Rectangle(x, y, Bounds.Width, Bounds.Height));
-            spriteBatch.Begin();
+            
             foreach (var tile in tilesByTerrain)
             {
 
-                    adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
-                    tile.Draw(spriteBatch, adjustedPosition, blendEffect);
+                adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
+                tile.Draw(spriteBatch, adjustedPosition, blendEffect);
             }
-            spriteBatch.End();
+            
             graphicsDevice.SetRenderTarget(null);
         }
 
