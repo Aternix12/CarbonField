@@ -12,19 +12,19 @@ namespace CarbonField
     public class ChunkManager(int width, int height, int worldWidth, int worldHeight, GraphicsDevice graphicsDevice, Tile[,] tileMap, ContentManager content)
     {
         private readonly GraphicsDevice graphicsDevice = graphicsDevice;
-        const int MaxRenderTargetSize = 640;
+        const int MaxRenderTargetSize = 320;
         private readonly int width = width, height = height, worldWidth = worldWidth, worldHeight = worldHeight;
         private readonly Tile[,] tileMap = tileMap;
         private SpriteFont tileCoordinateFont;
         private readonly ContentManager content = content;
         private Chunk[,] chunks;
-        private Chunk[] previousVisibleChunks = new Chunk[64];
-        private Chunk[] newVisibleChunks = new Chunk[64];
-        private Chunk[] visibleChunks = new Chunk[64];
+        private Chunk[] previousVisibleChunks = new Chunk[512];
+        private Chunk[] newVisibleChunks = new Chunk[512];
+        private Chunk[] visibleChunks = new Chunk[512];
         private int previousVisibleChunkCount = 0;
         private int newVisibleChunkCount = 0;
-        private readonly RenderTarget2D[] renderTargets = new RenderTarget2D[64];
-        private List<int> availableRenderTargetIndexes = Enumerable.Range(0, 64).ToList();
+        private readonly RenderTarget2D[] renderTargets = new RenderTarget2D[512];
+        private List<int> availableRenderTargetIndexes = Enumerable.Range(0, 512).ToList();
         private SpriteBatch spriteBatch;
 
         //Camera Culling

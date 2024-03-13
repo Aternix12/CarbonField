@@ -32,7 +32,7 @@ namespace CarbonField
             ConsoleLogger.Log($"Populating Chunk: {x}, {y}", ConsoleColor.Green);
             if (chunkManager.GetRenderTargetByIndex(RenderTargetIndex) == null)
             {
-                RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+                RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth16);
                 chunkManager.SetRenderTargetAtIndex(RenderTargetIndex, newRenderTarget);
                 ConsoleLogger.Log($"Creating new rendertarget! {x}, {y}", ConsoleColor.Yellow);
             }
@@ -61,7 +61,7 @@ namespace CarbonField
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch, Effect blendEffect, ChunkManager chunkManager)
         {
             // Create a new render target
-            RenderTarget2D newRenderTarget = new(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+            RenderTarget2D newRenderTarget = new(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth16);
 
             // Set the new render target
             graphicsDevice.SetRenderTarget(newRenderTarget);
