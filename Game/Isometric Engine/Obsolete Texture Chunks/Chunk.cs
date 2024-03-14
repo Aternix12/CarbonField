@@ -28,11 +28,12 @@ namespace CarbonField
 
         public void CreateRenderTarget(SpriteBatch spriteBatch, ChunkManager chunkManager, Effect blendEffect)
         {
-            
+
             ConsoleLogger.Log($"Populating Chunk: {x}, {y}", ConsoleColor.Green);
+            
             if (chunkManager.GetRenderTargetByIndex(RenderTargetIndex) == null)
             {
-                RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth16);
+                RenderTarget2D newRenderTarget = new RenderTarget2D(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
                 chunkManager.SetRenderTargetAtIndex(RenderTargetIndex, newRenderTarget);
                 ConsoleLogger.Log($"Creating new rendertarget! {x}, {y}", ConsoleColor.Yellow);
             }
@@ -45,7 +46,7 @@ namespace CarbonField
             foreach (var tile in tilesByTerrain)
             {
                 adjustedPosition = new(tile.Position.X - x, tile.Position.Y - y);
-                tile.Draw(spriteBatch, adjustedPosition, blendEffect);  
+                tile.Draw(spriteBatch, adjustedPosition, blendEffect);
             }
             spriteBatch.End();
 
@@ -61,7 +62,7 @@ namespace CarbonField
         public void RedrawTile(Tile tile, SpriteBatch spriteBatch, Effect blendEffect, ChunkManager chunkManager)
         {
             // Create a new render target
-            RenderTarget2D newRenderTarget = new(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth16);
+            RenderTarget2D newRenderTarget = new(graphicsDevice, Bounds.Width, Bounds.Height, false, graphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
             // Set the new render target
             graphicsDevice.SetRenderTarget(newRenderTarget);

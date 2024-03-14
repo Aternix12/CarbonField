@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CarbonField
@@ -22,6 +23,8 @@ namespace CarbonField
 
         //Clock
         private readonly Clock _time = new();
+        Stopwatch stopwatch = new Stopwatch();
+        double lagSpikeThreshold = 1.0;
 
         //Console
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -98,6 +101,7 @@ namespace CarbonField
 
         protected override void Update(GameTime gameTime)
         {
+            stopwatch.Restart();
             UserInterface.Update(this);
 
             ////Clock
@@ -119,7 +123,12 @@ namespace CarbonField
             CurrentWorld.Update(gameTime);
 
             base.Update(gameTime);
-        }
+            stopwatch.Stop();
+            if (stopwatch.Elapsed.TotalMilliseconds > lagSpikeThreshold)
+            {
+                ConsoleLogger.Log("Lag Spike Detected: " + stopwatch.Elapsed.TotalMilliseconds.ToString() + "ms", ConsoleColor.Red);
+            }
+          }
 
         protected override void Draw(GameTime gameTime)
         {

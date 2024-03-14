@@ -224,6 +224,8 @@ namespace CarbonField
             int startYIndex = Math.Max(0, expandedViewArea.Top / MaxRenderTargetSize);
             int endYIndex = Math.Min(chunks.GetLength(1), (expandedViewArea.Bottom / MaxRenderTargetSize) + 1);
 
+            ConsoleLogger.Log($"Number of Chunks being checked: {endXIndex - startXIndex} x {endYIndex - startYIndex}", ConsoleColor.Magenta);
+            int renderTargetHits = 0;
 
             // Identify new visible chunks
             for (int x = startXIndex; x < endXIndex; x++)
@@ -241,14 +243,16 @@ namespace CarbonField
                                 int index = availableRenderTargetIndexes[0];
                                 availableRenderTargetIndexes.RemoveAt(0);
                                 chunks[x, y].RenderTargetIndex = index;
-                                // Assuming CreateRenderTarget initializes the render target
                                 chunks[x, y].CreateRenderTarget(spriteBatch, this, blendEffect);
+                                renderTargetHits++;
                             }
                         }
                         newVisibleChunks[newVisibleChunkCount++] = chunks[x, y];
                     }
                 }
             }
+
+            ConsoleLogger.Log($"RenderTargets Created: {renderTargetHits}", ConsoleColor.Yellow);
 
             // Identify chunks that are no longer visible
             foreach (Chunk oldChunk in previouslyVisibleChunksList)

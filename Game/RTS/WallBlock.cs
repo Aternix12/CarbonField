@@ -29,10 +29,10 @@ namespace CarbonField
             
 
             Random r = new();
-            int nextValue = r.Next(-300, 300);
+            int nextValue = r.Next(-2000, 2000);
             Velocity = new Vector2(nextValue, Velocity.Y);
 
-            nextValue = r.Next(-300, 300);
+            nextValue = r.Next(-2000, 2000);
             Velocity = new Vector2(Velocity.X, nextValue);
 
             
@@ -90,9 +90,6 @@ namespace CarbonField
             }
         }
 
-
-
-
         public override void Draw(SpriteBatch spriteBatch)
         {
 
@@ -102,7 +99,8 @@ namespace CarbonField
 
             if (!Collisionwait)
             {
-                spriteBatch.Draw(_image, Position, Color.White);
+                spriteBatch.Draw(_image, Position, null, Color.White, 0f, Vector2.Zero, 15f, SpriteEffects.None, 0f);
+
             }
             else
             {

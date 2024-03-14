@@ -37,7 +37,7 @@ namespace CarbonField
         public void Initialize()
         {
             // Initialize IsometricManager
-            IsoManager = new IsometricManager(300, 300, _graphics.GraphicsDevice, _content);
+            IsoManager = new IsometricManager(200, 200, _graphics.GraphicsDevice, _content);
 
             // Initialize the lighting
             _lightingManager.Initialize(IsoManager);
@@ -49,7 +49,7 @@ namespace CarbonField
         public void LoadContent()
         {
             // Load textures, create entities, etc.
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 200; i++)
             {
                 Vector2 pos = GenerateRandomPositionWithinDiamond();
                 WallBlock ent = new(pos, IsoManager);
@@ -118,7 +118,7 @@ namespace CarbonField
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             _lightingManager.BeginDraw();
-            _graphics.GraphicsDevice.Clear(Color.Black);
+            _graphics.GraphicsDevice.Clear(Color.Gray);
 
             CamTransform = Cam.GetTransform();
              
